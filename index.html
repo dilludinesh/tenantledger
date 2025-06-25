@@ -212,6 +212,9 @@
     </style>
 </head>
 <body>
+    <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base" style="display:none; margin-bottom: 1rem;">Sign in with Google</button>
+    <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base" style="display:none; margin-bottom: 1rem;">Sign Out</button>
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
     </div>
@@ -332,7 +335,7 @@
 
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-            import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+            import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
             import { getFirestore, doc, addDoc, setDoc, deleteDoc, onSnapshot, collection, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
             // Global variables for Firebase instances
@@ -376,6 +379,25 @@
             // Tenant and Category options for inline editing dropdowns
             const TENANT_OPTIONS = ["Front KMR", "Rear KMR", "NZB"];
             const CATEGORY_OPTIONS = ["Rent", "Current Bill"];
+
+            const googleSignInBtn = document.getElementById('googleSignInBtn');
+            const signOutBtn = document.getElementById('signOutBtn');
+
+            // Add new elements for user name and email
+            let userNameDisplay = document.getElementById('userNameDisplay');
+            let userEmailDisplay = document.getElementById('userEmailDisplay');
+            if (!userNameDisplay) {
+                userNameDisplay = document.createElement('span');
+                userNameDisplay.id = 'userNameDisplay';
+                userNameDisplay.style.marginLeft = '1em';
+                userIdDisplay.parentElement.appendChild(userNameDisplay);
+            }
+            if (!userEmailDisplay) {
+                userEmailDisplay = document.createElement('span');
+                userEmailDisplay.id = 'userEmailDisplay';
+                userEmailDisplay.style.marginLeft = '1em';
+                userIdDisplay.parentElement.appendChild(userEmailDisplay);
+            }
 
             /**
              * Shows the loading overlay.
@@ -454,40 +476,66 @@
             async function initializeFirebase() {
                 showLoading();
                 try {
-                    // Your specific Firebase project configuration
                     const firebaseConfig = {
-                      apiKey: "AIzaSyAswyBBqVVdV9_ext83khlYHPdNgLaBaDY", // <-- YOU MUST PASTE YOUR KEY HERE
+                      apiKey: "AIzaSyAswyBBqVVdV9_ext83khlYHPdNgLaBaDY",
                       authDomain: "tenantledgerio.firebaseapp.com",
                       projectId: "tenantledgerio",
                       storageBucket: "tenantledgerio.firebasestorage.app",
                       messagingSenderId: "1097222749597",
                       appId: "1:1097222749597:web:219662b60453e025d20385"
                     };
-                    appId = firebaseConfig.projectId; // Assign to global appId variable
-
+                    appId = firebaseConfig.projectId;
                     app = initializeApp(firebaseConfig);
                     db = getFirestore(app);
                     auth = getAuth(app);
 
-                    // Directly sign in anonymously for the live app
-                    await signInAnonymously(auth);
+                    // Set up Google sign-in button
+                    googleSignInBtn.onclick = async function() {
+                        const provider = new GoogleAuthProvider();
+                        try {
+                            showLoading();
+                            await signInWithPopup(auth, provider);
+                            // User is now signed in, onAuthStateChanged will handle UI
+                        } catch (error) {
+                            showCustomModal("Sign-in error: " + error.message, 'alert');
+                        } finally {
+                            hideLoading();
+                        }
+                    };
+                    signOutBtn.onclick = async function() {
+                        try {
+                            showLoading();
+                            await signOut(auth);
+                        } catch (error) {
+                            showCustomModal("Sign-out error: " + error.message, 'alert');
+                        } finally {
+                            hideLoading();
+                        }
+                    };
 
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
                             userId = user.uid;
                             userIdDisplay.textContent = userId;
-                            console.log("User signed in:", userId);
+                            // Show display name and email if available
+                            userNameDisplay.textContent = user.displayName ? `Name: ${user.displayName}` : '';
+                            userEmailDisplay.textContent = user.email ? `Email: ${user.email}` : '';
+                            googleSignInBtn.style.display = 'none';
+                            signOutBtn.style.display = 'inline-block';
+                            document.querySelector('.container').style.display = '';
                             setupFirestoreAndFilters();
                         } else {
-                            userId = 'anonymous';
+                            userId = null;
                             userIdDisplay.textContent = 'Not Authenticated';
-                            console.log("User is signed out or not authenticated.");
-                            ledgerEntriesTable.innerHTML = `<tr><td colspan="6" class="py-4 px-4 text-center text-gray-500">Please sign in to view your ledger.</td></tr>`;
+                            userNameDisplay.textContent = '';
+                            userEmailDisplay.textContent = '';
+                            googleSignInBtn.style.display = 'inline-block';
+                            signOutBtn.style.display = 'none';
+                            document.querySelector('.container').style.display = 'none';
+                            hideLoading();
                         }
-                        hideLoading();
                     });
-                    console.log("Firebase initialized and ready!"); // Added console log
-
+                    hideLoading();
                 } catch (error) {
                     console.error("Error initializing Firebase:", error);
                     showCustomModal(`Error initializing app: ${error.message}`, 'alert');
