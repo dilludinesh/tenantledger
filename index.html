@@ -358,22 +358,26 @@
         const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 
         // Google sign-in
-        googleSignInBtn.onclick = async function() {
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                alert("Sign-in error: " + error.message);
-            }
-        };
+        if (googleSignInBtn) {
+            googleSignInBtn.onclick = async function() {
+                const provider = new GoogleAuthProvider();
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    alert("Sign-in error: " + error.message);
+                }
+            };
+        }
         // Sign out
-        signOutBtn.onclick = async function() {
-            try {
-                await signOut(auth);
-            } catch (error) {
-                alert("Sign-out error: " + error.message);
-            }
-        };
+        if (signOutBtn) {
+            signOutBtn.onclick = async function() {
+                try {
+                    await signOut(auth);
+                } catch (error) {
+                    alert("Sign-out error: " + error.message);
+                }
+            };
+        }
 
         // Auth state change
         onAuthStateChanged(auth, (user) => {
