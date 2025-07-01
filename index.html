@@ -534,20 +534,19 @@
                         // Show display name and email if available
                         userNameDisplay.textContent = user.displayName ? `Name: ${user.displayName}` : '';
                         userEmailDisplay.textContent = user.email ? `Email: ${user.email}` : '';
-                        googleSignInBtn.style.display = 'none';
-                        signOutBtn.style.display = 'inline-block';
-                        document.querySelector('.container').style.display = '';
+                        // googleSignInBtn.style.display = 'none'; // TEMP: Do not hide sign-in button
+                        // signOutBtn.style.display = 'inline-block';
+                        // document.querySelector('.container').style.display = '';
                         setupFirestoreAndFilters();
                     } else {
                         userId = null;
                         userIdDisplay.textContent = 'Please sign in above';
                         userNameDisplay.textContent = '';
                         userEmailDisplay.textContent = '';
-                        googleSignInBtn.style.display = 'inline-block';
-                        signOutBtn.style.display = 'none';
-                        document.querySelector('.container').style.display = 'none';
+                        // googleSignInBtn.style.display = 'inline-block'; // TEMP: Do not hide sign-in button
+                        // signOutBtn.style.display = 'none';
+                        // document.querySelector('.container').style.display = 'none';
                         hideLoading();
-                        // Unsubscribe from Firestore listener if it exists
                         if (unsubscribeLedger) {
                             unsubscribeLedger();
                             unsubscribeLedger = null;
