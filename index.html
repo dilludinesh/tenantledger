@@ -351,6 +351,7 @@
         let currentLedgerEntries = []; // Global variable to hold current ledger entries (unfiltered)
         let activeActionButtonsCell = null; // Stores the td element whose buttons are currently active (for click visibility)
         let appId; // Declare appId globally here
+        let unsubscribeLedger = null;
 
         const loadingOverlay = document.getElementById('loadingOverlay');
         const userIdDisplay = document.getElementById('userIdDisplay');
@@ -545,6 +546,11 @@
                         signOutBtn.style.display = 'none';
                         document.querySelector('.container').style.display = 'none';
                         hideLoading();
+                        // Unsubscribe from Firestore listener if it exists
+                        if (unsubscribeLedger) {
+                            unsubscribeLedger();
+                            unsubscribeLedger = null;
+                        }
                     }
                 });
                 hideLoading();
@@ -564,6 +570,12 @@
                 return;
             }
 
+            // Unsubscribe previous listener if it exists
+            if (unsubscribeLedger) {
+                unsubscribeLedger();
+                unsubscribeLedger = null;
+            }
+
             const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`; // Use global appId variable
             let q = collection(db, collectionPath);
 
@@ -573,7 +585,7 @@
                 q = query(q, where("category", "==", categoryFilterValue));
             }
 
-            onSnapshot(q, (snapshot) => {
+            unsubscribeLedger = onSnapshot(q, (snapshot) => {
                 let fetchedEntries = [];
                 snapshot.forEach((doc) => {
                     const data = doc.data();
