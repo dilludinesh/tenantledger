@@ -382,17 +382,17 @@
         // Auth state change
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                googleSignInBtn.style.display = 'none';
-                signOutBtn.style.display = 'inline-block';
-                mainCardContainer.style.display = '';
+                if (googleSignInBtn) googleSignInBtn.style.display = 'none';
+                if (signOutBtn) signOutBtn.style.display = 'inline-block';
+                if (mainCardContainer) mainCardContainer.style.display = '';
                 userId = user.uid;
-                userIdDisplay.textContent = userId ? userId : 'Please sign in above';
+                if (userIdDisplay) userIdDisplay.textContent = userId ? userId : 'Please sign in above';
                 setupFirestoreAndFilters();
             } else {
-                googleSignInBtn.style.display = 'block';
-                signOutBtn.style.display = 'none';
-                mainCardContainer.style.display = 'none';
-                userIdDisplay.textContent = '';
+                if (googleSignInBtn) googleSignInBtn.style.display = 'block';
+                if (signOutBtn) signOutBtn.style.display = 'none';
+                if (mainCardContainer) mainCardContainer.style.display = 'none';
+                if (userIdDisplay) userIdDisplay.textContent = '';
                 if (unsubscribeLedger) {
                     unsubscribeLedger();
                     unsubscribeLedger = null;
@@ -578,34 +578,36 @@
                 setupFirestoreAndFilters();
             }
         }
-        ledgerForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const date = dateInput.value;
-            const tenant = tenantInput.value;
-            const category = categoryInput.value;
-            const amount = parseFloat(amountInput.value);
-            const description = descriptionInput.value;
-            if (!date || !tenant || !category || isNaN(amount) || amount < 0) {
-                alert("Please fill all required fields with valid data.");
-                return;
-            }
-            const entryDate = Timestamp.fromDate(new Date(date));
-            const entryData = {
-                date: entryDate,
-                tenant,
-                category,
-                amount,
-                description,
-                timestamp: Timestamp.now()
+        if (ledgerForm) {
+            ledgerForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const date = dateInput ? dateInput.value : '';
+                const tenant = tenantInput ? tenantInput.value : '';
+                const category = categoryInput ? categoryInput.value : '';
+                const amount = amountInput ? parseFloat(amountInput.value) : NaN;
+                const description = descriptionInput ? descriptionInput.value : '';
+                if (!date || !tenant || !category || isNaN(amount) || amount < 0) {
+                    alert("Please fill all required fields with valid data.");
+                    return;
+                }
+                const entryDate = Timestamp.fromDate(new Date(date));
+                const entryData = {
+                    date: entryDate,
+                    tenant,
+                    category,
+                    amount,
+                    description,
+                    timestamp: Timestamp.now()
+                };
+                try {
+                    const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
+                    await addDoc(collection(db, collectionPath), entryData);
+                    if (ledgerForm) ledgerForm.reset();
+                } catch (error) {
+                    alert(`Failed to save entry: ${error.message}`);
+                }
             };
-            try {
-                const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
-                await addDoc(collection(db, collectionPath), entryData);
-                ledgerForm.reset();
-            } catch (error) {
-                alert(`Failed to save entry: ${error.message}`);
-            }
-        };
+        }
         async function deleteEntry(id) {
             if (!confirm("Are you sure you want to delete this entry?")) return;
             try {
@@ -616,23 +618,21 @@
             }
         }
         function resetAddForm() {
-            ledgerForm.reset();
+            if (ledgerForm) ledgerForm.reset();
         }
-        resetFormBtn.onclick = resetAddForm;
-        printLedgerBtn.onclick = () => {
-            window.print();
-        };
-        filterDateInput.onkeyup = setupFirestoreAndFilters;
-        filterTenantInput.onkeyup = setupFirestoreAndFilters;
-        filterCategorySelect.onchange = setupFirestoreAndFilters;
-        filterAmountInput.onkeyup = setupFirestoreAndFilters;
-        filterDescriptionInput.onkeyup = setupFirestoreAndFilters;
-        clearFiltersBtn.onclick = () => {
-            filterDateInput.value = '';
-            filterTenantInput.value = '';
-            filterCategorySelect.value = '';
-            filterAmountInput.value = '';
-            filterDescriptionInput.value = '';
+        if (resetFormBtn) resetFormBtn.onclick = resetAddForm;
+        if (printLedgerBtn) printLedgerBtn.onclick = () => { window.print(); };
+        if (filterDateInput) filterDateInput.onkeyup = setupFirestoreAndFilters;
+        if (filterTenantInput) filterTenantInput.onkeyup = setupFirestoreAndFilters;
+        if (filterCategorySelect) filterCategorySelect.onchange = setupFirestoreAndFilters;
+        if (filterAmountInput) filterAmountInput.onkeyup = setupFirestoreAndFilters;
+        if (filterDescriptionInput) filterDescriptionInput.onkeyup = setupFirestoreAndFilters;
+        if (clearFiltersBtn) clearFiltersBtn.onclick = () => {
+            if (filterDateInput) filterDateInput.value = '';
+            if (filterTenantInput) filterTenantInput.value = '';
+            if (filterCategorySelect) filterCategorySelect.value = '';
+            if (filterAmountInput) filterAmountInput.value = '';
+            if (filterDescriptionInput) filterDescriptionInput.value = '';
             setupFirestoreAndFilters();
         };
     </script>
