@@ -211,7 +211,7 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen">
     <h1 class="text-5xl font-extrabold text-center mb-6 text-gray-900 leading-tight">Tenant Ledger</h1>
     <div class="flex justify-center mb-4">
         <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base" style="display:none;">Sign in with Google</button>
@@ -220,38 +220,69 @@
         <div class="flex justify-center mb-4">
             <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base" style="display:none;">Sign Out</button>
         </div>
-        <div>Your main app content goes here.</div>
+        <!-- Ledger and user info will go here -->
+        <div id="userIdDisplay" class="mb-4 text-center text-lg text-gray-700"></div>
+        <div id="ledgerContent">Your main app content goes here.</div>
     </div>
-    <script>
-        // Simulate authentication state for testing
-        let signedIn = false;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // import { getFirestore, ... } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Uncomment and add Firestore logic as needed
+
+        // Firebase config (replace with your own if needed)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAswyBBqVVdV9_ext83khlYHPdNgLaBaDY",
+            authDomain: "tenantledgerio.firebaseapp.com",
+            projectId: "tenantledgerio",
+            storageBucket: "tenantledgerio.appspot.com",
+            messagingSenderId: "1097222749597",
+            appId: "1:1097222749597:web:219662b60453e025d20385"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        // const db = getFirestore(app); // Uncomment if using Firestore
+
+        // UI elements
         const googleSignInBtn = document.getElementById('googleSignInBtn');
         const signOutBtn = document.getElementById('signOutBtn');
         const container = document.querySelector('.container');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        // const ledgerContent = document.getElementById('ledgerContent');
 
-        function updateUI() {
-            if (signedIn) {
+        // Google sign-in
+        googleSignInBtn.onclick = async function() {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                alert("Sign-in error: " + error.message);
+            }
+        };
+        // Sign out
+        signOutBtn.onclick = async function() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                alert("Sign-out error: " + error.message);
+            }
+        };
+
+        // Auth state change
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
                 googleSignInBtn.style.display = 'none';
                 signOutBtn.style.display = 'inline-block';
                 container.style.display = '';
+                userIdDisplay.textContent = `Your User ID: ${user.uid}`;
+                // TODO: Load ledger content for this user
             } else {
                 googleSignInBtn.style.display = 'block';
                 signOutBtn.style.display = 'none';
                 container.style.display = 'none';
+                userIdDisplay.textContent = '';
             }
-        }
-
-        googleSignInBtn.onclick = () => {
-            signedIn = true;
-            updateUI();
-        };
-        signOutBtn.onclick = () => {
-            signedIn = false;
-            updateUI();
-        };
-
-        // Initial UI update
-        updateUI();
+        });
     </script>
 </body>
 </html>
