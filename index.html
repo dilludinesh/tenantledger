@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tenant Ledger</title>
+    <title>Tenant Ledger App</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -212,106 +212,112 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <div class="flex flex-col items-center mt-12 mb-12">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
-        <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2" style="display:none;">Sign in with Google</button>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
     </div>
-    <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" style="display:none;" id="mainCardContainer">
-        <div class="mb-6 text-center text-lg text-gray-700">Your User ID: <span id="userIdDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span></div>
-        <!-- BEGIN: Full original ledger UI restored below -->
-        <!-- Ledger form -->
-        <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md"> 
-            <input type="hidden" id="entryId"> 
-            <div>
-                <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
-                <input type="date" id="date" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+
+    <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg"> <h1 class="text-5xl font-extrabold text-center mb-6 text-gray-900 leading-tight">Tenant Ledger</h1> <div class="mb-6 text-center text-lg text-gray-700"> Your User ID: <span id="userIdDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span>
             </div>
-            <div>
-                <label for="tenant" class="block text-gray-800 text-sm font-semibold mb-1">Tenant:</label>
-                <select id="tenant" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-                    <option value="">Select Tenant</option>
-                    <option value="Front KMR">Front KMR</option>
-                    <option value="Rear KMR">Rear KMR</option>
-                    <option value="NZB">NZB</option>
-                </select>
-            </div>
-            <div>
-                <label for="category" class="block text-gray-800 text-sm font-semibold mb-1">Category:</label>
-                <select id="category" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-                    <option value="">Select Category</option>
-                    <option value="Rent">Rent</option>
-                    <option value="Current Bill">Current Bill</option>
-                </select>
-            </div>
-            <div>
-                <label for="amount" class="block text-gray-800 text-sm font-semibold mb-1">Amount (₹):</label>
-                <input type="number" id="amount" placeholder="e.g., 5000" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" min="0" step="0.01" required>
-            </div>
-            <div class="md:col-span-2">
-                <label for="description" class="block text-gray-800 text-sm font-semibold mb-1">Description:</label>
-                <textarea id="description" rows="2" placeholder="Brief description of the transaction" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500"></textarea>
-            </div>
-            <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
-                <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">Add Entry</button>
-                <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">Reset</button>
-                <button type="button" id="printLedgerBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base">Print Ledger</button>
-            </div>
-        </form>
-        <!-- Filter section -->
-        <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4"> 
-                <div>
-                    <label for="filterDate" class="block text-gray-700 text-sm font-bold mb-2">Filter by Date:</label>
-                    <input type="text" id="filterDate" placeholder="e.g., 20 Jun 2025" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+            <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md"> <input type="hidden" id="entryId"> <div>
+                    <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
+                    <input type="date" id="date" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
                 </div>
+
                 <div>
-                    <label for="filterTenant" class="block text-gray-700 text-sm font-bold mb-2">Filter by Tenant:</label>
-                    <input type="text" id="filterTenant" placeholder="Search tenant name..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <label for="tenant" class="block text-gray-800 text-sm font-semibold mb-1">Tenant:</label>
+                    <select id="tenant" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+                        <option value="">Select Tenant</option>
+                        <option value="Front KMR">Front KMR</option>
+                        <option value="Rear KMR">Rear KMR</option>
+                        <option value="NZB">NZB</option>
+                    </select>
                 </div>
+
                 <div>
-                    <label for="filterCategory" class="block text-gray-700 text-sm font-bold mb-2">Filter by Category:</label>
-                    <select id="filterCategory" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <option value="">All Categories</option>
+                    <label for="category" class="block text-gray-800 text-sm font-semibold mb-1">Category:</label>
+                    <select id="category" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+                        <option value="">Select Category</option>
                         <option value="Rent">Rent</option>
                         <option value="Current Bill">Current Bill</option>
                     </select>
                 </div>
+
                 <div>
-                    <label for="filterAmount" class="block text-gray-700 text-sm font-bold mb-2">Filter by Amount:</label>
-                    <input type="text" id="filterAmount" placeholder="e.g., 5000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <label for="amount" class="block text-gray-800 text-sm font-semibold mb-1">Amount (₹):</label>
+                    <input type="number" id="amount" placeholder="e.g., 5000" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" min="0" step="0.01" required>
                 </div>
-                <div class="md:col-span-1"> 
-                    <label for="filterDescription" class="block text-gray-700 text-sm font-bold mb-2">Filter by Description:</label>
-                    <textarea id="filterDescription" rows="1" placeholder="Search description..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+
+                <div class="md:col-span-2">
+                    <label for="description" class="block text-gray-800 text-sm font-semibold mb-1">Description:</label>
+                    <textarea id="description" rows="2" placeholder="Brief description of the transaction" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500"></textarea>
                 </div>
-                <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2"> 
-                    <button id="clearFiltersBtn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-300">Clear Filters</button>
+
+                <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
+                    <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">
+                        Add Entry
+                    </button>
+                    <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">
+                        Reset
+                    </button>
+                    <button type="button" id="printLedgerBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base">
+                        Print Ledger
+                    </button>
+                </div>
+            </form>
+            <!-- Filter section -->
+            <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4"> 
+                    <div>
+                        <label for="filterDate" class="block text-gray-700 text-sm font-bold mb-2">Filter by Date:</label>
+                        <input type="text" id="filterDate" placeholder="e.g., 20 Jun 2025" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="filterTenant" class="block text-gray-700 text-sm font-bold mb-2">Filter by Tenant:</label>
+                        <input type="text" id="filterTenant" placeholder="Search tenant name..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div>
+                        <label for="filterCategory" class="block text-gray-700 text-sm font-bold mb-2">Filter by Category:</label>
+                        <select id="filterCategory" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="">All Categories</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Current Bill">Current Bill</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filterAmount" class="block text-gray-700 text-sm font-bold mb-2">Filter by Amount:</label>
+                        <input type="text" id="filterAmount" placeholder="e.g., 5000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="md:col-span-1"> 
+                        <label for="filterDescription" class="block text-gray-700 text-sm font-bold mb-2">Filter by Description:</label>
+                        <textarea id="filterDescription" rows="1" placeholder="Search description..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                    </div>
+                    <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2"> 
+                        <button id="clearFiltersBtn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-300">Clear Filters</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Ledger table -->
-        <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
-            <table class="min-w-full bg-white">
-                <thead class="bg-white text-blue-800 border-b border-blue-200">
-                    <tr>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider rounded-tl-lg">Date</th>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Tenant</th>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Category</th>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Amount (₹)</th>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Description</th>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="ledgerEntries" class="divide-y divide-gray-100">
-                    <tr>
-                        <td colspan="6" class="py-4 px-4 text-center text-gray-500">No entries yet. Add one above!</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- END: Full original ledger UI -->
-    </div>
+            <!-- Ledger table -->
+            <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+                <table class="min-w-full bg-white">
+                    <thead class="bg-white text-blue-800 border-b border-blue-200">
+                        <tr>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider rounded-tl-lg">Date</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Tenant</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Category</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Amount (₹)</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Description</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerEntries" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="6" class="py-4 px-4 text-center text-gray-500">No entries yet. Add one above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
