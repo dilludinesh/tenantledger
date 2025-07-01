@@ -397,6 +397,13 @@
             userIdDisplay.parentElement.appendChild(userEmailDisplay);
         }
 
+        // After defining userIdDisplay:
+        let loadingTimeout = setTimeout(() => {
+            if (userIdDisplay.textContent === 'Loading...') {
+                userIdDisplay.textContent = 'Unable to connect. Please check your internet or try again later.';
+            }
+        }, 5000);
+
         /**
          * Shows the loading overlay.
          */
@@ -512,6 +519,7 @@
                 };
 
                 onAuthStateChanged(auth, (user) => {
+                    clearTimeout(loadingTimeout);
                     if (user) {
                         userId = user.uid;
                         userIdDisplay.textContent = userId ? userId : 'Please sign in above';
