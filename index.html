@@ -514,7 +514,7 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
-                        userIdDisplay.textContent = userId;
+                        userIdDisplay.textContent = userId ? userId : 'Please sign in above';
                         // Show display name and email if available
                         userNameDisplay.textContent = user.displayName ? `Name: ${user.displayName}` : '';
                         userEmailDisplay.textContent = user.email ? `Email: ${user.email}` : '';
@@ -524,7 +524,7 @@
                         setupFirestoreAndFilters();
                     } else {
                         userId = null;
-                        userIdDisplay.textContent = 'Not Authenticated';
+                        userIdDisplay.textContent = 'Please sign in above';
                         userNameDisplay.textContent = '';
                         userEmailDisplay.textContent = '';
                         googleSignInBtn.style.display = 'inline-block';
