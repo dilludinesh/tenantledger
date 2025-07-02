@@ -115,18 +115,16 @@
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
         <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2">Sign in with Google</button>
     </div>
-    <!-- Sign-out button (shown only when signed in) -->
-    <div class="flex flex-col items-center" id="signOutSection" style="display:none;">
-        <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-8">Sign Out</button>
-    </div>
-
+    
+    <!-- Main App Card -->
     <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
-        <!-- Main Title for post-sign-in page -->
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
-        <div class="mb-6 text-center text-lg text-gray-700 no-print">
-            Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span>
-            <br>
-            <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
+        <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print">
+            <div class="text-center md:text-left">
+                Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
+                <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
+            </div>
+            <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base mt-4 md:mt-0 md:ml-4">Sign Out</button>
         </div>
         <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md">
             <input type="hidden" id="entryId">
@@ -256,9 +254,8 @@
 
         // UI elements
         const signInSection = document.getElementById('signInSection');
-        const signOutSection = document.getElementById('signOutSection');
-        const signOutBtn = document.getElementById('signOutBtn');
         const mainCardContainer = document.getElementById('mainCardContainer');
+        const signOutBtn = document.getElementById('signOutBtn');
         const googleSignInBtn = document.getElementById('googleSignInBtn');
         const userIdDisplay = document.getElementById('userIdDisplay');
         const userNameDisplay = document.getElementById('userNameDisplay');
@@ -343,16 +340,13 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 if (signInSection) signInSection.style.display = 'none';
-                if (signOutSection) signOutSection.style.display = '';
                 if (mainCardContainer) mainCardContainer.style.display = '';
                 userId = user.uid;
-                // Show both friendly name (or email) and user id
                 if (userNameDisplay) userNameDisplay.textContent = user.displayName || user.email || 'User';
                 if (userIdDisplay) userIdDisplay.textContent = userId ? userId : 'N/A';
                 setupFirestoreAndFilters();
             } else {
                 if (signInSection) signInSection.style.display = '';
-                if (signOutSection) signOutSection.style.display = 'none';
                 if (mainCardContainer) mainCardContainer.style.display = 'none';
                 if (userIdDisplay) userIdDisplay.textContent = '';
                 if (userNameDisplay) userNameDisplay.textContent = '';
