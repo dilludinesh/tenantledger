@@ -98,7 +98,7 @@
                 border: 1px solid #ccc; padding: 8px; text-align: left;
             }
             .print-content th { background-color: #f2f2f2; text-align: center; }
-            .print-content .actions-column { display: none; }
+            .print-content .table-actions-cell { display: none !important; }
             .print-content .empty-table-message {
                 text-align: center; font-style: normal; color: #555;
             }
@@ -116,8 +116,8 @@
         <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2">Sign in with Google</button>
     </div>
     
-    <!-- Main App Card -->
-    <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
+    <!-- Main App Card with print-content wrapper -->
+    <div class="container print-content mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print">
             <div class="text-center md:text-left">
@@ -206,12 +206,12 @@
                         <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Category</th>
                         <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Amount (₹)</th>
                         <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Description</th>
-                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Actions</th>
+                        <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider table-actions-cell">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="ledgerEntries" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="6" class="py-4 px-4 text-center text-gray-500">No entries yet. Add one above!</td>
+                        <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
                     </tr>
                 </tbody>
             </table>
@@ -357,16 +357,16 @@
             }
         });
 
-        // Ledger logic
         const TENANT_OPTIONS = ["Front KMR", "Rear KMR", "NZB"];
         const CATEGORY_OPTIONS = ["Rent", "Current Bill"];
         function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
         function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
         function formatDateToDayMonthYear(dateObj) {
             const options = { day: '2-digit', month: 'short', year: 'numeric' };
-            return dateObj.toLocaleDateString('en-GB', options);
+            return dateObj ? dateObj.toLocaleDateString('en-GB', options) : '';
         }
         function formatDateForInput(dateObj) {
+            if(!dateObj) return '';
             const year = dateObj.getFullYear();
             const month = String(dateObj.getMonth() + 1).padStart(2, '0');
             const day = String(dateObj.getDate()).padStart(2, '0');
@@ -414,8 +414,10 @@
         }
         function displayLedgerEntries(entries) {
             ledgerEntriesTable.innerHTML = '';
-            if (entries.length === 0) {
-                ledgerEntriesTable.innerHTML = `<tr><td colspan="6" class="py-4 px-4 text-center text-gray-500">No entries found.</td></tr>`;
+            if (!entries || entries.length === 0) {
+                ledgerEntriesTable.innerHTML = `<tr>
+                    <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+                </tr>`;
                 return;
             }
             entries.forEach(entry => {
@@ -442,10 +444,10 @@
                     <td class="py-3 px-4 whitespace-nowrap text-center text-sm font-medium border-b border-blue-100 table-actions-cell">
                         ${isEditingThisRow ?
                             `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm">Save</button>
-                             <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Cancel</button>`
+                            <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Cancel</button>`
                             :
                             `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm ${currentEditingRowId ? 'opacity-50 cursor-not-allowed' : ''}" ${currentEditingRowId ? 'disabled' : ''}>Edit</button>
-                             <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Delete</button>`
+                            <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Delete</button>`
                         }
                     </td>
                 `;
