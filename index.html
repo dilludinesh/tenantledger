@@ -138,7 +138,6 @@
         </div>
         <!-- Only this block prints: -->
         <div id="print-table">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
             <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
                 <table class="min-w-full bg-white">
                     <thead>
@@ -173,7 +172,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, addDoc, setDoc, deleteDoc, onSnapshot, collection, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, addDoc, setDoc, deleteDoc, onSnapshot, collection, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Firebase config
         const firebaseConfig = {
