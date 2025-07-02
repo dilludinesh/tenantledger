@@ -38,6 +38,26 @@
           80% { filter: brightness(0.95);}
           100% { filter: none;}
         }
+        .btn-signout {
+            background-color: #fee2e2 !important; /* Tailwind red-100 */
+            color: #b91c1c !important; /* Tailwind red-700 */
+            border: 1px solid #fca5a5 !important; /* Tailwind red-300 */
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+        }
+        .btn-signout:hover, .btn-signout:focus {
+            background-color: #fecaca !important; /* Tailwind red-200 */
+            color: #991b1b !important; /* Tailwind red-800 */
+        }
+        .btn-signout:active {
+            filter: brightness(0.97);
+        }
+        .btn-signout:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px #fca5a5;
+        }
         .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .btn-secondary:hover, .btn-secondary:focus-visible { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
         .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
@@ -89,8 +109,11 @@
                 Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
                 <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
             </div>
-            <!-- Sign out button always enabled, not greyed out -->
-            <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base mt-4 md:mt-0 md:ml-4">Sign Out</button>
+            <!-- Sign Out button always visible, light red tint, styled like Print Ledger -->
+            <button id="signOutBtn"
+                class="btn-signout px-4 py-2 rounded-lg font-semibold transition shadow mt-4 md:mt-0 md:ml-4">
+                Sign Out
+            </button>
         </div>
         <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
             <input type="hidden" id="entryId">
