@@ -32,7 +32,8 @@
         .btn-primary { background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .btn-primary:hover { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
         .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .btn-secondary:hover:enabled { background-color: #d1d5db; }
+        .btn-secondary:hover:enabled, .btn-secondary.active:hover, .btn-secondary.active:focus { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
+        .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
         .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-danger { background-color: #fca5a5; color: #b91c1c; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .btn-danger:hover { background-color: #f87171; color: #7f1d1d; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
@@ -134,7 +135,7 @@
                 <input id="filter-description" class="border rounded py-2 px-3" placeholder="Description">
                 <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2">
                   <button id="clear-filters" type="button"
-                    class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed bg-gray-200 text-gray-600"
                     disabled
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -354,6 +355,12 @@
             el => (el.tagName === 'SELECT' ? el.value !== '' : el.value.trim() !== '')
           );
           clearFiltersBtn.disabled = !anyFilled;
+          clearFiltersBtn.classList.remove('active','bg-blue-600','text-white','ring-2','ring-blue-300','bg-gray-200','text-gray-600');
+          if (anyFilled) {
+            clearFiltersBtn.classList.add('active','bg-blue-600','text-white');
+          } else {
+            clearFiltersBtn.classList.add('bg-gray-200','text-gray-600');
+          }
         }
         function applyFilters() {
             let entries = allEntries.slice();
@@ -379,12 +386,13 @@
         });
         updateClearFiltersButtonState();
         clearFiltersBtn.onclick = () => {
+          if (clearFiltersBtn.disabled) return;
           filterFields.forEach(el => el.value = '');
           applyFilters();
           updateClearFiltersButtonState();
           filterFields[0].focus();
-          clearFiltersBtn.classList.add('bg-green-200');
-          setTimeout(() => clearFiltersBtn.classList.remove('bg-green-200'), 300);
+          clearFiltersBtn.classList.add('ring-2', 'ring-blue-300');
+          setTimeout(() => clearFiltersBtn.classList.remove('ring-2', 'ring-blue-300'), 200);
         };
         function displayLedgerEntries(entries) {
             ledgerEntriesTable.innerHTML = '';
