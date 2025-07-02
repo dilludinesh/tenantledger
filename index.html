@@ -588,75 +588,7 @@
         function resetAddForm() { ledgerForm.reset(); }
         resetFormBtn.onclick = resetAddForm;
         printLedgerBtn.onclick = () => {
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Tenant Ledger Printout</title>');
-            printWindow.document.write(`
-                <style>
-                    body { font-family: 'Inter', sans-serif; margin: 20px; }
-                    h1 { text-align: center; margin-bottom: 20px; color: #333; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                    th { background-color: #f2f2f2; text-align: center; }
-                    .actions-column { display: none; }
-                    .empty-table-message { text-align: center; font-style: normal; color: #555; }
-                    @media print { @page { margin: 10mm; } body { margin: 0; } }
-                </style>
-            `);
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(`<h1 class="text-3xl font-bold">${document.querySelector('h1').textContent}</h1>`);
-            // Removed user id/name display from printout
-            const printTable = document.createElement('table');
-            printTable.innerHTML = `
-                <thead class="bg-white text-blue-800 border-b border-blue-200">
-                    <tr>
-                        <th>Date</th>
-                        <th>Tenant</th>
-                        <th>Category</th>
-                        <th>Amount (₹)</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            `;
-            const printTableBody = printTable.querySelector('tbody');
-            const displayedRows = document.querySelectorAll('#ledgerEntries tr');
-            if (displayedRows.length === 1 && displayedRows[0].querySelector('td[colspan="6"]')) {
-                const emptyMessageRow = printTableBody.insertRow();
-                const emptyMessageCell = emptyMessageRow.insertCell();
-                emptyMessageCell.colSpan = 5;
-                emptyMessageCell.classList.add('empty-table-message');
-                emptyMessageCell.textContent = "No entries found.";
-            } else {
-                displayedRows.forEach(row => {
-                    const newRow = printTableBody.insertRow();
-                    Array.from(row.children).forEach((originalCell) => {
-                        if (!originalCell.classList.contains('table-actions-cell')) {
-                            const newCell = newRow.insertCell();
-                            const inputElement = originalCell.querySelector('input, select, textarea');
-                            if (inputElement) {
-                                if (inputElement.tagName === 'SELECT') {
-                                    newCell.textContent = inputElement.options[inputElement.selectedIndex].textContent;
-                                } else {
-                                    newCell.textContent = inputElement.value;
-                                }
-                            } else {
-                                newCell.innerHTML = originalCell.innerHTML;
-                            }
-                            if (originalCell.classList.contains('text-center')) {
-                                newCell.style.textAlign = 'center';
-                            } else if (originalCell.classList.contains('text-right')) {
-                                newCell.style.textAlign = 'right';
-                            } else {
-                                newCell.style.textAlign = 'left';
-                            }
-                        }
-                    });
-                });
-            }
-            printWindow.document.write(printTable.outerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
+            window.print();
         };
         filterDateInput.onkeyup = setupFirestoreAndFilters;
         filterTenantInput.onkeyup = setupFirestoreAndFilters;
