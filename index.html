@@ -39,7 +39,7 @@
           100% { filter: none;}
         }
         .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .btn-secondary:hover:enabled, .btn-secondary.active:hover, .btn-secondary.active:focus { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
+        .btn-secondary:hover, .btn-secondary:focus-visible { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
         .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
         .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-danger { background-color: #fca5a5; color: #b91c1c; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
@@ -89,6 +89,7 @@
                 Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
                 <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
             </div>
+            <!-- Sign out button always enabled, not greyed out -->
             <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base mt-4 md:mt-0 md:ml-4">Sign Out</button>
         </div>
         <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
