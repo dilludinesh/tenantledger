@@ -121,6 +121,8 @@
     </div>
 
     <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
+        <!-- Main Title for post-sign-in page -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
         <div class="mb-6 text-center text-lg text-gray-700">
             Your User ID: <span id="userIdDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span>
         </div>
@@ -357,7 +359,7 @@
             }
         });
 
-        // Ledger logic (copy from previous solution)
+        // Ledger logic
         const TENANT_OPTIONS = ["Front KMR", "Rear KMR", "NZB"];
         const CATEGORY_OPTIONS = ["Rent", "Current Bill"];
         function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
