@@ -124,9 +124,10 @@
         <!-- Main Title for post-sign-in page -->
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
         <div class="mb-6 text-center text-lg text-gray-700">
-            Your User ID: <span id="userIdDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span>
+            Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span>
+            <br>
+            <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
         </div>
-
         <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md">
             <input type="hidden" id="entryId">
             <div>
@@ -260,6 +261,7 @@
         const mainCardContainer = document.getElementById('mainCardContainer');
         const googleSignInBtn = document.getElementById('googleSignInBtn');
         const userIdDisplay = document.getElementById('userIdDisplay');
+        const userNameDisplay = document.getElementById('userNameDisplay');
         const ledgerForm = document.getElementById('ledgerForm');
         const dateInput = document.getElementById('date');
         const tenantInput = document.getElementById('tenant');
@@ -282,7 +284,6 @@
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const modalOkBtn = document.getElementById('modalOkBtn');
 
-        // Modal fix (never show blank)
         function showCustomModal(message, type = 'alert') {
             return new Promise((resolve) => {
                 if (!message || !message.trim()) {
@@ -345,13 +346,16 @@
                 if (signOutSection) signOutSection.style.display = '';
                 if (mainCardContainer) mainCardContainer.style.display = '';
                 userId = user.uid;
-                if (userIdDisplay) userIdDisplay.textContent = userId ? userId : 'Please sign in above';
+                // Show both friendly name (or email) and user id
+                if (userNameDisplay) userNameDisplay.textContent = user.displayName || user.email || 'User';
+                if (userIdDisplay) userIdDisplay.textContent = userId ? userId : 'N/A';
                 setupFirestoreAndFilters();
             } else {
                 if (signInSection) signInSection.style.display = '';
                 if (signOutSection) signOutSection.style.display = 'none';
                 if (mainCardContainer) mainCardContainer.style.display = 'none';
                 if (userIdDisplay) userIdDisplay.textContent = '';
+                if (userNameDisplay) userNameDisplay.textContent = '';
                 if (unsubscribeLedger) {
                     unsubscribeLedger();
                     unsubscribeLedger = null;
@@ -607,7 +611,7 @@
             `);
             printWindow.document.write('</head><body>');
             printWindow.document.write(`<h1 class="text-3xl font-bold">${document.querySelector('h1').textContent}</h1>`);
-            printWindow.document.write(`<div class="user-id-display">${document.getElementById('userIdDisplay').parentElement.innerHTML}</div>`);
+            printWindow.document.write(`<div class="user-id-display">${userNameDisplay.textContent} <br>User ID: ${userIdDisplay.textContent}</div>`);
             const printTable = document.createElement('table');
             printTable.innerHTML = `
                 <thead class="bg-white text-blue-800 border-b border-blue-200">
