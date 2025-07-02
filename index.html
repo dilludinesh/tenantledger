@@ -9,14 +9,6 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 2rem;
-            padding-bottom: 2rem;
         }
         .container {
             max-width: 1000px;
@@ -90,9 +82,8 @@
         .no-print { }
         @media print {
             body > *:not(.print-content) { display: none !important; }
-            .print-content { display: block !important; width: 100%; margin: 0; padding: 0; }
+            .print-content { display: block !important; width: 100vw; margin: 0; padding: 0; }
             .print-content h1 { text-align: center; margin-bottom: 1rem; }
-            .no-print { display: none !important; }
             .print-content table { width: 100%; border-collapse: collapse; }
             .print-content th, .print-content td {
                 border: 1px solid #ccc; padding: 8px; text-align: left;
@@ -116,9 +107,8 @@
         <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2">Sign in with Google</button>
     </div>
     
-    <!-- Main App Card with print-content wrapper -->
-    <div class="container print-content mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
+    <!-- Main App Card (NO print-content here) -->
+    <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
         <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print">
             <div class="text-center md:text-left">
                 Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
@@ -126,7 +116,7 @@
             </div>
             <button id="signOutBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base mt-4 md:mt-0 md:ml-4">Sign Out</button>
         </div>
-        <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md">
+        <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
             <input type="hidden" id="entryId">
             <div>
                 <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
@@ -164,7 +154,7 @@
             </div>
         </form>
 
-        <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50">
+        <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
             <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div>
@@ -197,7 +187,31 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+        <!-- PRINT CONTENT: Only show this in print -->
+        <div class="print-content">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
+            <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+                <table class="min-w-full bg-white">
+                    <thead class="bg-white text-blue-800 border-b border-blue-200">
+                        <tr>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider rounded-tl-lg">Date</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Tenant</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Category</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Amount (₹)</th>
+                            <th class="py-4 px-4 text-center text-sm font-semibold uppercase tracking-wider">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerEntriesPrint" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="5" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Visible table for interaction (not printed) -->
+        <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200 no-print">
             <table class="min-w-full bg-white">
                 <thead class="bg-white text-blue-800 border-b border-blue-200">
                     <tr>
@@ -413,64 +427,68 @@
             });
         }
         function displayLedgerEntries(entries) {
+            // Update interactive table (screen)
             ledgerEntriesTable.innerHTML = '';
             if (!entries || entries.length === 0) {
                 ledgerEntriesTable.innerHTML = `<tr>
                     <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
                 </tr>`;
-                return;
+            } else {
+                entries.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.classList.add('hover:bg-blue-50');
+                    row.setAttribute('data-id', entry.id);
+                    const isEditingThisRow = currentEditingRowId === entry.id;
+                    row.innerHTML = `
+                        <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
+                            ${isEditingThisRow ? `<input type="date" value="${entry.date ? formatDateForInput(entry.date) : ''}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500">` : formatDateToDayMonthYear(entry.date)}
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 font-medium text-center">
+                            ${isEditingThisRow ? createSelectHtml(TENANT_OPTIONS, entry.tenant) : entry.tenant}
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
+                            ${isEditingThisRow ? createSelectHtml(CATEGORY_OPTIONS, entry.category) : entry.category}
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 text-center font-bold border-b border-blue-100">
+                            ${isEditingThisRow ? `<input type="number" value="${entry.amount}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500" min="0" step="0.01">` : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(entry.amount)}
+                        </td>
+                        <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
+                            ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500">${entry.description || ''}</textarea>` : (entry.description || '-')}
+                        </td>
+                        <td class="py-3 px-4 whitespace-nowrap text-center text-sm font-medium border-b border-blue-100 table-actions-cell">
+                            ${isEditingThisRow ?
+                                `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm">Save</button>
+                                <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Cancel</button>`
+                                :
+                                `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm ${currentEditingRowId ? 'opacity-50 cursor-not-allowed' : ''}" ${currentEditingRowId ? 'disabled' : ''}>Edit</button>
+                                <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Delete</button>`
+                            }
+                        </td>
+                    `;
+                    ledgerEntriesTable.appendChild(row);
+                });
             }
-            entries.forEach(entry => {
-                const row = document.createElement('tr');
-                row.classList.add('hover:bg-blue-50');
-                row.setAttribute('data-id', entry.id);
-                const isEditingThisRow = currentEditingRowId === entry.id;
-                row.innerHTML = `
-                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
-                        ${isEditingThisRow ? `<input type="date" value="${entry.date ? formatDateForInput(entry.date) : ''}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500">` : formatDateToDayMonthYear(entry.date)}
-                    </td>
-                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 font-medium text-center">
-                        ${isEditingThisRow ? createSelectHtml(TENANT_OPTIONS, entry.tenant) : entry.tenant}
-                    </td>
-                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
-                        ${isEditingThisRow ? createSelectHtml(CATEGORY_OPTIONS, entry.category) : entry.category}
-                    </td>
-                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 text-center font-bold border-b border-blue-100">
-                        ${isEditingThisRow ? `<input type="number" value="${entry.amount}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500" min="0" step="0.01">` : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(entry.amount)}
-                    </td>
-                    <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
-                        ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500">${entry.description || ''}</textarea>` : (entry.description || '-')}
-                    </td>
-                    <td class="py-3 px-4 whitespace-nowrap text-center text-sm font-medium border-b border-blue-100 table-actions-cell">
-                        ${isEditingThisRow ?
-                            `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm">Save</button>
-                            <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Cancel</button>`
-                            :
-                            `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm ${currentEditingRowId ? 'opacity-50 cursor-not-allowed' : ''}" ${currentEditingRowId ? 'disabled' : ''}>Edit</button>
-                            <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Delete</button>`
-                        }
-                    </td>
-                `;
-                ledgerEntriesTable.appendChild(row);
-            });
 
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.onclick = (e) => {
-                    const row = e.target.closest('tr');
-                    const entryId = row.getAttribute('data-id');
-                    const entryData = currentLedgerEntries.find(entry => entry.id === entryId);
-                    toggleEditMode(row, entryData);
-                };
-            });
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.onclick = (e) => deleteEntry(e.target.closest('tr').getAttribute('data-id'));
-            });
-            document.querySelectorAll('.save-btn').forEach(button => {
-                button.onclick = (e) => saveEditedEntry(e.target.closest('tr'));
-            });
-            document.querySelectorAll('.cancel-edit-btn').forEach(button => {
-                button.onclick = (e) => cancelInlineEdit(e.target.closest('tr').getAttribute('data-id'));
-            });
+            // Update print table (print preview only)
+            const ledgerEntriesPrintTable = document.getElementById('ledgerEntriesPrint');
+            ledgerEntriesPrintTable.innerHTML = '';
+            if (!entries || entries.length === 0) {
+                ledgerEntriesPrintTable.innerHTML = `<tr>
+                    <td colspan="5" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+                </tr>`;
+            } else {
+                entries.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${formatDateToDayMonthYear(entry.date)}</td>
+                        <td>${entry.tenant}</td>
+                        <td>${entry.category}</td>
+                        <td>${new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(entry.amount)}</td>
+                        <td>${entry.description || '-'}</td>
+                    `;
+                    ledgerEntriesPrintTable.appendChild(row);
+                });
+            }
         }
         function createSelectHtml(optionsArray, selectedValue) {
             let optionsHtml = `<option value="">Select</option>`;
