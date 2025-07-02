@@ -87,12 +87,12 @@
             border-color: #2563eb !important;
             box-shadow: 0 0 0 3px rgba(37,99,235,0.3) !important;
         }
+        .no-print { }
         @media print {
             body > *:not(.print-content) { display: none !important; }
             .print-content { display: block !important; width: 100%; margin: 0; padding: 0; }
-            .print-content h1, .print-content .user-id-display {
-                text-align: center; margin-bottom: 1rem;
-            }
+            .print-content h1 { text-align: center; margin-bottom: 1rem; }
+            .no-print { display: none !important; }
             .print-content table { width: 100%; border-collapse: collapse; }
             .print-content th, .print-content td {
                 border: 1px solid #ccc; padding: 8px; text-align: left;
@@ -123,7 +123,7 @@
     <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
         <!-- Main Title for post-sign-in page -->
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
-        <div class="mb-6 text-center text-lg text-gray-700">
+        <div class="mb-6 text-center text-lg text-gray-700 no-print">
             Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span>
             <br>
             <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
@@ -600,7 +600,6 @@
                 <style>
                     body { font-family: 'Inter', sans-serif; margin: 20px; }
                     h1 { text-align: center; margin-bottom: 20px; color: #333; }
-                    .user-id-display { text-align: center; margin-bottom: 20px; font-size: 0.9em; color: #555; }
                     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
                     th { background-color: #f2f2f2; text-align: center; }
@@ -611,7 +610,7 @@
             `);
             printWindow.document.write('</head><body>');
             printWindow.document.write(`<h1 class="text-3xl font-bold">${document.querySelector('h1').textContent}</h1>`);
-            printWindow.document.write(`<div class="user-id-display">${userNameDisplay.textContent} <br>User ID: ${userIdDisplay.textContent}</div>`);
+            // Removed user id/name display from printout
             const printTable = document.createElement('table');
             printTable.innerHTML = `
                 <thead class="bg-white text-blue-800 border-b border-blue-200">
