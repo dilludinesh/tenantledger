@@ -30,7 +30,15 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); max-width: 450px; text-align: center;
         }
         .btn-primary { background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .btn-primary:hover { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-primary:hover, #printLedgerBtn:hover:enabled { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-primary:focus-visible, #printLedgerBtn:focus-visible { box-shadow: 0 0 0 2px #93c5fd; }
+        .btn-primary:active, #printLedgerBtn:active { animation: pulseActiveLedger 0.20s; }
+        .btn-primary:disabled, #printLedgerBtn:disabled { opacity: 0.5; cursor: not-allowed;}
+        @keyframes pulseActiveLedger {
+          0% { filter: brightness(1.18);}
+          80% { filter: brightness(0.95);}
+          100% { filter: none;}
+        }
         .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .btn-secondary:hover:enabled, .btn-secondary.active:hover, .btn-secondary.active:focus { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
         .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
@@ -118,7 +126,16 @@
             <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
                 <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">Add Entry</button>
                 <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">Reset</button>
-                <button type="button" id="printLedgerBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg text-base">Print Ledger</button>
+                <button id="printLedgerBtn" type="button"
+                  class="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition bg-blue-600 text-white shadow"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="6" y="9" width="12" height="7" rx="2" stroke="currentColor"/>
+                    <path d="M6 17v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2" stroke="currentColor"/>
+                    <path d="M6 13V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v6" stroke="currentColor"/>
+                  </svg>
+                  Print Ledger
+                </button>
             </div>
         </form>
         <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
@@ -394,12 +411,31 @@
           clearFiltersBtn.classList.add('ring-2', 'ring-blue-300');
           setTimeout(() => clearFiltersBtn.classList.remove('ring-2', 'ring-blue-300'), 200);
         };
+        // PRINT LEDGER BUTTON
+        function updatePrintLedgerBtnState() {
+          // Only allow print if there are entries visible (not filtered out)
+          const visibleRows = document.querySelectorAll('#ledgerEntries tr');
+          // If only the "No entries found" row is present, disable print
+          const onlyEmpty = visibleRows.length === 1 && visibleRows[0].querySelector('.empty-table-message');
+          printLedgerBtn.disabled = onlyEmpty;
+        }
+        function printLedgerBtnPulseFeedback() {
+          printLedgerBtn.classList.add('ring-2', 'ring-blue-300');
+          setTimeout(() => printLedgerBtn.classList.remove('ring-2', 'ring-blue-300'), 180);
+        }
+        printLedgerBtn.onclick = () => {
+          if (printLedgerBtn.disabled) return;
+          printLedgerBtnPulseFeedback();
+          setTimeout(() => window.print(), 100); // allow pulse to show before dialog
+        };
+        // table display logic
         function displayLedgerEntries(entries) {
             ledgerEntriesTable.innerHTML = '';
             if (!entries || entries.length === 0) {
                 ledgerEntriesTable.innerHTML = `<tr>
                     <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
                 </tr>`;
+                updatePrintLedgerBtnState();
                 return;
             }
             entries.forEach(entry => {
@@ -453,6 +489,7 @@
             document.querySelectorAll('.cancel-edit-btn').forEach(button => {
                 button.onclick = (e) => cancelInlineEdit(e.target.closest('tr').getAttribute('data-id'));
             });
+            updatePrintLedgerBtnState();
         }
         function createSelectHtml(optionsArray, selectedValue) {
             let optionsHtml = `<option value="">Select</option>`;
@@ -565,7 +602,6 @@
         }
         function resetAddForm() { ledgerForm.reset(); }
         resetFormBtn.onclick = resetAddForm;
-        printLedgerBtn.onclick = () => { window.print(); };
     </script>
 </body>
 </html>
