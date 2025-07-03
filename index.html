@@ -81,7 +81,27 @@
         @media print {
             #print-table, #print-table * { display: revert !important; }
             .no-print, #print-table .no-print, #print-table .table-actions-cell { display: none !important; }
-            #print-table { width: 100vw !important; margin: 0 !important; padding: 0 !important; }
+            #mainCardContainer {
+                background: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: none !important;
+                width: 100vw !important;
+            }
+            #print-table {
+                width: 100vw !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            #mainCardContainer h1 {
+                text-align: center !important;
+                margin-top: 0 !important;
+                margin-bottom: 1.5rem !important;
+            }
             #print-table th, #print-table td {
               border: 1px solid #ccc; padding: 8px; text-align: left;
             }
