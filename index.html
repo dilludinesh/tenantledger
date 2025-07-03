@@ -237,6 +237,7 @@
         let unsubscribeLedger = null;
         let allEntries = [];
         let currentEditingRowId = null;
+        let currentFilteredEntries = [];
 
         // UI elements
         const signInSection = document.getElementById('signInSection');
@@ -412,6 +413,7 @@
                 let matchDesc = !descVal || (e.description || "").toLowerCase().includes(descVal);
                 return matchDate && matchTenant && matchCategory && matchAmount && matchDesc;
             });
+            currentFilteredEntries = entries; // Save currently filtered entries for printing
             displayLedgerEntries(entries);
             updateClearFiltersButtonState();
         }
@@ -429,21 +431,20 @@
           clearFiltersBtn.classList.add('ring-2', 'ring-blue-300');
           setTimeout(() => clearFiltersBtn.classList.remove('ring-2', 'ring-blue-300'), 200);
         };
-        // PRINT LEDGER BUTTON - always enabled, always visible
+
+        // Print Ledger
         printLedgerBtn.onclick = () => {
           printLedgerBtn.classList.add('ring-2', 'ring-blue-300');
           setTimeout(() => printLedgerBtn.classList.remove('ring-2', 'ring-blue-300'), 180);
-          // Before printing, ensure the print-table always has at least one row with "No entries found" if empty
-          const entries = allEntries.slice();
-          const printTableBody = document.getElementById('ledgerEntries');
-          if (!entries || entries.length === 0) {
-              printTableBody.innerHTML = `<tr>
+          // Always ensure the visible table contains at least the empty row if nothing filtered
+          if (!currentFilteredEntries || currentFilteredEntries.length === 0) {
+              ledgerEntriesTable.innerHTML = `<tr>
                   <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
               </tr>`;
           }
-          setTimeout(() => window.print(), 100); // allow pulse to show before dialog
+          setTimeout(() => window.print(), 100);
         };
-        // table display logic
+
         function displayLedgerEntries(entries) {
             ledgerEntriesTable.innerHTML = '';
             if (!entries || entries.length === 0) {
