@@ -209,6 +209,22 @@
             background: #e8f0fe;
             transition: background 0.2s;
         }
+        /* Icon button styles for row actions */
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-size: 1.15em;
+            padding: 4px 8px;
+            margin: 0 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+        }
+        .icon-btn:hover {
+            background: #e0e7ff;
+            color: #1d4ed8;
+        }
     </style>
 </head>
 <body>
@@ -623,11 +639,24 @@
                     <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
                         ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Edit description">${sanitizeHTML(entry.description || '')}</textarea>` : (sanitizeHTML(entry.description) || '-')}
                     </td>
+                    <td class="py-3 px-2 whitespace-nowrap text-center text-sm border-b border-blue-100">
+                        <button class="edit-btn-row icon-btn" aria-label="Edit entry" title="Edit">
+                            ✏️
+                        </button>
+                        <button class="delete-btn-row icon-btn" aria-label="Delete entry" title="Delete">
+                            🗑️
+                        </button>
+                        ${isEditingThisRow ?
+                            `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm" aria-label="Save entry">Save</button>
+                            <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Cancel edit">Cancel</button>`
+                            : ''
+                        }
+                    </td>
                 `;
                 ledgerEntriesTable.appendChild(row);
             });
 
-            document.querySelectorAll('.edit-btn').forEach(button => {
+            document.querySelectorAll('.edit-btn-row').forEach(button => {
                 button.onclick = (e) => {
                     const row = e.target.closest('tr');
                     const entryId = row.getAttribute('data-id');
@@ -635,7 +664,7 @@
                     toggleEditMode(row, entryData);
                 };
             });
-            document.querySelectorAll('.delete-btn').forEach(button => {
+            document.querySelectorAll('.delete-btn-row').forEach(button => {
                 button.onclick = (e) => deleteEntry(e.target.closest('tr').getAttribute('data-id'));
             });
             document.querySelectorAll('.save-btn').forEach(button => {
