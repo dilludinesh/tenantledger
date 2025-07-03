@@ -1,609 +1,665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tenant Ledger</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    .container { max-width: 1000px; width: 100%; }
-    .loading-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(255,255,255,0.9);
-      display: flex; justify-content: center; align-items: center; z-index: 1000;
-    }
-    .spinner {
-      border: 4px solid rgba(0,0,0,0.1);
-      border-left-color: #2563eb;
-      border-radius: 50%; width: 40px; height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6); display: flex;
-      justify-content: center; align-items: center; z-index: 2000;
-    }
-    .modal-content {
-      background-color: white; padding: 2.5rem; border-radius: 0.75rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15); max-width: 450px; text-align: center;
-    }
-    .btn-primary { background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    .btn-primary:hover, #printLedgerBtn:hover { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
-    .btn-primary:focus-visible, #printLedgerBtn:focus-visible { box-shadow: 0 0 0 2px #93c5fd; }
-    .btn-primary:active, #printLedgerBtn:active { animation: pulseActiveLedger 0.20s; }
-    @keyframes pulseActiveLedger {
-      0% { filter: brightness(1.18);}
-      80% { filter: brightness(0.95);}
-      100% { filter: none;}
-    }
-    .btn-signout {
-      background-color: #fee2e2 !important; /* Tailwind red-100 */
-      color: #b91c1c !important; /* Tailwind red-700 */
-      border: 1px solid #fca5a5 !important; /* Tailwind red-300 */
-      font-weight: 600;
-      border-radius: 0.5rem;
-      transition: all 0.2s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-    }
-    .btn-signout:hover, .btn-signout:focus {
-      background-color: #fecaca !important; /* Tailwind red-200 */
-      color: #991b1b !important; /* Tailwind red-800 */
-    }
-    .btn-signout:active {
-      filter: brightness(0.97);
-    }
-    .btn-signout:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px #fca5a5;
-    }
-    .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    .btn-secondary:hover, .btn-secondary:focus-visible { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
-    .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
-    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-danger { background-color: #fca5a5; color: #b91c1c; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    .btn-danger:hover { background-color: #f87171; color: #7f1d1d; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
-    .btn-warning { background-color: #3b82f6; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    .btn-warning:hover { background-color: #2563eb; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
-    .btn-reset { background-color: #ef4444; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    .btn-reset:hover { background-color: #dc2626; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
-    input:focus, select:focus, textarea:focus {
-      outline: none !important;
-      border-color: #2563eb !important;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.3) !important;
-    }
-    .no-print { }
-    @media print {
-      body * { display: none !important; }
-      #print-table, #print-table * { display: revert !important; }
-      .no-print, #print-table .no-print, #print-table .table-actions-cell { display: none !important; }
-      #print-table { width: 100vw !important; margin: 0 !important; padding: 0 !important; }
-      #print-table th, #print-table td {
-        border: 1px solid #ccc; padding: 8px; text-align: left;
-      }
-      #print-table th { background-color: #f2f2f2; text-align: center; }
-      #print-table .empty-table-message {
-        text-align: center; font-style: normal; color: #555;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Tenant Ledger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .container { max-width: 1000px; width: 100%; }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255,255,255,0.9);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: #2563eb;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); display: flex;
+            justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-content {
+            background-color: white; padding: 2.5rem; border-radius: 0.75rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); max-width: 450px; text-align: center;
+        }
+        .btn-primary { background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-primary:hover, #printLedgerBtn:hover { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-primary:focus-visible, #printLedgerBtn:focus-visible { box-shadow: 0 0 0 2px #93c5fd; }
+        .btn-primary:active, #printLedgerBtn:active { animation: pulseActiveLedger 0.20s; }
+        @keyframes pulseActiveLedger {
+          0% { filter: brightness(1.18);}
+          80% { filter: brightness(0.95);}
+          100% { filter: none;}
+        }
+        .btn-signout {
+            background-color: #fee2e2 !important; /* Tailwind red-100 */
+            color: #b91c1c !important; /* Tailwind red-700 */
+            border: 1px solid #fca5a5 !important; /* Tailwind red-300 */
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+        }
+        .btn-signout:hover, .btn-signout:focus {
+            background-color: #fecaca !important; /* Tailwind red-200 */
+            color: #991b1b !important; /* Tailwind red-800 */
+        }
+        .btn-signout:active {
+            filter: brightness(0.97);
+        }
+        .btn-signout:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px #fca5a5;
+        }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-secondary:hover, .btn-secondary:focus-visible { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
+        .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
+        .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-danger { background-color: #fca5a5; color: #b91c1c; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-danger:hover { background-color: #f87171; color: #7f1d1d; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-warning { background-color: #3b82f6; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-warning:hover { background-color: #2563eb; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-reset { background-color: #ef4444; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-reset:hover { background-color: #dc2626; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .table-actions-cell button.edit-btn,
+        .table-actions-cell button.delete-btn { opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s;}
+        .table-actions-cell.active-buttons button.edit-btn,
+        .table-actions-cell.active-buttons button.delete-btn { opacity: 1; visibility: visible;}
+        input:focus, select:focus, textarea:focus {
+            outline: none !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.3) !important;
+        }
+        .no-print { }
+        @media print {
+            body * { display: none !important; }
+            #print-table, #print-table * { display: revert !important; }
+            .no-print, #print-table .no-print, #print-table .table-actions-cell { display: none !important; }
+            #print-table { width: 100vw !important; margin: 0 !important; padding: 0 !important; }
+            #print-table th, #print-table td {
+              border: 1px solid #ccc; padding: 8px; text-align: left;
+            }
+            #print-table th { background-color: #f2f2f2; text-align: center; }
+            #print-table .empty-table-message {
+                text-align: center; font-style: normal; color: #555;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="loading-overlay hidden" id="loadingOverlay"><div class="spinner"></div></div>
+    <div class="loading-overlay hidden" id="loadingOverlay"><div class="spinner"></div></div>
 
-  <!-- Google Sign-in Section -->
-  <div class="flex flex-col items-center mt-12 mb-12" id="signInSection">
-    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
-    <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2">Sign in with Google</button>
-  </div>
-
-  <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
-    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
-    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print">
-      <div class="text-center md:text-left">
-        Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
-        <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
-      </div>
-      <button id="signOutBtn"
-        class="btn-signout px-4 py-2 rounded-lg font-semibold transition shadow mt-4 md:mt-0 md:ml-4">
-        Sign Out
-      </button>
+    <!-- Google Sign-in Section -->
+    <div class="flex flex-col items-center mt-12 mb-12" id="signInSection">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
+        <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2">Sign in with Google</button>
     </div>
-    <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
-      <input type="hidden" id="entryId">
-      <div>
-        <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
-        <input type="date" id="date" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-      </div>
-      <div>
-        <label for="tenant" class="block text-gray-800 text-sm font-semibold mb-1">Tenant:</label>
-        <select id="tenant" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-          <option value="">Select Tenant</option>
-          <option value="Front KMR">Front KMR</option>
-          <option value="Rear KMR">Rear KMR</option>
-          <option value="NZB">NZB</option>
-        </select>
-      </div>
-      <div>
-        <label for="category" class="block text-gray-800 text-sm font-semibold mb-1">Category:</label>
-        <select id="category" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-          <option value="">Select Category</option>
-          <option value="Rent">Rent</option>
-          <option value="Current Bill">Current Bill</option>
-        </select>
-      </div>
-      <div>
-        <label for="amount" class="block text-gray-800 text-sm font-semibold mb-1">Amount (₹):</label>
-        <input type="number" id="amount" placeholder="e.g., 5000" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" min="0" step="0.01" required>
-      </div>
-      <div class="md:col-span-2">
-        <label for="description" class="block text-gray-800 text-sm font-semibold mb-1">Description:</label>
-        <textarea id="description" rows="2" placeholder="Brief description of the transaction" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500"></textarea>
-      </div>
-      <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
-        <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">Add Entry</button>
-        <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">Reset</button>
-        <button id="printLedgerBtn" type="button"
-          class="btn-primary px-4 py-2 rounded-lg font-semibold transition bg-blue-600 text-white shadow"
-        >
-          Print Ledger
-        </button>
-      </div>
-    </form>
-    <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
-      <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <input id="filter-date" class="border rounded py-2 px-3" placeholder="Filter by Date (e.g. 20 Jun 2025)">
-        <input id="filter-tenant" class="border rounded py-2 px-3" placeholder="Tenant">
-        <select id="filter-category" class="border rounded py-2 px-3">
-          <option value="">All Categories</option>
-          <option>Rent</option>
-          <option>Current Bill</option>
-        </select>
-        <input id="filter-amount" class="border rounded py-2 px-3" placeholder="Amount (e.g. 5000)">
-        <input id="filter-description" class="border rounded py-2 px-3" placeholder="Description">
-        <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2">
-          <button id="clear-filters" type="button"
-            class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed bg-gray-200 text-gray-600"
-            disabled
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-            Clear Filters
-          </button>
+
+    <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
+        <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print">
+            <div class="text-center md:text-left">
+                Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
+                <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
+            </div>
+            <!-- Sign Out button always visible, light red tint, styled like Print Ledger -->
+            <button id="signOutBtn"
+                class="btn-signout px-4 py-2 rounded-lg font-semibold transition shadow mt-4 md:mt-0 md:ml-4">
+                Sign Out
+            </button>
         </div>
-      </div>
+        <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
+            <input type="hidden" id="entryId">
+            <div>
+                <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
+                <input type="date" id="date" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+            </div>
+            <div>
+                <label for="tenant" class="block text-gray-800 text-sm font-semibold mb-1">Tenant:</label>
+                <select id="tenant" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+                    <option value="">Select Tenant</option>
+                    <option value="Front KMR">Front KMR</option>
+                    <option value="Rear KMR">Rear KMR</option>
+                    <option value="NZB">NZB</option>
+                </select>
+            </div>
+            <div>
+                <label for="category" class="block text-gray-800 text-sm font-semibold mb-1">Category:</label>
+                <select id="category" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+                    <option value="">Select Category</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Current Bill">Current Bill</option>
+                </select>
+            </div>
+            <div>
+                <label for="amount" class="block text-gray-800 text-sm font-semibold mb-1">Amount (₹):</label>
+                <input type="number" id="amount" placeholder="e.g., 5000" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" min="0" step="0.01" required>
+            </div>
+            <div class="md:col-span-2">
+                <label for="description" class="block text-gray-800 text-sm font-semibold mb-1">Description:</label>
+                <textarea id="description" rows="2" placeholder="Brief description of the transaction" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500"></textarea>
+            </div>
+            <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
+                <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">Add Entry</button>
+                <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">Reset</button>
+                <button id="printLedgerBtn" type="button"
+                  class="btn-primary px-4 py-2 rounded-lg font-semibold transition bg-blue-600 text-white shadow"
+                >
+                  Print Ledger
+                </button>
+            </div>
+        </form>
+        <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <input id="filter-date" class="border rounded py-2 px-3" placeholder="Filter by Date (e.g. 20 Jun 2025)">
+                <input id="filter-tenant" class="border rounded py-2 px-3" placeholder="Tenant">
+                <select id="filter-category" class="border rounded py-2 px-3">
+                  <option value="">All Categories</option>
+                  <option>Rent</option>
+                  <option>Current Bill</option>
+                </select>
+                <input id="filter-amount" class="border rounded py-2 px-3" placeholder="Amount (e.g. 5000)">
+                <input id="filter-description" class="border rounded py-2 px-3" placeholder="Description">
+                <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2">
+                  <button id="clear-filters" type="button"
+                    class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed bg-gray-200 text-gray-600"
+                    disabled
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Clear Filters
+                  </button>
+                </div>
+            </div>
+        </div>
+        <!-- Only this block prints: -->
+        <div id="print-table">
+            <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Tenant</th>
+                            <th>Category</th>
+                            <th>Amount (₹)</th>
+                            <th>Description</th>
+                            <th class="table-actions-cell no-print">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerEntries">
+                        <tr>
+                            <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <!-- Only this block prints: -->
-    <div id="print-table">
-      <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
-        <table class="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Tenant</th>
-              <th>Category</th>
-              <th>Amount (₹)</th>
-              <th>Description</th>
-              <th class="table-actions-cell no-print">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="ledgerEntries">
-            <tr>
-              <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div id="customModal" class="modal hidden">
+        <div class="modal-content">
+            <p id="modalMessage" class="text-gray-800 text-lg font-medium mb-6"></p>
+            <div id="modalButtons" class="flex justify-center space-x-4">
+                <button id="modalConfirmBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg hidden">Confirm</button>
+                <button id="modalCancelBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg hidden">Cancel</button>
+                <button id="modalOkBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg">OK</button>
+            </div>
+        </div>
     </div>
-  </div>
-  <div id="customModal" class="modal hidden">
-    <div class="modal-content">
-      <p id="modalMessage" class="text-gray-800 text-lg font-medium mb-6"></p>
-      <div id="modalButtons" class="flex justify-center space-x-4">
-        <button id="modalConfirmBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg hidden">Confirm</button>
-        <button id="modalCancelBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg hidden">Cancel</button>
-        <button id="modalOkBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg">OK</button>
-      </div>
-    </div>
-  </div>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, addDoc, setDoc, deleteDoc, onSnapshot, collection, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, setDoc, deleteDoc, onSnapshot, collection, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAswyBBqVVdV9_ext83khlYHPdNgLaBaDY",
-      authDomain: "tenantledgerio.firebaseapp.com",
-      projectId: "tenantledgerio",
-      storageBucket: "tenantledgerio.appspot.com",
-      messagingSenderId: "1097222749597",
-      appId: "1:1097222749597:web:219662b60453e025d20385"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    let appId = firebaseConfig.projectId;
-    let userId = null;
-    let unsubscribeLedger = null;
-    let allEntries = [];
-    let currentEditingRowId = null;
-    let currentFilteredEntries = [];
-
-    // UI elements
-    const signInSection = document.getElementById('signInSection');
-    const mainCardContainer = document.getElementById('mainCardContainer');
-    const signOutBtn = document.getElementById('signOutBtn');
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
-    const userIdDisplay = document.getElementById('userIdDisplay');
-    const userNameDisplay = document.getElementById('userNameDisplay');
-    const ledgerForm = document.getElementById('ledgerForm');
-    const dateInput = document.getElementById('date');
-    const tenantInput = document.getElementById('tenant');
-    const categoryInput = document.getElementById('category');
-    const amountInput = document.getElementById('amount');
-    const descriptionInput = document.getElementById('description');
-    const ledgerEntriesTable = document.getElementById('ledgerEntries');
-    const resetFormBtn = document.getElementById('resetFormBtn');
-    const printLedgerBtn = document.getElementById('printLedgerBtn');
-    const filterDateInput = document.getElementById('filter-date');
-    const filterTenantInput = document.getElementById('filter-tenant');
-    const filterCategorySelect = document.getElementById('filter-category');
-    const filterAmountInput = document.getElementById('filter-amount');
-    const filterDescriptionInput = document.getElementById('filter-description');
-    const clearFiltersBtn = document.getElementById('clear-filters');
-    // Modal elements
-    const customModal = document.getElementById('customModal');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-    const modalCancelBtn = document.getElementById('modalCancelBtn');
-    const modalOkBtn = document.getElementById('modalOkBtn');
-
-    function showCustomModal(message, type = 'alert') {
-      return new Promise((resolve) => {
-        if (!message || !message.trim()) {
-          resolve(false);
-          return;
-        }
-        modalMessage.textContent = message;
-        modalOkBtn.classList.add('hidden');
-        modalConfirmBtn.classList.add('hidden');
-        modalCancelBtn.classList.add('hidden');
-        if (type === 'confirm') {
-          modalConfirmBtn.classList.remove('hidden');
-          modalCancelBtn.classList.remove('hidden');
-          modalConfirmBtn.onclick = () => {
-            customModal.classList.add('hidden');
-            resolve(true);
-          };
-          modalCancelBtn.onclick = () => {
-            customModal.classList.add('hidden');
-            resolve(false);
-          };
-        } else {
-          modalOkBtn.classList.remove('hidden');
-          modalOkBtn.onclick = () => {
-            customModal.classList.add('hidden');
-            resolve(true);
-          };
-        }
-        customModal.classList.remove('hidden');
-      });
-    }
-
-    // Google sign-in
-    if (googleSignInBtn) {
-      googleSignInBtn.onclick = async function() {
-        const provider = new GoogleAuthProvider();
-        try {
-          await signInWithPopup(auth, provider);
-        } catch (error) {
-          showCustomModal("Sign-in error: " + error.message, "alert");
-        }
-      };
-    }
-
-    // Sign out
-    if (signOutBtn) {
-      signOutBtn.onclick = async function() {
-        try {
-          await signOut(auth);
-        } catch (error) {
-          showCustomModal("Sign-out error: " + error.message, "alert");
-        }
-      };
-    }
-
-    // Auth state change
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        signInSection.style.display = 'none';
-        mainCardContainer.style.display = '';
-        userId = user.uid;
-        userNameDisplay.textContent = user.displayName || user.email || 'User';
-        userIdDisplay.textContent = userId ? userId : 'N/A';
-        setupFirestoreAndFilters();
-      } else {
-        signInSection.style.display = '';
-        mainCardContainer.style.display = 'none';
-        userIdDisplay.textContent = '';
-        userNameDisplay.textContent = '';
-        if (unsubscribeLedger) {
-          unsubscribeLedger();
-          unsubscribeLedger = null;
-        }
-      }
-    });
-
-    const TENANT_OPTIONS = ["Front KMR", "Rear KMR", "NZB"];
-    const CATEGORY_OPTIONS = ["Rent", "Current Bill"];
-    function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
-    function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
-    function formatDateToDayMonthYear(dateObj) {
-      const options = { day: '2-digit', month: 'short', year: 'numeric' };
-      return dateObj ? dateObj.toLocaleDateString('en-GB', options) : '';
-    }
-    function formatDateForInput(dateObj) {
-      if(!dateObj) return '';
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-    function setupFirestoreAndFilters() {
-      if (!db || !userId) return;
-      const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
-      let q = collection(db, collectionPath);
-      if (unsubscribeLedger) unsubscribeLedger();
-      unsubscribeLedger = onSnapshot(q, (snapshot) => {
-        allEntries = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          allEntries.push({
-            id: doc.id,
-            date: data.date ? data.date.toDate() : null,
-            tenant: data.tenant,
-            category: data.category,
-            amount: data.amount,
-            description: data.description,
-          });
-        });
-        applyFilters();
-      }, (error) => {
-        showCustomModal(`Failed to load ledger entries: ${error.message}`, 'alert');
-      });
-    }
-    // FILTERS
-    const filterFields = [
-      filterDateInput, filterTenantInput, filterCategorySelect, filterAmountInput, filterDescriptionInput
-    ];
-    function updateClearFiltersButtonState() {
-      const anyFilled = filterFields.some(
-        el => (el.tagName === 'SELECT' ? el.value !== '' : el.value.trim() !== '')
-      );
-      clearFiltersBtn.disabled = !anyFilled;
-      clearFiltersBtn.classList.remove('active','bg-blue-600','text-white','ring-2','ring-blue-300','bg-gray-200','text-gray-600');
-      if (anyFilled) {
-        clearFiltersBtn.classList.add('active','bg-blue-600','text-white');
-      } else {
-        clearFiltersBtn.classList.add('bg-gray-200','text-gray-600');
-      }
-    }
-    function applyFilters() {
-      let entries = allEntries.slice();
-      const dateVal = filterDateInput.value.trim().toLowerCase();
-      const tenantVal = filterTenantInput.value.trim().toLowerCase();
-      const categoryVal = filterCategorySelect.value.trim().toLowerCase();
-      const amountVal = filterAmountInput.value.trim().toLowerCase();
-      const descVal = filterDescriptionInput.value.trim().toLowerCase();
-      entries = entries.filter(e => {
-        let matchDate = !dateVal || (e.date && formatDateToDayMonthYear(e.date).toLowerCase().includes(dateVal));
-        let matchTenant = !tenantVal || (e.tenant || "").toLowerCase().includes(tenantVal);
-        let matchCategory = !categoryVal || (e.category || "").toLowerCase() === categoryVal;
-        let matchAmount = !amountVal || (String(e.amount || "")).toLowerCase().includes(amountVal);
-        let matchDesc = !descVal || (e.description || "").toLowerCase().includes(descVal);
-        return matchDate && matchTenant && matchCategory && matchAmount && matchDesc;
-      });
-      currentFilteredEntries = entries; // Save currently filtered entries for printing
-      displayLedgerEntries(entries);
-      updateClearFiltersButtonState();
-    }
-    filterFields.forEach(el => {
-      el.addEventListener('input', () => { applyFilters(); updateClearFiltersButtonState(); });
-      el.addEventListener('change', () => { applyFilters(); updateClearFiltersButtonState(); });
-    });
-    updateClearFiltersButtonState();
-    clearFiltersBtn.onclick = () => {
-      if (clearFiltersBtn.disabled) return;
-      filterFields.forEach(el => el.value = '');
-      applyFilters();
-      updateClearFiltersButtonState();
-      filterFields[0].focus();
-      clearFiltersBtn.classList.add('ring-2', 'ring-blue-300');
-      setTimeout(() => clearFiltersBtn.classList.remove('ring-2', 'ring-blue-300'), 200);
-    };
-
-    printLedgerBtn.onclick = () => {
-      printLedgerBtn.classList.add('ring-2', 'ring-blue-300');
-      setTimeout(() => printLedgerBtn.classList.remove('ring-2', 'ring-blue-300'), 180);
-      setTimeout(() => window.print(), 100);
-    };
-
-    function displayLedgerEntries(entries) {
-      ledgerEntriesTable.innerHTML = '';
-      if (!entries || entries.length === 0) {
-        ledgerEntriesTable.innerHTML = `<tr>
-          <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
-        </tr>`;
-        return;
-      }
-      entries.forEach(entry => {
-        const row = document.createElement('tr');
-        row.classList.add('hover:bg-blue-50');
-        row.setAttribute('data-id', entry.id);
-        const isEditingThisRow = currentEditingRowId === entry.id;
-        row.innerHTML = `
-          <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
-            ${isEditingThisRow ? `<input type="date" value="${entry.date ? formatDateForInput(entry.date) : ''}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500">` : formatDateToDayMonthYear(entry.date)}
-          </td>
-          <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 font-medium text-center">
-            ${isEditingThisRow ? createSelectHtml(TENANT_OPTIONS, entry.tenant) : entry.tenant}
-          </td>
-          <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
-            ${isEditingThisRow ? createSelectHtml(CATEGORY_OPTIONS, entry.category) : entry.category}
-          </td>
-          <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 text-center font-bold border-b border-blue-100">
-            ${isEditingThisRow ? `<input type="number" value="${entry.amount}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500" min="0" step="0.01">` : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(entry.amount)}
-          </td>
-          <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
-            ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500">${entry.description || ''}</textarea>` : (entry.description || '-')}
-          </td>
-          <td class="py-3 px-4 whitespace-nowrap text-center text-sm font-medium border-b border-blue-100 table-actions-cell no-print">
-            ${isEditingThisRow ?
-              `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm">Save</button>
-              <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Cancel</button>`
-              :
-              `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm ${currentEditingRowId ? 'opacity-50 cursor-not-allowed' : ''}" ${currentEditingRowId ? 'disabled' : ''}>Edit</button>
-              <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm">Delete</button>`
-            }
-          </td>
-        `;
-        ledgerEntriesTable.appendChild(row);
-      });
-
-      document.querySelectorAll('.edit-btn').forEach(button => {
-        button.onclick = (e) => {
-          const row = e.target.closest('tr');
-          const entryId = row.getAttribute('data-id');
-          const entryData = allEntries.find(entry => entry.id === entryId);
-          toggleEditMode(row, entryData);
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAswyBBqVVdV9_ext83khlYHPdNgLaBaDY",
+            authDomain: "tenantledgerio.firebaseapp.com",
+            projectId: "tenantledgerio",
+            storageBucket: "tenantledgerio.appspot.com",
+            messagingSenderId: "1097222749597",
+            appId: "1:1097222749597:web:219662b60453e025d20385"
         };
-      });
-      document.querySelectorAll('.delete-btn').forEach(button => {
-        button.onclick = (e) => deleteEntry(e.target.closest('tr').getAttribute('data-id'));
-      });
-      document.querySelectorAll('.save-btn').forEach(button => {
-        button.onclick = (e) => saveEditedEntry(e.target.closest('tr'));
-      });
-      document.querySelectorAll('.cancel-edit-btn').forEach(button => {
-        button.onclick = (e) => cancelInlineEdit(e.target.closest('tr').getAttribute('data-id'));
-      });
-    }
-    function createSelectHtml(optionsArray, selectedValue) {
-      let optionsHtml = `<option value="">Select</option>`;
-      optionsArray.forEach(option => {
-        optionsHtml += `<option value="${option}" ${selectedValue === option ? 'selected' : ''}>${option}</option>`;
-      });
-      return `<select class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500">${optionsHtml}</select>`;
-    }
-    function toggleEditMode(row, entryData) {
-      if (currentEditingRowId && currentEditingRowId !== row.getAttribute('data-id')) {
-        currentEditingRowId = null;
-        applyFilters();
-      }
-      currentEditingRowId = row.getAttribute('data-id');
-      applyFilters();
-    }
-    async function saveEditedEntry(row) {
-      showLoading();
-      const entryId = row.getAttribute('data-id');
-      const cells = row.querySelectorAll('td');
-      const dateInput = cells[0].querySelector('input');
-      const tenantSelect = cells[1].querySelector('select');
-      const categorySelect = cells[2].querySelector('select');
-      const amountInput = cells[3].querySelector('input');
-      const descriptionTextarea = cells[4].querySelector('textarea');
-      const date = dateInput.value;
-      const tenant = tenantSelect.value;
-      const category = categorySelect.value;
-      const amount = parseFloat(amountInput.value);
-      const description = descriptionTextarea.value;
-      if (!date || !tenant || !category || isNaN(amount) || amount < 0) {
-        showCustomModal("Please fill all required fields with valid data.", 'alert');
-        hideLoading();
-        return;
-      }
-      try {
-        const parsedDate = new Date(date);
-        if (isNaN(parsedDate)) {
-          showCustomModal("Please enter a valid date format (e.g., 20 Jun 2025).", 'alert');
-          hideLoading();
-          return;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let appId = firebaseConfig.projectId;
+        let userId = null;
+        let unsubscribeLedger = null;
+        let allEntries = [];
+        let currentEditingRowId = null;
+
+        // UI elements
+        const signInSection = document.getElementById('signInSection');
+        const mainCardContainer = document.getElementById('mainCardContainer');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const googleSignInBtn = document.getElementById('googleSignInBtn');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const ledgerForm = document.getElementById('ledgerForm');
+        const dateInput = document.getElementById('date');
+        const tenantInput = document.getElementById('tenant');
+        const categoryInput = document.getElementById('category');
+        const amountInput = document.getElementById('amount');
+        const descriptionInput = document.getElementById('description');
+        const ledgerEntriesTable = document.getElementById('ledgerEntries');
+        const resetFormBtn = document.getElementById('resetFormBtn');
+        const printLedgerBtn = document.getElementById('printLedgerBtn');
+        const filterDateInput = document.getElementById('filter-date');
+        const filterTenantInput = document.getElementById('filter-tenant');
+        const filterCategorySelect = document.getElementById('filter-category');
+        const filterAmountInput = document.getElementById('filter-amount');
+        const filterDescriptionInput = document.getElementById('filter-description');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+        // Modal elements
+        const customModal = document.getElementById('customModal');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        const modalOkBtn = document.getElementById('modalOkBtn');
+
+        function showCustomModal(message, type = 'alert') {
+            return new Promise((resolve) => {
+                if (!message || !message.trim()) {
+                    resolve(false);
+                    return;
+                }
+                modalMessage.textContent = message;
+                modalOkBtn.classList.add('hidden');
+                modalConfirmBtn.classList.add('hidden');
+                modalCancelBtn.classList.add('hidden');
+                if (type === 'confirm') {
+                    modalConfirmBtn.classList.remove('hidden');
+                    modalCancelBtn.classList.remove('hidden');
+                    modalConfirmBtn.onclick = () => {
+                        customModal.classList.add('hidden');
+                        resolve(true);
+                    };
+                    modalCancelBtn.onclick = () => {
+                        customModal.classList.add('hidden');
+                        resolve(false);
+                    };
+                } else {
+                    modalOkBtn.classList.remove('hidden');
+                    modalOkBtn.onclick = () => {
+                        customModal.classList.add('hidden');
+                        resolve(true);
+                    };
+                }
+                customModal.classList.remove('hidden');
+            });
         }
-        const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
-        await setDoc(doc(db, collectionPath, entryId), {
-          date: Timestamp.fromDate(parsedDate),
-          tenant: tenant,
-          category: category,
-          amount: amount,
-          description: description,
-          timestamp: Timestamp.now()
-        }, { merge: true });
-        currentEditingRowId = null;
-        applyFilters();
-        hideLoading();
-      } catch (error) {
-        showCustomModal(`Failed to update entry: ${error.message}`, 'alert');
-        hideLoading();
-      }
-    }
-    function cancelInlineEdit(entryId) {
-      if (currentEditingRowId === entryId) {
-        currentEditingRowId = null;
-        applyFilters();
-      }
-    }
-    ledgerForm.onsubmit = async (e) => {
-      e.preventDefault();
-      showLoading();
-      const date = dateInput.value;
-      const tenant = tenantInput.value;
-      const category = categoryInput.value;
-      const amount = parseFloat(amountInput.value);
-      const description = descriptionInput.value;
-      if (!date || !tenant || !category || isNaN(amount) || amount < 0) {
-        showCustomModal("Please fill all required fields with valid data.", 'alert');
-        hideLoading();
-        return;
-      }
-      const entryDate = Timestamp.fromDate(new Date(date));
-      const entryData = {
-        date: entryDate,
-        tenant,
-        category,
-        amount,
-        description,
-        timestamp: Timestamp.now()
-      };
-      try {
-        const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
-        await addDoc(collection(db, collectionPath), entryData);
-        ledgerForm.reset();
-        hideLoading();
-      } catch (error) {
-        showCustomModal(`Failed to save entry: ${error.message}`, 'alert');
-        hideLoading();
-      }
-    };
-    async function deleteEntry(id) {
-      const confirmed = await showCustomModal("Are you sure you want to delete this entry?", 'confirm');
-      if (!confirmed) { return; }
-      showLoading();
-      try {
-        const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
-        await deleteDoc(doc(db, collectionPath, id));
-        hideLoading();
-      } catch (error) {
-        showCustomModal(`Failed to delete entry: ${error.message}`, 'alert');
-        hideLoading();
-      }
-    }
-    function resetAddForm() { ledgerForm.reset(); }
-    resetFormBtn.onclick = resetAddForm;
-  </script>
+
+        // Google sign-in
+        if (googleSignInBtn) {
+            googleSignInBtn.onclick = async function() {
+                const provider = new GoogleAuthProvider();
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (error) {
+                    showCustomModal("Sign-in error: " + error.message, "alert");
+                }
+            };
+        }
+
+        // Sign out
+        if (signOutBtn) {
+            signOutBtn.onclick = async function() {
+                const confirmed = await showCustomModal("Are you sure you want to sign out?", 'confirm');
+                if (!confirmed) return;
+                try {
+                    await signOut(auth);
+                } catch (error) {
+                    showCustomModal("Sign-out error: " + error.message, "alert");
+                }
+            };
+        }
+
+        // Auth state change
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                signInSection.style.display = 'none';
+                mainCardContainer.style.display = '';
+                userId = user.uid;
+                userNameDisplay.textContent = user.displayName || user.email || 'User';
+                userIdDisplay.textContent = userId ? userId : 'N/A';
+                setupFirestoreAndFilters();
+            } else {
+                signInSection.style.display = '';
+                mainCardContainer.style.display = 'none';
+                userIdDisplay.textContent = '';
+                userNameDisplay.textContent = '';
+                if (unsubscribeLedger) {
+                    unsubscribeLedger();
+                    unsubscribeLedger = null;
+                }
+            }
+        });
+
+        const TENANT_OPTIONS = ["Front KMR", "Rear KMR", "NZB"];
+        const CATEGORY_OPTIONS = ["Rent", "Current Bill"];
+        function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+        function sanitizeHTML(str) {
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        }
+        function formatDateToDayMonthYear(dateObj) {
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            return dateObj ? dateObj.toLocaleDateString('en-GB', options) : '';
+        }
+        function formatDateForInput(dateObj) {
+            if(!dateObj) return '';
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        function normalizeDateString(str) {
+            // Accepts '20 Jun 2025' or '2025-06-20' and returns 'YYYY-MM-DD'
+            if (!str) return '';
+            let d = new Date(str);
+            if (!isNaN(d)) {
+                return formatDateForInput(d);
+            }
+            // Try parsing '20 Jun 2025' manually
+            const parts = str.trim().split(/\s+/);
+            if (parts.length === 3) {
+                const [day, mon, year] = parts;
+                const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+                const mIdx = months.indexOf(mon.toLowerCase());
+                if (mIdx >= 0) {
+                    return `${year}-${String(mIdx+1).padStart(2,'0')}-${day.padStart(2,'0')}`;
+                }
+            }
+            return str;
+        }
+        function setupFirestoreAndFilters() {
+            if (!db || !userId) return;
+            const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
+            let q = collection(db, collectionPath);
+            if (unsubscribeLedger) unsubscribeLedger();
+            unsubscribeLedger = onSnapshot(q, (snapshot) => {
+                allEntries = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allEntries.push({
+                        id: doc.id,
+                        date: data.date ? data.date.toDate() : null,
+                        tenant: data.tenant,
+                        category: data.category,
+                        amount: data.amount,
+                        description: data.description,
+                    });
+                });
+                applyFilters();
+            }, (error) => {
+                showCustomModal(`Failed to load ledger entries: ${error.message}`, 'alert');
+            });
+        }
+        // FILTERS
+        const filterFields = [
+          filterDateInput, filterTenantInput, filterCategorySelect, filterAmountInput, filterDescriptionInput
+        ];
+        function updateClearFiltersButtonState() {
+          const anyFilled = filterFields.some(
+            el => (el.tagName === 'SELECT' ? el.value !== '' : el.value.trim() !== '')
+          );
+          clearFiltersBtn.disabled = !anyFilled;
+          clearFiltersBtn.classList.remove('active','bg-blue-600','text-white','ring-2','ring-blue-300','bg-gray-200','text-gray-600');
+          if (anyFilled) {
+            clearFiltersBtn.classList.add('active','bg-blue-600','text-white');
+          } else {
+            clearFiltersBtn.classList.add('bg-gray-200','text-gray-600');
+          }
+        }
+        function applyFilters() {
+            let entries = allEntries.slice();
+            const dateVal = filterDateInput.value.trim().toLowerCase();
+            const tenantVal = filterTenantInput.value.trim().toLowerCase();
+            const categoryVal = filterCategorySelect.value.trim().toLowerCase();
+            const amountVal = filterAmountInput.value.trim().toLowerCase();
+            const descVal = filterDescriptionInput.value.trim().toLowerCase();
+            entries = entries.filter(e => {
+                let matchDate = true;
+                if (dateVal) {
+                    const entryDateStr = formatDateForInput(e.date).toLowerCase();
+                    const entryDatePretty = formatDateToDayMonthYear(e.date).toLowerCase();
+                    const filterNorm = normalizeDateString(dateVal);
+                    matchDate = entryDateStr.includes(filterNorm) || entryDatePretty.includes(dateVal);
+                }
+                let matchTenant = !tenantVal || (e.tenant || "").toLowerCase().includes(tenantVal);
+                let matchCategory = !categoryVal || (e.category || "").toLowerCase() === categoryVal;
+                let matchAmount = !amountVal || (String(e.amount || "")).toLowerCase().includes(amountVal);
+                let matchDesc = !descVal || (e.description || "").toLowerCase().includes(descVal);
+                return matchDate && matchTenant && matchCategory && matchAmount && matchDesc;
+            });
+            displayLedgerEntries(entries);
+            updateClearFiltersButtonState();
+            // Disable print button if no entries
+            printLedgerBtn.disabled = entries.length === 0;
+            printLedgerBtn.setAttribute('aria-disabled', entries.length === 0 ? 'true' : 'false');
+        }
+        filterFields.forEach(el => {
+          el.addEventListener('input', () => { applyFilters(); updateClearFiltersButtonState(); });
+          el.addEventListener('change', () => { applyFilters(); updateClearFiltersButtonState(); });
+        });
+        updateClearFiltersButtonState();
+        clearFiltersBtn.onclick = () => {
+          if (clearFiltersBtn.disabled) return;
+          filterFields.forEach(el => el.value = '');
+          applyFilters();
+          updateClearFiltersButtonState();
+          filterFields[0].focus();
+          clearFiltersBtn.classList.add('ring-2', 'ring-blue-300');
+          setTimeout(() => clearFiltersBtn.classList.remove('ring-2', 'ring-blue-300'), 200);
+        };
+        // PRINT LEDGER BUTTON - always enabled, always visible
+        printLedgerBtn.setAttribute('aria-label', 'Print ledger');
+        printLedgerBtn.onclick = () => {
+          if (printLedgerBtn.disabled) return;
+          printLedgerBtn.classList.add('ring-2', 'ring-blue-300');
+          setTimeout(() => printLedgerBtn.classList.remove('ring-2', 'ring-blue-300'), 180);
+          setTimeout(() => window.print(), 100); // allow pulse to show before dialog
+        };
+        // table display logic
+        function displayLedgerEntries(entries) {
+            ledgerEntriesTable.innerHTML = '';
+            if (!entries || entries.length === 0) {
+                ledgerEntriesTable.innerHTML = `<tr>
+                    <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+                </tr>`;
+                return;
+            }
+            entries.forEach(entry => {
+                const row = document.createElement('tr');
+                row.classList.add('hover:bg-blue-50');
+                row.setAttribute('data-id', entry.id);
+                const isEditingThisRow = currentEditingRowId === entry.id;
+                row.innerHTML = `
+                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
+                        ${isEditingThisRow ? `<input type="date" value="${entry.date ? formatDateForInput(entry.date) : ''}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Edit date">` : formatDateToDayMonthYear(entry.date)}
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 font-medium text-center">
+                        ${isEditingThisRow ? createSelectHtml(TENANT_OPTIONS, entry.tenant) : sanitizeHTML(entry.tenant)}
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 border-b border-blue-100 text-center">
+                        ${isEditingThisRow ? createSelectHtml(CATEGORY_OPTIONS, entry.category) : sanitizeHTML(entry.category)}
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-800 text-center font-bold border-b border-blue-100">
+                        ${isEditingThisRow ? `<input type="number" value="${entry.amount}" class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500" min="0.01" step="0.01" aria-label="Edit amount">` : new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(entry.amount)}
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
+                        ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Edit description">${sanitizeHTML(entry.description || '')}</textarea>` : (sanitizeHTML(entry.description) || '-')}
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap text-center text-sm font-medium border-b border-blue-100 table-actions-cell no-print">
+                        ${isEditingThisRow ?
+                            `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm" aria-label="Save entry">Save</button>
+                            <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Cancel edit">Cancel</button>`
+                            :
+                            `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm ${currentEditingRowId ? 'opacity-50 cursor-not-allowed' : ''}" ${currentEditingRowId ? 'disabled' : ''} aria-label="Edit entry">Edit</button>
+                            <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Delete entry">Delete</button>`
+                        }
+                    </td>
+                `;
+                ledgerEntriesTable.appendChild(row);
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.onclick = (e) => {
+                    const row = e.target.closest('tr');
+                    const entryId = row.getAttribute('data-id');
+                    const entryData = allEntries.find(entry => entry.id === entryId);
+                    toggleEditMode(row, entryData);
+                };
+            });
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.onclick = (e) => deleteEntry(e.target.closest('tr').getAttribute('data-id'));
+            });
+            document.querySelectorAll('.save-btn').forEach(button => {
+                button.onclick = (e) => saveEditedEntry(e.target.closest('tr'));
+            });
+            document.querySelectorAll('.cancel-edit-btn').forEach(button => {
+                button.onclick = (e) => cancelInlineEdit(e.target.closest('tr').getAttribute('data-id'));
+            });
+        }
+        function createSelectHtml(optionsArray, selectedValue) {
+            let optionsHtml = `<option value="">Select</option>`;
+            optionsArray.forEach(option => {
+                optionsHtml += `<option value="${option}" ${selectedValue === option ? 'selected' : ''}>${option}</option>`;
+            });
+            return `<select class="w-full py-1 px-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500">${optionsHtml}</select>`;
+        }
+        function toggleEditMode(row, entryData) {
+            if (currentEditingRowId && currentEditingRowId !== row.getAttribute('data-id')) {
+                currentEditingRowId = null;
+                applyFilters();
+            }
+            currentEditingRowId = row.getAttribute('data-id');
+            applyFilters();
+        }
+        async function saveEditedEntry(row) {
+            showLoading();
+            const entryId = row.getAttribute('data-id');
+            const cells = row.querySelectorAll('td');
+            const dateInput = cells[0].querySelector('input');
+            const tenantSelect = cells[1].querySelector('select');
+            const categorySelect = cells[2].querySelector('select');
+            const amountInput = cells[3].querySelector('input');
+            const descriptionTextarea = cells[4].querySelector('textarea');
+            const date = dateInput.value;
+            const tenant = tenantSelect.value;
+            const category = categorySelect.value;
+            const amount = parseFloat(amountInput.value);
+            const description = descriptionTextarea.value;
+            if (!date || !tenant || !category || isNaN(amount) || amount <= 0) {
+                showCustomModal("Please fill all required fields with valid data (amount must be > 0).", 'alert');
+                hideLoading();
+                return;
+            }
+            try {
+                const parsedDate = new Date(date);
+                if (isNaN(parsedDate)) {
+                    showCustomModal("Please enter a valid date format (e.g., 20 Jun 2025).", 'alert');
+                    hideLoading();
+                    return;
+                }
+                const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
+                await setDoc(doc(db, collectionPath, entryId), {
+                    date: Timestamp.fromDate(parsedDate),
+                    tenant: tenant,
+                    category: category,
+                    amount: amount,
+                    description: description,
+                    timestamp: Timestamp.now()
+                }, { merge: true });
+                currentEditingRowId = null;
+                applyFilters();
+                hideLoading();
+            } catch (error) {
+                showCustomModal(`Failed to update entry: ${error.message}`, 'alert');
+                hideLoading();
+            }
+        }
+        function cancelInlineEdit(entryId) {
+            if (currentEditingRowId === entryId) {
+                currentEditingRowId = null;
+                applyFilters();
+            }
+        }
+        ledgerForm.onsubmit = async (e) => {
+            e.preventDefault();
+            showLoading();
+            const date = dateInput.value;
+            const tenant = tenantInput.value;
+            const category = categoryInput.value;
+            const amount = parseFloat(amountInput.value);
+            const description = descriptionInput.value;
+            if (!date || !tenant || !category || isNaN(amount) || amount <= 0) {
+                showCustomModal("Please fill all required fields with valid data (amount must be > 0).", 'alert');
+                hideLoading();
+                return;
+            }
+            const entryDate = Timestamp.fromDate(new Date(date));
+            const entryData = {
+                date: entryDate,
+                tenant,
+                category,
+                amount,
+                description,
+                timestamp: Timestamp.now()
+            };
+            try {
+                const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
+                await addDoc(collection(db, collectionPath), entryData);
+                ledgerForm.reset();
+                hideLoading();
+            } catch (error) {
+                showCustomModal(`Failed to save entry: ${error.message}`, 'alert');
+                hideLoading();
+            }
+        };
+        async function deleteEntry(id) {
+            const confirmed = await showCustomModal("Are you sure you want to delete this entry?", 'confirm');
+            if (!confirmed) { return; }
+            showLoading();
+            try {
+                const collectionPath = `/artifacts/${appId}/users/${userId}/ledgerEntries`;
+                await deleteDoc(doc(db, collectionPath, id));
+                hideLoading();
+            } catch (error) {
+                showCustomModal(`Failed to delete entry: ${error.message}`, 'alert');
+                hideLoading();
+            }
+        }
+        function resetAddForm() {
+            ledgerForm.reset();
+            if (currentEditingRowId) {
+                currentEditingRowId = null;
+                applyFilters();
+            }
+        }
+        resetFormBtn.onclick = resetAddForm;
+        // Add aria-labels to form fields
+        dateInput.setAttribute('aria-label', 'Entry date');
+        tenantInput.setAttribute('aria-label', 'Tenant');
+        categoryInput.setAttribute('aria-label', 'Category');
+        amountInput.setAttribute('aria-label', 'Amount');
+        descriptionInput.setAttribute('aria-label', 'Description');
+        resetFormBtn.setAttribute('aria-label', 'Reset form');
+        clearFiltersBtn.setAttribute('aria-label', 'Clear filters');
+        signOutBtn.setAttribute('aria-label', 'Sign out');
+        googleSignInBtn.setAttribute('aria-label', 'Sign in with Google');
+    </script>
 </body>
 </html>
