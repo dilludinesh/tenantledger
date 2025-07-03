@@ -267,7 +267,7 @@
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const modalOkBtn = document.getElementById('modalOkBtn');
 
-        function showCustomModal(message, type = 'alert') {
+        function showCustomModal(message, type = 'alert', confirmType = '') {
             return new Promise((resolve) => {
                 if (!message || !message.trim()) {
                     resolve(false);
@@ -277,7 +277,17 @@
                 modalOkBtn.classList.add('hidden');
                 modalConfirmBtn.classList.add('hidden');
                 modalCancelBtn.classList.add('hidden');
+                // Remove all possible classes first
+                modalConfirmBtn.classList.remove('btn-primary','btn-danger','btn-signout');
                 if (type === 'confirm') {
+                    // Determine confirm button style
+                    if (confirmType === 'signout' || /sign out|logout/i.test(message)) {
+                        modalConfirmBtn.classList.add('btn-signout');
+                    } else if (confirmType === 'delete' || /delete/i.test(message)) {
+                        modalConfirmBtn.classList.add('btn-danger');
+                    } else {
+                        modalConfirmBtn.classList.add('btn-primary');
+                    }
                     modalConfirmBtn.classList.remove('hidden');
                     modalCancelBtn.classList.remove('hidden');
                     modalConfirmBtn.onclick = () => {
@@ -314,7 +324,7 @@
         // Sign out
         if (signOutBtn) {
             signOutBtn.onclick = async function() {
-                const confirmed = await showCustomModal("Are you sure you want to sign out?", 'confirm');
+                const confirmed = await showCustomModal("Are you sure you want to sign out?", 'confirm', 'signout');
                 if (!confirmed) return;
                 try {
                     await signOut(auth);
@@ -630,7 +640,7 @@
             }
         };
         async function deleteEntry(id) {
-            const confirmed = await showCustomModal("Are you sure you want to delete this entry?", 'confirm');
+            const confirmed = await showCustomModal("Are you sure you want to delete this entry?", 'confirm', 'delete');
             if (!confirmed) { return; }
             showLoading();
             try {
