@@ -166,6 +166,41 @@
                 padding: 8px 0 !important;
             }
         }
+        /* Main UI table aesthetics */
+        #print-table table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            font-size: 1.04rem;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);
+        }
+        #print-table th {
+            background: #f6f8fa;
+            color: #222;
+            font-weight: 700;
+            padding: 14px 12px;
+            border-bottom: 2px solid #e5e7eb;
+            text-align: center;
+        }
+        #print-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f1f1f1;
+            text-align: center;
+            color: #222;
+        }
+        #print-table tr:nth-child(even) td {
+            background: #f9fafb;
+        }
+        #print-table tr:last-child td {
+            border-bottom: none;
+        }
+        #print-table tr:hover td {
+            background: #e8f0fe;
+            transition: background 0.2s;
+        }
     </style>
 </head>
 <body>
