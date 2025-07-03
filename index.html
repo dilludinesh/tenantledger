@@ -108,7 +108,7 @@
                 overflow: visible !important;
                 border-collapse: collapse !important;
                 border-spacing: 0 !important;
-                table-layout: fixed !important;
+                table-layout: auto !important;
             }
             #mainCardContainer h1 {
                 text-align: left !important;
@@ -128,12 +128,15 @@
                 color: #222 !important;
                 box-shadow: none !important;
                 min-width: unset !important;
-                max-width: 1px !important;
+                max-width: unset !important;
                 min-height: 16px !important;
                 line-height: 1.1 !important;
                 font-size: 0.95em !important;
                 word-break: break-word !important;
                 overflow-wrap: break-word !important;
+            }
+            #print-table td:nth-child(4), #print-table th:nth-child(4) {
+                word-break: break-all !important;
             }
             #print-table th {
                 background: none !important;
