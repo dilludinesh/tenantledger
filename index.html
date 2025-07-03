@@ -487,6 +487,8 @@
                         description: data.description,
                     });
                 });
+                // Sort by date descending (newest first)
+                allEntries.sort((a, b) => (b.date?.getTime?.() || 0) - (a.date?.getTime?.() || 0));
                 applyFilters();
             }, (error) => {
                 showCustomModal(`Failed to load ledger entries: ${error.message}`, 'alert');
