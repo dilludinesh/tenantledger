@@ -480,7 +480,8 @@
           if (printLedgerBtn.disabled) return;
           printLedgerBtn.classList.add('ring-2', 'ring-blue-300');
           setTimeout(() => printLedgerBtn.classList.remove('ring-2', 'ring-blue-300'), 180);
-          setTimeout(() => window.print(), 100); // allow pulse to show before dialog
+          applyFilters();
+          setTimeout(() => window.print(), 200);
         };
         // table display logic
         function displayLedgerEntries(entries) {
