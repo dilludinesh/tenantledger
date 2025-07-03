@@ -310,7 +310,6 @@
                             <th>Category</th>
                             <th>Amount (₹)</th>
                             <th>Description</th>
-                            <th class="table-actions-cell no-print">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ledgerEntries">
@@ -623,15 +622,6 @@
                     </td>
                     <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
                         ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Edit description">${sanitizeHTML(entry.description || '')}</textarea>` : (sanitizeHTML(entry.description) || '-')}
-                    </td>
-                    <td class="py-3 px-4 whitespace-nowrap text-center text-sm font-medium border-b border-blue-100 table-actions-cell no-print">
-                        <button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm${(currentEditingRowId && currentEditingRowId !== entry.id) ? ' opacity-50 cursor-not-allowed' : ''}" ${(currentEditingRowId && currentEditingRowId !== entry.id) ? 'disabled' : ''} aria-label="Edit entry">Edit</button>
-                        <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Delete entry">Delete</button>
-                        ${isEditingThisRow ?
-                            `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm" aria-label="Save entry">Save</button>
-                            <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Cancel edit">Cancel</button>`
-                            : ''
-                        }
                     </td>
                 `;
                 ledgerEntriesTable.appendChild(row);
