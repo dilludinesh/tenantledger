@@ -69,9 +69,9 @@
         .btn-reset { background-color: #ef4444; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .btn-reset:hover { background-color: #dc2626; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
         .table-actions-cell button.edit-btn,
-        .table-actions-cell button.delete-btn { opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s;}
+        .table-actions-cell button.delete-btn { opacity: 0 !important; visibility: hidden !important; transition: opacity 0.2s, visibility 0.2s;}
         .table-actions-cell.active-buttons button.edit-btn,
-        .table-actions-cell.active-buttons button.delete-btn { opacity: 1; visibility: visible;}
+        .table-actions-cell.active-buttons button.delete-btn { opacity: 1 !important; visibility: visible !important;}
         input:focus, select:focus, textarea:focus {
             outline: none !important;
             border-color: #2563eb !important;
@@ -202,18 +202,6 @@
         #print-table tr:hover td {
             background: #e8f0fe;
             transition: background 0.2s;
-        }
-        /* Hide action buttons by default, show only with .active-buttons */
-        #print-table .table-actions-cell button.edit-btn,
-        #print-table .table-actions-cell button.delete-btn {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s, visibility 0.2s;
-        }
-        #print-table .table-actions-cell.active-buttons button.edit-btn,
-        #print-table .table-actions-cell.active-buttons button.delete-btn {
-            opacity: 1;
-            visibility: visible;
         }
     </style>
 </head>
@@ -635,7 +623,7 @@
                             `<button class="save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm" aria-label="Save entry">Save</button>
                             <button class="cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Cancel edit">Cancel</button>`
                             :
-                            `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm ${currentEditingRowId ? 'opacity-50 cursor-not-allowed' : ''}" ${currentEditingRowId ? 'disabled' : ''} aria-label="Edit entry">Edit</button>
+                            `<button class="edit-btn btn-warning text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm${(currentEditingRowId && currentEditingRowId !== entry.id) ? ' opacity-50 cursor-not-allowed' : ''}" ${(currentEditingRowId && currentEditingRowId !== entry.id) ? 'disabled' : ''} aria-label="Edit entry">Edit</button>
                             <button class="delete-btn btn-danger text-white py-1.5 px-3 rounded-md text-xs shadow-sm" aria-label="Delete entry">Delete</button>`
                         }
                     </td>
