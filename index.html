@@ -433,6 +433,14 @@
         printLedgerBtn.onclick = () => {
           printLedgerBtn.classList.add('ring-2', 'ring-blue-300');
           setTimeout(() => printLedgerBtn.classList.remove('ring-2', 'ring-blue-300'), 180);
+          // Before printing, ensure the print-table always has at least one row with "No entries found" if empty
+          const entries = allEntries.slice();
+          const printTableBody = document.getElementById('ledgerEntries');
+          if (!entries || entries.length === 0) {
+              printTableBody.innerHTML = `<tr>
+                  <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+              </tr>`;
+          }
           setTimeout(() => window.print(), 100); // allow pulse to show before dialog
         };
         // table display logic
