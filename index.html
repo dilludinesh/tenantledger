@@ -203,6 +203,18 @@
             background: #e8f0fe;
             transition: background 0.2s;
         }
+        /* Hide action buttons by default, show only with .active-buttons */
+        #print-table .table-actions-cell button.edit-btn,
+        #print-table .table-actions-cell button.delete-btn {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        #print-table .table-actions-cell.active-buttons button.edit-btn,
+        #print-table .table-actions-cell.active-buttons button.delete-btn {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
