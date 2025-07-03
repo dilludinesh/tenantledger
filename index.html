@@ -96,14 +96,18 @@
                 width: 100vw !important;
             }
             #print-table {
-                width: 90vw !important;
-                margin: 2.5rem auto 0 auto !important;
+                width: 80vw !important;
+                max-width: 900px !important;
+                margin: 3rem auto 2.5rem auto !important;
                 padding: 0 !important;
                 box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08) !important;
                 border: 1px solid #e0e0e0 !important;
                 background: #fff !important;
-                border-radius: 12px !important;
+                border-radius: 18px !important;
                 font-size: 1.08rem !important;
+                overflow: hidden !important;
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
             }
             #mainCardContainer h1 {
                 text-align: center !important;
@@ -118,16 +122,27 @@
             }
             #print-table th, #print-table td {
                 border: 1px solid #e0e0e0 !important;
-                padding: 12px 18px !important;
+                padding: 14px 22px !important;
                 text-align: center !important;
                 background: none !important;
                 color: #222 !important;
                 box-shadow: none !important;
-                border-radius: 0 !important;
                 min-width: 80px !important;
                 min-height: 32px !important;
                 line-height: 1.6 !important;
                 font-size: 1em !important;
+            }
+            #print-table th:first-child {
+                border-top-left-radius: 18px !important;
+            }
+            #print-table th:last-child {
+                border-top-right-radius: 18px !important;
+            }
+            #print-table tr:last-child td:first-child {
+                border-bottom-left-radius: 18px !important;
+            }
+            #print-table tr:last-child td:last-child {
+                border-bottom-right-radius: 18px !important;
             }
             #print-table th {
                 background: #f3f6fa !important;
@@ -146,10 +161,6 @@
             }
             #print-table tr {
                 transition: none !important;
-            }
-            #print-table {
-                border-collapse: separate !important;
-                border-spacing: 0 !important;
             }
             #print-table td, #print-table th {
                 vertical-align: middle !important;
