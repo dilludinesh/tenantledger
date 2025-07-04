@@ -206,6 +206,13 @@
             box-shadow: 0 0 0 3px rgba(37,99,235,0.3) !important;
         }
         @media print {
+            body, .container, #print-table {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #print-table {
+                page-break-inside: avoid !important;
+            }
             body, #mainCardContainer, #print-table {
                 font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
                 background: #fff !important;
