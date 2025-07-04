@@ -290,6 +290,11 @@
                 opacity: 1 !important;
                 visibility: visible !important;
             }
+            /* Hide Actions column in print */
+            #print-table th:last-child,
+            #print-table td:last-child {
+                display: none !important;
+            }
         }
         /* Main UI table aesthetics */
         #print-table table {
