@@ -272,9 +272,18 @@
         <div class="flex flex-col items-center gap-6">
           <div class="flex items-center justify-center gap-3">
             <span class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-1.5">
-              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M16.862 3.487a2.25 2.25 0 113.182 3.182l-10.5 10.5a2 2 0 01-.878.513l-4 1a.5.5 0 01-.606-.606l1-4a2 2 0 01.513-.878l10.5-10.5z" fill="currentColor"/>
-                <path d="M15 6l3 3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <svg class="w-8 h-8 text-white" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Ledger/book background -->
+                <rect x="4" y="7" width="16" height="18" rx="3" fill="currentColor" fill-opacity="0.18"/>
+                <rect x="4" y="7" width="16" height="18" rx="3" stroke="white" stroke-width="1.5"/>
+                <line x1="8" y1="11" x2="16" y2="11" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="8" y1="15" x2="16" y2="15" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="8" y1="19" x2="16" y2="19" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                <!-- Pencil with sharp tip -->
+                <rect x="17.5" y="19" width="8" height="2.2" rx="1.1" transform="rotate(-35 17.5 19)" fill="#fff" stroke="#fff" stroke-width="0.5"/>
+                <rect x="22.2" y="15.7" width="5.2" height="2.2" rx="1.1" transform="rotate(-35 22.2 15.7)" fill="#fff" stroke="#fff" stroke-width="0.5"/>
+                <polygon points="27,13.5 29,15.5 25.7,16.7" fill="#fbbf24" stroke="#fff" stroke-width="0.5"/>
+                <polygon points="29,15.5 28.2,16.3 25.7,16.7" fill="#f59e42"/>
               </svg>
             </span>
             <h1 class="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">Tenant Ledger</h1>
