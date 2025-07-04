@@ -259,7 +259,12 @@
     </style>
 </head>
 <body>
-    <div class="loading-overlay hidden" id="loadingOverlay"><div class="spinner"></div></div>
+    <div class="loading-overlay hidden" id="loadingOverlay">
+      <div class="flex flex-col items-center">
+        <div class="spinner"></div>
+        <div class="mt-4 text-gray-600 text-base font-medium animate-pulse">Waiting for Google sign-in...</div>
+      </div>
+    </div>
 
     <!-- Google Sign-in Section -->
     <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 p-4" id="signInSection">
