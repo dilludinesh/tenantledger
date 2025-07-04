@@ -1,253 +1,391 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Tenant Ledger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* --- Modern UI Styles inspired by the new website --- */
-      body {
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        min-height: 100vh;
-      }
-      .container {
-        max-width: 1200px;
-        width: 100%;
-      }
-      /* Loading Spinner */
-      .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.95);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-      .spinner {
-        border: 4px solid rgba(59, 130, 246, 0.1);
-        border-left-color: #3b82f6;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .container { max-width: 1000px; width: 100%; }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255,255,255,0.9);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
         }
-      }
-      /* --- Print Styles: keep simple and basic as before --- */
-      @media print {
-        body, .data-table, .data-table * {
-          font-family: "Arial", sans-serif !important;
-          background: #fff !important;
-          color: #222 !important;
-          font-size: 12px !important;
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: #2563eb;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
         }
-        .no-print {
-          display: none !important;
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); display: flex;
+            justify-content: center; align-items: center; z-index: 2000;
         }
-        .container {
-          max-width: none !important;
-          width: 100vw !important;
-          margin: 0 !important;
-          padding: 0 !important;
+        .modal-content {
+            background-color: white; padding: 2.5rem; border-radius: 0.75rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); max-width: 450px; text-align: center;
         }
-        .data-table {
-          border-collapse: collapse !important;
-          width: 100% !important;
+        .btn-primary { background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-primary:hover, #printLedgerBtn:hover { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-primary:focus-visible, #printLedgerBtn:focus-visible { box-shadow: 0 0 0 2px #93c5fd; }
+        .btn-primary:active, #printLedgerBtn:active { animation: pulseActiveLedger 0.20s; }
+        @keyframes pulseActiveLedger {
+          0% { filter: brightness(1.18);}
+          80% { filter: brightness(0.95);}
+          100% { filter: none;}
         }
-        .data-table th,
-        .data-table td {
-          border: 1px solid #ddd !important;
-          padding: 8px 6px !important;
-          background: white !important;
-          color: #222 !important;
+        .btn-signout {
+            background-color: #fee2e2 !important; /* Tailwind red-100 */
+            color: #b91c1c !important; /* Tailwind red-700 */
+            border: 1px solid #fca5a5 !important; /* Tailwind red-300 */
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
         }
-        .data-table th {
-          background: #f5f5f5 !important;
-          font-weight: 700 !important;
+        .btn-signout:hover, .btn-signout:focus {
+            background-color: #fecaca !important; /* Tailwind red-200 */
+            color: #991b1b !important; /* Tailwind red-800 */
         }
-      }
-      /* --- Responsive --- */
-      @media (max-width: 768px) {
-        .container {
-          padding: 1rem;
+        .btn-signout:active {
+            filter: brightness(0.97);
         }
-      }
+        .btn-signout:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px #fca5a5;
+        }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-secondary:hover, .btn-secondary:focus-visible { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
+        .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
+        .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-danger { background-color: #fca5a5; color: #b91c1c; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-danger:hover { background-color: #f87171; color: #7f1d1d; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-warning { background-color: #3b82f6; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-warning:hover { background-color: #2563eb; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .btn-reset { background-color: #ef4444; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .btn-reset:hover { background-color: #dc2626; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .table-actions-cell button.edit-btn,
+        .table-actions-cell button.delete-btn { opacity: 0 !important; visibility: hidden !important; transition: opacity 0.2s, visibility 0.2s;}
+        .table-actions-cell.active-buttons button.edit-btn,
+        .table-actions-cell.active-buttons button.delete-btn { opacity: 1 !important; visibility: visible !important;}
+        input:focus, select:focus, textarea:focus {
+            outline: none !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.3) !important;
+        }
+        .no-print { }
+        @media print {
+            body, #mainCardContainer, #print-table {
+                font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+                background: #fff !important;
+                color: #222 !important;
+                font-size: 1.08rem !important;
+            }
+            #print-table, #print-table * { display: revert !important; }
+            .no-print, #print-table .no-print, #print-table .table-actions-cell { display: none !important; }
+            #mainCardContainer {
+                background: none !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: none !important;
+                width: 100vw !important;
+            }
+            #print-table {
+                width: 100% !important;
+                max-width: 100vw !important;
+                margin: 0.5rem auto 0.5rem auto !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background: #fff !important;
+                border-radius: 8px !important;
+                font-size: 1.08rem !important;
+                overflow: visible !important;
+                border-collapse: collapse !important;
+                border-spacing: 0 !important;
+                table-layout: auto !important;
+            }
+            #print-table *, #print-table tr, #print-table th, #print-table td {
+                box-shadow: none !important;
+            }
+            #mainCardContainer h1 {
+                text-align: left !important;
+                margin: 0.5rem 0 0.5rem 0 !important;
+                background: none !important;
+                color: #1a1a1a !important;
+                padding: 0 !important;
+                font-size: 1.18rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0 !important;
+            }
+            #print-table th, #print-table td {
+                border: 1px solid #eee !important;
+                padding: 8px 6px !important;
+                text-align: left !important;
+                background: none !important;
+                color: #222 !important;
+                box-shadow: none !important;
+                min-width: unset !important;
+                max-width: unset !important;
+                min-height: 16px !important;
+                line-height: 1.1 !important;
+                font-size: 1em !important;
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
+            }
+            #print-table td:nth-child(4), #print-table th:nth-child(4) {
+                word-break: break-all !important;
+            }
+            #print-table th {
+                background: #f6f6f6 !important;
+                color: #111 !important;
+                text-align: left !important;
+                font-weight: 700 !important;
+                font-size: 1em !important;
+                letter-spacing: 0 !important;
+                border-bottom: 1px solid #eee !important;
+                box-shadow: none !important;
+            }
+            #print-table td {
+                font-weight: 400 !important;
+            }
+            #print-table td strong,
+            #print-table td b {
+                font-weight: 400 !important;
+            }
+            #print-table .empty-table-message {
+                text-align: left !important;
+                font-style: normal !important;
+                color: #b0b0b0 !important;
+                background: none !important;
+                font-size: 1em !important;
+                padding: 8px 0 !important;
+            }
+            /* Always show action buttons in main UI */
+            #print-table .table-actions-cell button.edit-btn,
+            #print-table .table-actions-cell button.delete-btn {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+        }
+        /* Main UI table aesthetics */
+        #print-table table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            font-size: 1.04rem;
+            background: #fff;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);
+        }
+        #print-table th {
+            background: #f6f8fa;
+            color: #222;
+            font-weight: 700;
+            padding: 14px 12px;
+            border-bottom: 2px solid #e5e7eb;
+            text-align: center;
+        }
+        #print-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f1f1f1;
+            text-align: center;
+            color: #222;
+        }
+        #print-table tr:nth-child(even) td {
+            background: #f9fafb;
+        }
+        #print-table tr:last-child td {
+            border-bottom: none;
+        }
+        #print-table tr:hover td {
+            background: #e8f0fe;
+            transition: background 0.2s;
+        }
+        /* Action button styles for row actions */
+        .action-btn {
+            background: #f1f5fd;
+            border: 1px solid #c7d7f5;
+            color: #2563eb;
+            font-size: 0.98em;
+            padding: 5px 16px;
+            margin: 0 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.18s, color 0.18s, border 0.18s;
+        }
+        .action-btn:hover {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .action-btn.delete {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+        .action-btn.delete:hover {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+        /* Hide action buttons unless editing is enabled */
+        .action-cell {
+            display: none;
+        }
+        .editing-enabled .action-cell {
+            display: table-cell;
+        }
+        #editWarningBanner {
+            display: none;
+        }
+        .editing-enabled #editWarningBanner {
+            display: block;
+        }
+        /* Hide Actions column unless editing is enabled */
+        #ledgerTable .actions-col {
+            display: none;
+        }
+        .editing-enabled #ledgerTable .actions-col {
+            display: table-cell;
+        }
     </style>
-  </head>
-  <body>
-    <!-- Loading Overlay -->
+</head>
+<body>
     <div class="loading-overlay hidden" id="loadingOverlay"><div class="spinner"></div></div>
 
-    <!-- Modern Landing Page -->
-    <div class="min-h-screen flex items-center justify-center p-4" id="signInSection">
-      <div class="bg-white/90 rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-gray-200">
-        <div class="space-y-6">
-          <div class="w-20 h-20 mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-            <svg class="text-white w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Tenant Ledger</h1>
-            <p class="text-gray-600 text-lg">Professional Property Management System</p>
-          </div>
-          <button id="googleSignInBtn" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white w-full py-4 text-lg font-semibold rounded-xl flex items-center justify-center gap-2 shadow-md hover:from-blue-600 hover:to-purple-700 transition">
-            <svg class="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Sign in with Google
-          </button>
-          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
-            <div class="text-center">
-              <div class="w-8 h-8 mx-auto mb-2 text-blue-500">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                </svg>
-              </div>
-              <div class="text-sm text-gray-600">Secure</div>
-            </div>
-            <div class="text-center">
-              <div class="w-8 h-8 mx-auto mb-2 text-green-500">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                </svg>
-              </div>
-              <div class="text-sm text-gray-600">Analytics</div>
-            </div>
-            <div class="text-center">
-              <div class="w-8 h-8 mx-auto mb-2 text-purple-500">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                </svg>
-              </div>
-              <div class="text-sm text-gray-600">Reports</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Google Sign-in Section -->
+    <div class="flex flex-col items-center mt-12 mb-12" id="signInSection">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
+        <button id="googleSignInBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base shadow mb-2">Sign in with Google</button>
     </div>
-    <!-- Main Application -->
-    <div class="container mx-auto bg-white/95 p-8 rounded-2xl shadow-2xl mt-10 mb-10" id="mainCardContainer" style="display:none;">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">Tenant Ledger</h1>
-      <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print gap-4">
-        <div class="text-center md:text-left">
-          <span class="block text-gray-700 text-base">Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span></span>
-          <span class="block text-gray-500 text-sm">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
-        </div>
-        <button id="signOutBtn" class="btn-signout px-4 py-2 rounded-lg font-semibold transition shadow mt-4 md:mt-0 md:ml-4">Sign Out</button>
-      </div>
-      <div id="editWarningBanner" class="no-print hidden mb-4 p-3 rounded-xl bg-yellow-50 text-yellow-800 font-semibold text-center border border-yellow-200">
-        <span>⚠️ Editing is enabled. Be careful: changes and deletions are permanent!</span>
-      </div>
-      <div class="flex justify-end mb-4 no-print">
-        <button id="toggleEditModeBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-xl text-base shadow">Enable Editing</button>
-      </div>
-      <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 mb-8 p-8 bg-blue-50/60 rounded-2xl shadow-md no-print">
-        <input type="hidden" id="entryId">
-        <div>
-          <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
-          <input type="date" id="date" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-        </div>
-        <div>
-          <label for="tenant" class="block text-gray-800 text-sm font-semibold mb-1">Tenant:</label>
-          <select id="tenant" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-            <option value="">Select Tenant</option>
-            <option value="Front KMR">Front KMR</option>
-            <option value="Rear KMR">Rear KMR</option>
-            <option value="NZB">NZB</option>
-          </select>
-        </div>
-        <div>
-          <label for="category" class="block text-gray-800 text-sm font-semibold mb-1">Category:</label>
-          <select id="category" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
-            <option value="">Select Category</option>
-            <option value="Rent">Rent</option>
-            <option value="Current Bill">Current Bill</option>
-          </select>
-        </div>
-        <div>
-          <label for="amount" class="block text-gray-800 text-sm font-semibold mb-1">Amount (₹):</label>
-          <input type="number" id="amount" placeholder="e.g., 5000" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" min="0" step="0.01" required>
-        </div>
-        <div class="md:col-span-2">
-          <label for="description" class="block text-gray-800 text-sm font-semibold mb-1">Description:</label>
-          <textarea id="description" rows="2" placeholder="Brief description of the transaction" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500"></textarea>
-        </div>
-        <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
-          <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">Add Entry</button>
-          <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">Reset</button>
-          <button id="printLedgerBtn" type="button" class="btn-primary px-4 py-2 rounded-lg font-semibold transition bg-blue-600 text-white shadow">Print Ledger</button>
-        </div>
-      </form>
-      <div class="mb-8 p-8 border border-gray-200 rounded-2xl shadow-sm bg-gray-50/80 no-print">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          <input id="filter-date" class="border rounded py-2 px-3" placeholder="Filter by Date (e.g. 20 Jun 2025)">
-          <input id="filter-tenant" class="border rounded py-2 px-3" placeholder="Tenant">
-          <select id="filter-category" class="border rounded py-2 px-3">
-            <option value="">All Categories</option>
-            <option>Rent</option>
-            <option>Current Bill</option>
-          </select>
-          <input id="filter-amount" class="border rounded py-2 px-3" placeholder="Amount (e.g. 5000)">
-          <input id="filter-description" class="border rounded py-2 px-3" placeholder="Description">
-          <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2">
-            <button id="clear-filters" type="button" class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed bg-gray-200 text-gray-600" disabled>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-              Clear Filters
+
+    <div class="container mx-auto bg-white p-8 rounded-xl shadow-lg" id="mainCardContainer" style="display:none;">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 text-center">Tenant Ledger</h1>
+        <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between text-lg text-gray-700 no-print">
+            <div class="text-center md:text-left">
+                Welcome, <span id="userNameDisplay" class="font-bold text-blue-700 tracking-wide">Loading...</span><br>
+                <span class="text-gray-500 text-base">User ID: <span id="userIdDisplay" class="font-mono text-blue-700 tracking-wide">Loading...</span></span>
+            </div>
+            <!-- Sign Out button always visible, light red tint, styled like Print Ledger -->
+            <button id="signOutBtn"
+                class="btn-signout px-4 py-2 rounded-lg font-semibold transition shadow mt-4 md:mt-0 md:ml-4">
+                Sign Out
             </button>
-          </div>
         </div>
-      </div>
-      <!-- Ledger Table -->
-      <div id="print-table">
-        <div class="overflow-x-auto rounded-2xl shadow-lg border border-gray-200">
-          <table id="ledgerTable" class="min-w-full bg-white">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Tenant</th>
-                <th>Category</th>
-                <th>Amount (₹)</th>
-                <th>Description</th>
-                <th class="no-print actions-col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ledgerEntries">
-              <tr>
-                <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
-              </tr>
-            </tbody>
-          </table>
+        <div id="editWarningBanner" class="no-print hidden mb-4 p-3 rounded-lg bg-yellow-100 text-yellow-800 font-semibold text-center border border-yellow-300">
+            <span>⚠️ Editing is enabled. Be careful: changes and deletions are permanent!</span>
         </div>
-      </div>
+        <div class="flex justify-end mb-2 no-print">
+            <button id="toggleEditModeBtn" class="btn-primary text-white font-semibold py-2 px-5 rounded-lg text-base shadow">Enable Editing</button>
+        </div>
+        <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
+            <input type="hidden" id="entryId">
+            <div>
+                <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
+                <input type="date" id="date" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+            </div>
+            <div>
+                <label for="tenant" class="block text-gray-800 text-sm font-semibold mb-1">Tenant:</label>
+                <select id="tenant" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+                    <option value="">Select Tenant</option>
+                    <option value="Front KMR">Front KMR</option>
+                    <option value="Rear KMR">Rear KMR</option>
+                    <option value="NZB">NZB</option>
+                </select>
+            </div>
+            <div>
+                <label for="category" class="block text-gray-800 text-sm font-semibold mb-1">Category:</label>
+                <select id="category" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" required>
+                    <option value="">Select Category</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Current Bill">Current Bill</option>
+                </select>
+            </div>
+            <div>
+                <label for="amount" class="block text-gray-800 text-sm font-semibold mb-1">Amount (₹):</label>
+                <input type="number" id="amount" placeholder="e.g., 5000" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500" min="0" step="0.01" required>
+            </div>
+            <div class="md:col-span-2">
+                <label for="description" class="block text-gray-800 text-sm font-semibold mb-1">Description:</label>
+                <textarea id="description" rows="2" placeholder="Brief description of the transaction" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-800 leading-tight focus:border-blue-500 focus:ring-blue-500"></textarea>
+            </div>
+            <div class="md:col-span-2 flex justify-center space-x-4 mt-4">
+                <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg text-base">Add Entry</button>
+                <button type="button" id="resetFormBtn" class="btn-reset text-white font-semibold py-2 px-6 rounded-lg text-base">Reset</button>
+                <button id="printLedgerBtn" type="button"
+                  class="btn-primary px-4 py-2 rounded-lg font-semibold transition bg-blue-600 text-white shadow"
+                >
+                  Print Ledger
+                </button>
+            </div>
+        </form>
+        <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <input id="filter-date" class="border rounded py-2 px-3" placeholder="Filter by Date (e.g. 20 Jun 2025)">
+                <input id="filter-tenant" class="border rounded py-2 px-3" placeholder="Tenant">
+                <select id="filter-category" class="border rounded py-2 px-3">
+                  <option value="">All Categories</option>
+                  <option>Rent</option>
+                  <option>Current Bill</option>
+                </select>
+                <input id="filter-amount" class="border rounded py-2 px-3" placeholder="Amount (e.g. 5000)">
+                <input id="filter-description" class="border rounded py-2 px-3" placeholder="Description">
+                <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2">
+                  <button id="clear-filters" type="button"
+                    class="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed bg-gray-200 text-gray-600"
+                    disabled
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Clear Filters
+                  </button>
+                </div>
+            </div>
+        </div>
+        <!-- Only this block prints: -->
+        <div id="print-table">
+            <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200">
+                <table id="ledgerTable" class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Tenant</th>
+                            <th>Category</th>
+                            <th>Amount (₹)</th>
+                            <th>Description</th>
+                            <th class="no-print actions-col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerEntries">
+                        <tr>
+                            <td colspan="6" class="empty-table-message py-4 px-4 text-center text-gray-500">No entries found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <!-- Modal -->
     <div id="customModal" class="modal hidden">
-      <div class="modal-content">
-        <p id="modalMessage" class="text-gray-800 text-lg font-medium mb-6"></p>
-        <div id="modalButtons" class="flex justify-center space-x-4">
-          <button id="modalConfirmBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg hidden">Confirm</button>
-          <button id="modalCancelBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg hidden">Cancel</button>
-          <button id="modalOkBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg">OK</button>
+        <div class="modal-content">
+            <p id="modalMessage" class="text-gray-800 text-lg font-medium mb-6"></p>
+            <div id="modalButtons" class="flex justify-center space-x-4">
+                <button id="modalConfirmBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg hidden">Confirm</button>
+                <button id="modalCancelBtn" class="btn-secondary text-white font-semibold py-2 px-6 rounded-lg hidden">Cancel</button>
+                <button id="modalOkBtn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg">OK</button>
+            </div>
         </div>
-      </div>
     </div>
-    <!-- Scripts (Firebase and app logic, untouched) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -731,5 +869,5 @@
             }
         };
     </script>
-  </body>
-</html> 
+</body>
+</html>
