@@ -338,7 +338,7 @@
                             <th>Category</th>
                             <th>Amount (₹)</th>
                             <th>Description</th>
-                            <th>Actions</th>
+                            <th class="no-print">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ledgerEntries">
@@ -652,7 +652,7 @@
                     <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
                         ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Edit description">${sanitizeHTML(entry.description || '')}</textarea>` : (sanitizeHTML(entry.description) || '-')}
                     </td>
-                    <td class="py-3 px-2 whitespace-nowrap text-center text-sm border-b border-blue-100">
+                    <td class="py-3 px-2 whitespace-nowrap text-center text-sm border-b border-blue-100 no-print">
                         <button class="edit-btn-row action-btn" aria-label="Edit entry" title="Edit">Edit</button>
                         <button class="delete-btn-row action-btn delete" aria-label="Delete entry" title="Delete">Delete</button>
                         ${isEditingThisRow ?
