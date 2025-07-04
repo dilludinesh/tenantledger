@@ -431,6 +431,8 @@
             </div>
         </div>
     </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg text-base font-semibold z-50 hidden transition-opacity duration-300"></div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -535,9 +537,17 @@
             googleSignInBtn.onclick = async function() {
                 const provider = new GoogleAuthProvider();
                 try {
+                    showLoading();
                     await signInWithPopup(auth, provider);
                 } catch (error) {
-                    showCustomModal("Sign-in error: " + error.message, "alert");
+                    hideLoading();
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        showToast("Sign-in cancelled. You closed the sign-in popup.");
+                    } else {
+                        showToast("Sign-in error: " + error.message);
+                    }
+                } finally {
+                    hideLoading();
                 }
             };
         }
@@ -913,6 +923,19 @@
                 setEditingEnabled(false);
             }
         };
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                    toast.classList.remove('opacity-0', 'opacity-100');
+                }, 300);
+            }, duration);
+        }
     </script>
 </body>
 </html>
