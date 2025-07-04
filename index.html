@@ -237,6 +237,19 @@
             color: #fff;
             border-color: #dc2626;
         }
+        /* Hide action buttons unless editing is enabled */
+        .action-cell, .no-print {
+            display: none;
+        }
+        .editing-enabled .action-cell, .editing-enabled .no-print {
+            display: table-cell;
+        }
+        #editWarningBanner {
+            display: none;
+        }
+        .editing-enabled #editWarningBanner {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -260,6 +273,12 @@
                 class="btn-signout px-4 py-2 rounded-lg font-semibold transition shadow mt-4 md:mt-0 md:ml-4">
                 Sign Out
             </button>
+        </div>
+        <div id="editWarningBanner" class="hidden mb-4 p-3 rounded-lg bg-yellow-100 text-yellow-800 font-semibold text-center border border-yellow-300">
+            <span>⚠️ Editing is enabled. Be careful: changes and deletions are permanent!</span>
+        </div>
+        <div class="flex justify-end mb-2">
+            <button id="toggleEditModeBtn" class="btn-primary text-white font-semibold py-2 px-5 rounded-lg text-base shadow">Enable Editing</button>
         </div>
         <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
             <input type="hidden" id="entryId">
@@ -412,6 +431,10 @@
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const modalOkBtn = document.getElementById('modalOkBtn');
         const printLedgerBtn = document.getElementById('printLedgerBtn');
+        const toggleEditModeBtn = document.getElementById('toggleEditModeBtn');
+        const editWarningBanner = document.getElementById('editWarningBanner');
+        let editingEnabled = false;
+        const EDIT_PASSWORD = 'ledger2024'; // Change this password as needed
 
         function showCustomModal(message, type = 'alert', confirmType = '') {
             return new Promise((resolve) => {
@@ -652,7 +675,7 @@
                     <td class="py-3 px-4 text-sm text-gray-800 border-b border-blue-100 text-center">
                         ${isEditingThisRow ? `<textarea rows="1" class="w-full py-1 px-1 border rounded text-center resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Edit description">${sanitizeHTML(entry.description || '')}</textarea>` : (sanitizeHTML(entry.description) || '-')}
                     </td>
-                    <td class="py-3 px-2 whitespace-nowrap text-center text-sm border-b border-blue-100 no-print">
+                    <td class="py-3 px-2 whitespace-nowrap text-center text-sm border-b border-blue-100 no-print action-cell">
                         ${isEditingThisRow ?
                             `<button class=\"save-btn btn-primary text-white py-1.5 px-3 rounded-md text-xs mr-2 shadow-sm\" aria-label=\"Save entry\">Save</button>
                              <button class=\"cancel-edit-btn btn-secondary text-white py-1.5 px-3 rounded-md text-xs shadow-sm\" aria-label=\"Cancel edit\">Cancel</button>`
@@ -812,6 +835,31 @@
         googleSignInBtn.setAttribute('aria-label', 'Sign in with Google');
         printLedgerBtn.onclick = () => {
           window.print();
+        };
+        function setEditingEnabled(enabled) {
+            editingEnabled = enabled;
+            if (enabled) {
+                mainCardContainer.classList.add('editing-enabled');
+                toggleEditModeBtn.textContent = 'Disable Editing';
+                editWarningBanner.classList.remove('hidden');
+            } else {
+                mainCardContainer.classList.remove('editing-enabled');
+                toggleEditModeBtn.textContent = 'Enable Editing';
+                editWarningBanner.classList.add('hidden');
+            }
+        }
+        setEditingEnabled(false);
+        toggleEditModeBtn.onclick = async function() {
+            if (!editingEnabled) {
+                const pwd = prompt('Enter password to enable editing:');
+                if (pwd === EDIT_PASSWORD) {
+                    setEditingEnabled(true);
+                } else if (pwd !== null) {
+                    alert('Incorrect password. Editing not enabled.');
+                }
+            } else {
+                setEditingEnabled(false);
+            }
         };
     </script>
 </body>
