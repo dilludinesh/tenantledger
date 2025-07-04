@@ -210,6 +210,17 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
+            .container, #mainCardContainer, #print-table {
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                overflow: visible !important;
+            }
+            .no-print {
+                display: none !important;
+            }
             #print-table {
                 page-break-inside: avoid !important;
             }
@@ -220,30 +231,6 @@
                 font-size: 1.08rem !important;
             }
             #print-table, #print-table * { display: revert !important; }
-            .no-print, #print-table .no-print, #print-table .table-actions-cell { display: none !important; }
-            #mainCardContainer {
-                background: none !important;
-                box-shadow: none !important;
-                border: none !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                max-width: none !important;
-                width: 100vw !important;
-            }
-            #print-table {
-                border-collapse: collapse !important;
-                width: 100% !important;
-                border: none !important;
-                box-shadow: none !important;
-                background: #fff !important;
-                border-radius: 8px !important;
-                font-size: 1.08rem !important;
-                overflow: visible !important;
-                table-layout: auto !important;
-            }
-            #print-table *, #print-table tr, #print-table th, #print-table td {
-                box-shadow: none !important;
-            }
             #mainCardContainer h1 {
                 text-align: left !important;
                 margin: 0.5rem 0 0.5rem 0 !important;
