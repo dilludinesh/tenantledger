@@ -206,34 +206,25 @@
             box-shadow: 0 0 0 3px rgba(37,99,235,0.3) !important;
         }
         @media print {
-            html, body {
+            html, body, .container, #mainCardContainer, #print-table, #print-table table, #print-table thead, #print-table tbody, #print-table tr, #print-table th, #print-table td {
                 margin: 0 !important;
                 padding: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-            }
-            .container, #mainCardContainer, #print-table {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                max-width: 100vw !important;
-                box-shadow: none !important;
-                border: none !important;
-                border-radius: 0 !important;
-            }
-            #print-table {
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
                 border: none !important;
                 box-shadow: none !important;
-                width: 100% !important;
-                max-width: 100vw !important;
-                margin: 0 !important;
-                padding: 0 !important;
+                overflow: visible !important;
+                page-break-before: auto !important;
+                page-break-after: auto !important;
+                page-break-inside: avoid !important;
             }
             .no-print {
                 display: none !important;
             }
             #print-table {
-                page-break-inside: avoid !important;
+                width: 100% !important;
+                max-width: 100vw !important;
             }
             body, #mainCardContainer, #print-table {
                 font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
