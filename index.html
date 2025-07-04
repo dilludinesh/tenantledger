@@ -6,7 +6,138 @@
     <title>Tenant Ledger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        .container, .main-card, .stats-card, .table-container, .modal-content {
+            background: rgba(255,255,255,0.92) !important;
+            border-radius: 1.25rem !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08) !important;
+            border: 1px solid #f1f5f9 !important;
+        }
+        .btn-primary, .btn-primary:focus {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%) !important;
+            color: #fff !important;
+            font-weight: 600;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.18) !important;
+            border: none !important;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%) !important;
+            box-shadow: 0 8px 20px rgba(59,130,246,0.22) !important;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #f1f5f9 !important;
+            color: #475569 !important;
+            font-weight: 600;
+            border-radius: 0.75rem !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #3b82f6 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.18) !important;
+        }
+        .btn-danger {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #fff !important;
+            font-weight: 600;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 4px 12px rgba(239,68,68,0.18) !important;
+            border: none !important;
+            transition: all 0.2s;
+        }
+        .btn-danger:hover {
+            background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%) !important;
+            box-shadow: 0 8px 20px rgba(239,68,68,0.22) !important;
+            transform: translateY(-1px);
+        }
+        .stats-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .table-container, #print-table {
+            background: #fff !important;
+            border-radius: 1.25rem !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+            border: 1px solid #f1f5f9 !important;
+        }
+        #ledgerTable th {
+            background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            color: #374151 !important;
+            font-weight: 700 !important;
+            padding: 16px 20px !important;
+            text-align: left !important;
+            border-bottom: 2px solid #e5e7eb !important;
+        }
+        #ledgerTable td {
+            padding: 16px 20px !important;
+            border-bottom: 1px solid #f3f4f6 !important;
+            color: #374151 !important;
+        }
+        #ledgerTable tr:nth-child(even) td {
+            background-color: #f9fafb !important;
+        }
+        #ledgerTable tr:hover td {
+            background-color: #eff6ff !important;
+            transition: background-color 0.2s;
+        }
+        .modal-content {
+            background: #fff !important;
+            border-radius: 1.25rem !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        .loading-overlay {
+            background-color: rgba(255,255,255,0.95) !important;
+        }
+        .spinner {
+            border: 4px solid rgba(59,130,246,0.1) !important;
+            border-left-color: #3b82f6 !important;
+        }
+        .stats-card {
+            background: #fff !important;
+            border-radius: 1.25rem !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+            border: 1px solid #f1f5f9 !important;
+            padding: 24px !important;
+        }
+        .form-grid input, .form-grid select, .form-grid textarea {
+            border-radius: 0.75rem !important;
+            border: 1px solid #e2e8f0 !important;
+            padding: 0.75rem 1.25rem !important;
+            font-size: 1rem !important;
+            color: #374151 !important;
+            background: #f8fafc !important;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.18) !important;
+            outline: none !important;
+        }
+        .text-gray-900, .main-title {
+            color: #1f2937 !important;
+        }
+        .text-gray-600 {
+            color: #6b7280 !important;
+        }
+        .rounded-xl, .rounded-2xl, .rounded-lg {
+            border-radius: 1.25rem !important;
+        }
         .container { max-width: 1000px; width: 100%; }
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -29,8 +160,6 @@
             background-color: white; padding: 2.5rem; border-radius: 0.75rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); max-width: 450px; text-align: center;
         }
-        .btn-primary { background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .btn-primary:hover, #printLedgerBtn:hover { background-color: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
         .btn-primary:focus-visible, #printLedgerBtn:focus-visible { box-shadow: 0 0 0 2px #93c5fd; }
         .btn-primary:active, #printLedgerBtn:active { animation: pulseActiveLedger 0.20s; }
         @keyframes pulseActiveLedger {
@@ -58,12 +187,8 @@
             outline: none;
             box-shadow: 0 0 0 2px #fca5a5;
         }
-        .btn-secondary { background-color: #e5e7eb; color: #374151; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .btn-secondary:hover, .btn-secondary:focus-visible { background-color: #1d4ed8 !important; color: #fff !important; box-shadow: 0 0 0 2px #93c5fd;}
         .btn-secondary.active { background-color: #2563eb !important; color: #fff !important; }
         .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-danger { background-color: #fca5a5; color: #b91c1c; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .btn-danger:hover { background-color: #f87171; color: #7f1d1d; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
         .btn-warning { background-color: #3b82f6; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
         .btn-warning:hover { background-color: #2563eb; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15);}
         .btn-reset { background-color: #ef4444; color: #fff; font-weight: 600; border-radius: 0.5rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
