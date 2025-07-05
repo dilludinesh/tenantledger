@@ -435,10 +435,12 @@
             min-height: 100%;
           }
         }
-        #filterSection .grid {
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 1rem !important;
+        @media (min-width: 768px) {
+          #filterSection .grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem !important;
+          }
         }
     </style>
 </head>
