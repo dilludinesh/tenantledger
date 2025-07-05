@@ -29,7 +29,7 @@
         .btn-primary:hover {
             background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%) !important;
             box-shadow: 0 8px 20px rgba(59,130,246,0.22) !important;
-            transform: translateY(-2px);
+            transform: none !important;
         }
         .btn-secondary {
             background: #f1f5f9 !important;
@@ -57,7 +57,7 @@
         .btn-danger:hover {
             background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%) !important;
             box-shadow: 0 8px 20px rgba(239,68,68,0.22) !important;
-            transform: translateY(-1px);
+            transform: none !important;
         }
         .stats-value {
             font-size: 2.2rem;
@@ -414,6 +414,9 @@
         }
         #ledgerForm {
           background: rgba(255,255,255,0.92) !important;
+        }
+        #toggleEditModeBtn:hover, #printLedgerBtn:hover {
+          transform: none !important;
         }
     </style>
 </head>
