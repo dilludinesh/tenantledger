@@ -530,12 +530,12 @@
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <input id="filter-date" class="border rounded py-2 px-3" placeholder="Filter by Date (e.g. 20 Jun 2025)">
                 <input id="filter-tenant" class="border rounded py-2 px-3" placeholder="Tenant">
-                <select id="filter-category" class="border rounded py-2 px-3">
+                <select id="filter-category" class="border rounded py-2 px-3" style="grid-column: span 2;">
                   <option value="">All Categories</option>
                   <option>Rent</option>
                   <option>Current Bill</option>
                 </select>
-                <input id="filter-amount" class="border rounded py-2 px-3" placeholder="Amount (e.g. 5000)">
+                <input id="filter-amount" class="border rounded py-2 px-3" placeholder="Amount (e.g. 5000)" style="grid-column: span 2;">
                 <input id="filter-description" class="border rounded py-2 px-3" placeholder="Description" style="grid-column: span 2;">
                 <div class="md:col-span-3 lg:col-span-5 flex justify-center mt-2">
                   <button id="clear-filters" type="button"
