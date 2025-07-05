@@ -418,6 +418,18 @@
         #toggleEditModeBtn:hover, #printLedgerBtn:hover {
           transform: none !important;
         }
+        @media (min-width: 1024px) {
+          .dashboard-flex-row {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            align-items: flex-start;
+          }
+          #ledgerForm, #filterSection {
+            flex: 1 1 0;
+            min-width: 0;
+          }
+        }
     </style>
 </head>
 <body>
@@ -459,7 +471,8 @@
         <div class="flex justify-end mb-2 no-print">
             <button id="toggleEditModeBtn" class="btn-primary text-white font-semibold py-2 px-5 rounded-lg text-base shadow">Enable Editing</button>
         </div>
-        <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
+        <div class="dashboard-flex-row">
+          <form id="ledgerForm" class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-6 p-6 bg-blue-50 rounded-xl shadow-md no-print">
             <input type="hidden" id="entryId">
             <div>
                 <label for="date" class="block text-gray-800 text-sm font-semibold mb-1">Date:</label>
@@ -499,8 +512,8 @@
                   Print Ledger
                 </button>
             </div>
-        </form>
-        <div class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
+          </form>
+          <div id="filterSection" class="mb-6 p-6 border border-gray-200 rounded-lg shadow-sm bg-gray-50 no-print">
             <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Filter Ledger</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <input id="filter-date" class="border rounded py-2 px-3" placeholder="Filter by Date (e.g. 20 Jun 2025)">
@@ -524,6 +537,7 @@
                   </button>
                 </div>
             </div>
+          </div>
         </div>
         <!-- Only this block prints: -->
         <div id="print-table">
