@@ -45,19 +45,20 @@
             color: #fff !important;
             box-shadow: 0 4px 12px rgba(59,130,246,0.18) !important;
         }
-        .btn-danger {
+        .btn-signout, .btn-danger {
             background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%) !important;
             color: #fff !important;
-            font-weight: 600;
-            border-radius: 0.75rem !important;
-            box-shadow: 0 4px 12px rgba(239,68,68,0.18) !important;
             border: none !important;
+            border-radius: 0.75rem !important;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            padding: 0.5rem 1rem !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
             transition: all 0.2s;
         }
-        .btn-danger:hover {
+        .btn-signout:hover, .btn-signout:focus, .btn-danger:hover, .btn-danger:focus {
             background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%) !important;
-            box-shadow: 0 8px 20px rgba(239,68,68,0.22) !important;
-            transform: none !important;
+            color: #fff !important;
         }
         .stats-value {
             font-size: 2.2rem;
@@ -169,21 +170,6 @@
           0% { filter: brightness(1.18);}
           80% { filter: brightness(0.95);}
           100% { filter: none;}
-        }
-        .btn-signout {
-            background-color: #fee2e2 !important; /* Tailwind red-100 */
-            color: #b91c1c !important; /* Tailwind red-700 */
-            border: 1px solid #fca5a5 !important; /* Tailwind red-300 */
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-            font-size: 1rem !important;
-            padding: 0.5rem 1rem !important;
-        }
-        .btn-signout:hover, .btn-signout:focus {
-            background-color: #fecaca !important; /* Tailwind red-200 */
-            color: #991b1b !important; /* Tailwind red-800 */
         }
         .btn-signout:active {
             filter: brightness(0.97);
