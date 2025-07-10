@@ -1,0 +1,249 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getEntries, addEntry } from '@/services/ledgerService';
+import { LedgerEntry } from '@/types/ledger';
+import { EntryForm } from './components/EntryForm/EntryForm';
+import { EntriesTable } from './components/EntriesTable/EntriesTable';
+import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
+import { useAuth } from '@/context/AuthContext';
+
+type User = {
+  email: string | null;
+  uid: string;
+  displayName?: string | null;
+  name?: string | null;
+};
+
+// Create a client
+const queryClient = new QueryClient();
+
+function DashboardContent() {
+  const { user, loading, logout } = useAuth();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  // Update the LedgerEntry type to make the id field required
+  type LedgerEntry = {
+    id: string;
+    tenant: string;
+    amount: number;
+    category: string;
+    description: string;
+    date: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+  };
+
+  const [entries, setEntries] = useState<LedgerEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      router.push('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  useEffect(() => {
+    console.log('Dashboard auth check:', { user, loading });
+    if (!loading && !user) {
+      console.log('Redirecting to login');
+      router.push('/');
+    }
+  }, [user, loading, router]);
+
+  // Fetch entries using React Query
+  const { data: fetchedEntries = [], isLoading: isFetching, error: fetchError } = useQuery<Array<LedgerEntry & { id: string }>>({
+    queryKey: ['entries', user?.uid],
+    queryFn: async () => {
+      if (!user) return [];
+      const ledgerEntries = await getEntries(user.uid);
+      // Ensure each entry has an id and proper types
+      return ledgerEntries
+        .filter((entry): entry is LedgerEntry & { id: string } => {
+          if (!entry.id) {
+            console.warn('Entry is missing required id, skipping:', entry);
+            return false;
+          }
+          return true;
+        })
+        .map(entry => ({
+          ...entry,
+          userId: entry.userId || user.uid,
+          createdAt: entry.createdAt || new Date(),
+          updatedAt: entry.updatedAt || new Date(),
+        }));
+    },
+    enabled: !!user,
+  });
+
+  // Add entry mutation
+  const addEntryMutation = useMutation({
+    mutationFn: async (data: {
+      tenant: string;
+      amount: string;
+      category: string;
+      description: string;
+      date: string;
+    }) => {
+      if (!user) throw new Error('User not authenticated');
+      
+      const entryToAdd: Omit<LedgerEntry, 'id'> = {
+        tenant: data.tenant,
+        amount: Number(data.amount) || 0,
+        category: data.category,
+        description: data.description,
+        date: new Date(data.date),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId: user.uid
+      };
+      
+      await addEntry(entryToAdd, user.uid);
+      return; // Explicitly return void
+    },
+    onSuccess: () => {
+      // Invalidate and refetch entries after successful addition
+      queryClient.invalidateQueries({ queryKey: ['entries'] });
+    },
+  });
+
+  if (loading) {
+    console.log('Showing loading spinner');
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (isLoading || !user) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600">Error loading entries</h2>
+          <p className="mt-2 text-gray-600">Please try again later</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen p-4 md:p-8 bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <header className="mb-10">
+          <div className="space-y-6">
+            <div className="flex flex-col items-center">
+              <div className="w-full flex justify-between items-center mb-2">
+                {user && (
+                  <div className="text-sm bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/80 dark:border-gray-700/80 px-4 py-2.5 rounded-xl shadow-sm">
+                    <div className="flex items-baseline space-x-1.5">
+                      <span className="text-xs text-gray-400 dark:text-gray-500">Welcome,</span>
+                      <span className="text-[15px] font-semibold text-gray-900 dark:text-white">
+                        {user.displayName || user.email?.split('@')[0] || 'User'}
+                      </span>
+                    </div>
+                    <div className="space-y-1 mt-1.5">
+                      {user.email && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[240px]">
+                          {user.email}
+                        </div>
+                      )}
+                      <div className="flex items-center">
+                        <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-0.5 rounded border border-gray-100 dark:border-gray-700/50">
+                          <span className="text-gray-400 dark:text-gray-500">UID:</span>{' '}
+                          <span className="text-gray-600 dark:text-gray-300 font-medium">{user.uid}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={handleSignOut}
+                  className="text-sm bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center space-x-2 group"
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+              <h1 
+                className="text-3xl md:text-4xl font-bold mt-2"
+                style={{
+                  background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  display: 'inline-block',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                }}
+              >
+                Tenant Ledger
+              </h1>
+            </div>
+          </div>
+        </header>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Entry Form */}
+          <div className="lg:col-span-1">
+            <div className="card p-6">
+              <EntryForm 
+                onSubmit={async (data) => {
+                  await addEntryMutation.mutateAsync(data);
+                }}
+                isLoading={addEntryMutation.isPending}
+              />
+            </div>
+          </div>
+          
+          {/* Entries Table */}
+          <div className="lg:col-span-2">
+            <div className="card overflow-hidden">
+              <EntriesTable 
+                entries={entries} 
+                isLoading={isLoading} 
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <QueryClientProvider client={queryClient}>
+        <DashboardContent />
+      </QueryClientProvider>
+    </div>
+  );
+}
