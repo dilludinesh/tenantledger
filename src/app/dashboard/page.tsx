@@ -5,18 +5,13 @@ import { useRouter } from 'next/navigation';
 // Firebase auth is now handled by AuthContext
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getEntries, addEntry } from '@/services/ledgerService';
-import { LedgerEntry } from '@/types/ledger';
+// LedgerEntry type is defined locally
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { useAuth } from '@/context/AuthContext';
 
-type User = {
-  email: string | null;
-  uid: string;
-  displayName?: string | null;
-  name?: string | null;
-};
+// User type is available from AuthContext
 
 // Create a client
 const queryClient = new QueryClient();
@@ -40,7 +35,6 @@ function DashboardContent() {
   };
 
   // State managed by React Query
-  const [error, setError] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     try {
@@ -60,7 +54,7 @@ function DashboardContent() {
   }, [user, loading, router]);
 
   // Fetch entries using React Query
-  const { data: entries = [], isLoading: isFetching, error: queryError } = useQuery<Array<LedgerEntry & { id: string }>>({
+  const { data: entries = [], isLoading: isFetching } = useQuery<Array<LedgerEntry & { id: string }>>({
     queryKey: ['entries', user?.uid],
     queryFn: async () => {
       if (!user) return [];
@@ -119,23 +113,6 @@ function DashboardContent() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <LoadingSpinner />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-red-600">Error loading entries</h2>
-          <p className="mt-2 text-gray-600">Please try again later</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Retry
-          </button>
-        </div>
       </div>
     );
   }
