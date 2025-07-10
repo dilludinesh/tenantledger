@@ -122,80 +122,86 @@ function DashboardContent() {
     <div className={`min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800`}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <header className="mb-10">
-          <div className="space-y-6">
-            <div className="flex flex-col items-center">
-              <div className="w-full flex justify-between items-center mb-2">
-                {user && (
-                  <div className={`${styles.glassCard} text-sm`}>
-                    <div className="flex items-baseline space-x-1.5">
-                      <span className="text-xs text-gray-400 dark:text-gray-500">Welcome,</span>
+        <header className="mb-8">
+          {/* Title Section */}
+          <div className="text-center mb-8">
+            <h1 
+              className="text-4xl md:text-5xl font-bold mb-6"
+              style={{
+                background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block',
+                textShadow: '0 2px 4px rgba(0,0,0,0.05)'
+              }}
+            >
+              Tenant Ledger
+            </h1>
+          </div>
+
+          {/* User Info Bar */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+            {user && (
+              <div className={`${styles.glassCard} text-sm w-full sm:w-auto`}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">Welcome,</span>
+                    <span 
+                      className="text-[15px] font-semibold"
+                      style={{
+                        background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                      }}
+                    >
+                      {user.displayName || user.email?.split('@')[0] || 'User'}
+                    </span>
+                  </div>
+                  
+                  <div className="hidden sm:block w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+                  
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs">
+                    {user.email && (
+                      <div className="text-gray-500 dark:text-gray-400 truncate max-w-[200px] sm:max-w-[180px]">
+                        {user.email}
+                      </div>
+                    )}
+                    <div className="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+                    <div className="flex items-center">
                       <span 
-                        className="text-[15px] font-semibold"
+                        className="font-mono"
                         style={{
                           background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                           WebkitBackgroundClip: 'text',
                           WebkitTextFillColor: 'transparent',
-                          display: 'inline-block',
                           textShadow: '0 1px 2px rgba(0,0,0,0.05)'
                         }}
                       >
-                        {user.displayName || user.email?.split('@')[0] || 'User'}
+                        <span className="text-gray-400 dark:text-gray-500">UID: </span>
+                        <span className="font-medium">{user.uid.substring(0, 8)}...</span>
                       </span>
                     </div>
-                    <div className="space-y-1 mt-1.5">
-                      {user.email && (
-                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[240px]">
-                          {user.email}
-                        </div>
-                      )}
-                      <div className="flex items-center">
-                        <span 
-                          className="text-[11px] font-mono px-2 py-0.5 rounded"
-                          style={{
-                            background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            display: 'inline-block',
-                            textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                          }}
-                        >
-                          <span>UID:</span>{' '}
-                          <span className="font-medium">{user.uid}</span>
-                        </span>
-                      </div>
-                    </div>
                   </div>
-                )}
-                <button
-                  onClick={handleSignOut}
-                  className={`${styles.glassButton} flex items-center space-x-2 group`}
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  <span>Sign Out</span>
-                </button>
+                </div>
               </div>
-              <h1 
-                className="text-3xl md:text-4xl font-bold mt-2"
-                style={{
-                  background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  display: 'inline-block',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                }}
+            )}
+            
+            <button
+              onClick={handleSignOut}
+              className={`${styles.glassButton} flex items-center space-x-2 group w-full sm:w-auto justify-center`}
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
               >
-                Tenant Ledger
-              </h1>
-            </div>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Sign Out</span>
+            </button>
           </div>
         </header>
         
