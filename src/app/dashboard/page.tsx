@@ -10,6 +10,7 @@ import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { useAuth } from '@/context/AuthContext';
+import styles from './glass.module.css';
 
 // User type is available from AuthContext
 
@@ -118,7 +119,7 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-gray-50">
+    <div className={`min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800`}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="mb-10">
@@ -126,7 +127,7 @@ function DashboardContent() {
             <div className="flex flex-col items-center">
               <div className="w-full flex justify-between items-center mb-2">
                 {user && (
-                  <div className="text-sm bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/80 dark:border-gray-700/80 px-4 py-2.5 rounded-xl shadow-sm">
+                  <div className={`${styles.glassCard} text-sm`}>
                     <div className="flex items-baseline space-x-1.5">
                       <span className="text-xs text-gray-400 dark:text-gray-500">Welcome,</span>
                       <span className="text-[15px] font-semibold text-gray-900 dark:text-white">
@@ -140,9 +141,9 @@ function DashboardContent() {
                         </div>
                       )}
                       <div className="flex items-center">
-                        <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-0.5 rounded border border-gray-100 dark:border-gray-700/50">
+                        <span className="text-[11px] font-mono text-gray-500 dark:text-gray-300 px-2 py-0.5 rounded">
                           <span className="text-gray-400 dark:text-gray-500">UID:</span>{' '}
-                          <span className="text-gray-600 dark:text-gray-300 font-medium">{user.uid}</span>
+                          <span className="text-gray-600 dark:text-gray-200 font-medium">{user.uid}</span>
                         </span>
                       </div>
                     </div>
@@ -150,7 +151,7 @@ function DashboardContent() {
                 )}
                 <button
                   onClick={handleSignOut}
-                  className="text-sm bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 flex items-center space-x-2 group"
+                  className={`${styles.glassButton} flex items-center space-x-2 group`}
                 >
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
@@ -183,7 +184,7 @@ function DashboardContent() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Entry Form */}
           <div className="lg:col-span-1">
-            <div className="card p-6">
+            <div className={styles.glassCard}>
               <EntryForm 
                 onSubmit={async (data) => {
                   await addEntryMutation.mutateAsync(data);
@@ -195,7 +196,7 @@ function DashboardContent() {
           
           {/* Entries Table */}
           <div className="lg:col-span-2">
-            <div className="card overflow-hidden">
+            <div className={styles.glassCard}>
               <EntriesTable 
                 entries={entries} 
                 isLoading={isFetching} 

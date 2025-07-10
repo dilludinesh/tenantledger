@@ -1,6 +1,7 @@
 import React from 'react';
 import { LedgerEntry } from '@/types/ledger';
 import { EntryRow } from '../EntryRow/EntryRow';
+import styles from './EntriesTable.module.css';
 
 interface EntriesTableProps {
   entries: Array<LedgerEntry & { id: string }>;
@@ -9,14 +10,29 @@ interface EntriesTableProps {
 
 export const EntriesTable: React.FC<EntriesTableProps> = ({ entries, isLoading = false }) => {
   if (isLoading) {
-    return null; // Return nothing while loading
+    return (
+      <div className={styles.loadingRow}>
+        <div className="animate-pulse flex space-x-4">
+          <div className="flex-1 space-y-6 py-1">
+            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded col-span-2"></div>
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded col-span-1"></div>
+              </div>
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (entries.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className={styles.emptyState}>
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className={styles.emptyIcon}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -25,41 +41,41 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ entries, isLoading =
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={1}
+            strokeWidth={1.5}
             d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
           />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">No entries yet</h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by adding a new entry above.</p>
+        <h3 className={styles.emptyTitle}>No entries yet</h3>
+        <p className={styles.emptyDescription}>Get started by adding a new entry above.</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <div className={styles.tableContainer}>
+      <table className={styles.table}>
         <thead>
-          <tr className="bg-gradient-to-r from-blue-600 to-purple-600">
-            <th scope="col" className="px-6 py-3.5 text-left text-sm font-semibold text-white/90 uppercase tracking-wider">
+          <tr className={styles.tableHead}>
+            <th scope="col" className={styles.tableHeader}>
               Date
             </th>
-            <th scope="col" className="px-6 py-3.5 text-left text-sm font-semibold text-white/90 uppercase tracking-wider">
+            <th scope="col" className={styles.tableHeader}>
               Tenant
             </th>
-            <th scope="col" className="px-6 py-3.5 text-right text-sm font-semibold text-white/90 uppercase tracking-wider w-48">
+            <th scope="col" className={`${styles.tableHeader} text-right w-48`}>
               <div className="flex justify-end items-center w-full">
                 <span>Amount</span>
               </div>
             </th>
-            <th scope="col" className="px-6 py-3.5 text-left text-sm font-semibold text-white/90 uppercase tracking-wider">
+            <th scope="col" className={styles.tableHeader}>
               Category
             </th>
-            <th scope="col" className="px-6 py-3.5 text-left text-sm font-semibold text-white/90 uppercase tracking-wider">
+            <th scope="col" className={styles.tableHeader}>
               Description
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody className={styles.tableBody}>
           {entries.map((entry) => (
             <EntryRow key={entry.id} entry={entry} />
           ))}

@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { format } from 'date-fns';
+import styles from './EntryForm.module.css';
 
 const CATEGORIES = [
   'Rent',
@@ -97,10 +98,10 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="date" className={styles.label}>
             Date
           </label>
           <div className="relative">
@@ -110,15 +111,15 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              className={styles.formInput}
               required
             />
           </div>
-          {errors.date && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.date}</p>}
+          {errors.date && <p className={styles.errorText}>{errors.date}</p>}
         </div>
 
         <div>
-          <label htmlFor="tenant" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="tenant" className={styles.label}>
             Tenant Name
           </label>
           <input
@@ -127,15 +128,15 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
             name="tenant"
             value={formData.tenant}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            className={styles.formInput}
             placeholder="Enter tenant name"
             required
           />
-          {errors.tenant && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.tenant}</p>}
+          {errors.tenant && <p className={styles.errorText}>{errors.tenant}</p>}
         </div>
 
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="amount" className={styles.label}>
             Amount
           </label>
           <div className="relative">
@@ -148,18 +149,18 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
               name="amount"
               value={formData.amount}
               onChange={handleChange}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              className={`${styles.formInput} pl-8`}
               placeholder="0.00"
               min="0.01"
               step="0.01"
               required
             />
           </div>
-          {errors.amount && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.amount}</p>}
+          {errors.amount && <p className={styles.errorText}>{errors.amount}</p>}
         </div>
 
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="category" className={styles.label}>
             Category
           </label>
           <select
@@ -167,7 +168,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            className={styles.formSelect}
           >
             {CATEGORIES.map((category) => (
               <option key={category} value={category}>
@@ -179,7 +180,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label htmlFor="description" className={styles.label}>
           Description (Optional)
         </label>
         <textarea
@@ -188,7 +189,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
           rows={3}
           value={formData.description}
           onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+          className={styles.formTextarea}
           placeholder="Add any additional notes"
         />
       </div>
@@ -197,14 +198,14 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
         <button
           type="button"
           onClick={handleReset}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+          className={styles.buttonSecondary}
           disabled={isLoading}
         >
           Reset
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          className={styles.buttonPrimary}
           disabled={isLoading}
         >
           {isLoading ? 'Adding...' : 'Add Entry'}
