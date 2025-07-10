@@ -70,54 +70,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
       console.error('Sign in error:', errorInfo);
       
+      // Initialize error message with a default
+      let errorMessage = 'Failed to sign in with Google';
+      
       // Handle different error cases
-      if (err.code === 'auth/popup-closed-by-user') {
-        const message = 'Sign in was cancelled';
-        setAuthError(message);
-        toast.error(message);
-      } else if (err.code === 'auth/popup-blocked' || err.message === 'popup-blocked') {
-        const errorMessage = err.message || 'An unknown error occurred';
-        setAuthError(errorMessage);
-        toast.error(errorMessage, { 
-          duration: 6000,
-          icon: '🔔',
-          style: {
-            background: '#FEE2E2',
-            color: '#B91C1C',
-          }
-        });
-      } else {
-        // Handle other errors with more detailed information
-        let message = 'Failed to sign in with Google';
-        
-        if (err.code) {
-          // Handle Firebase auth errors
-          switch (err.code) {
-            case 'auth/account-exists-with-different-credential':
-              message = 'An account already exists with the same email but different sign-in credentials';
-              break;
-            case 'auth/auth-domain-config-required':
-              message = 'Authentication domain configuration is required';
-              break;
-            case 'auth/operation-not-allowed':
-              message = 'Google sign-in is not enabled for this project';
-              break;
-            case 'auth/unauthorized-domain':
-              message = 'This domain is not authorized for authentication';
-              break;
-            default:
-              message = error.message || message;
-          }
-        } else if (error.message) {
-          message = error.message;
+      if (err.code) {
+        switch (err.code) {
+          case 'auth/account-exists-with-different-credential':
+            errorMessage = 'An account already exists with the same email but different sign-in credentials';
+            break;
+          case 'auth/popup-closed-by-user':
+            errorMessage = 'Sign in was cancelled';
+            break;
+          case 'auth/cancelled-popup-request':
+            errorMessage = 'Sign in was cancelled';
+            break;
+          case 'auth/popup-blocked':
+            errorMessage = 'Sign in popup was blocked. Please allow popups for this site.';
+            break;
+          case 'auth/auth-domain-config-required':
+            errorMessage = 'Authentication domain configuration is required';
+            break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'Google sign-in is not enabled for this project';
+            break;
+          case 'auth/unauthorized-domain':
+            errorMessage = 'This domain is not authorized for authentication';
+            break;
+          default:
+            errorMessage = err.message || errorMessage;
         }
-        
-        setAuthError(message);
-        toast.error(message, {
-          duration: 5000,
-          position: 'bottom-center'
-        });
+      } else if (err.message) {
+        errorMessage = err.message;
       }
+      
+      setAuthError(errorMessage);
+      toast.error(errorMessage, { 
+        duration: 6000,
+        position: 'top-center'
+      });
       
       // Re-throw the error so it can be caught by the login page if needed
       throw error;
