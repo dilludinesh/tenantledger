@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+// Firebase auth is now handled by AuthContext
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getEntries, addEntry } from '@/services/ledgerService';
 import { LedgerEntry } from '@/types/ledger';
@@ -40,8 +39,7 @@ function DashboardContent() {
     userId: string;
   };
 
-  const [entries, setEntries] = useState<LedgerEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // State managed by React Query
   const [error, setError] = useState<string | null>(null);
 
   const handleSignOut = async () => {
@@ -62,7 +60,7 @@ function DashboardContent() {
   }, [user, loading, router]);
 
   // Fetch entries using React Query
-  const { data: fetchedEntries = [], isLoading: isFetching, error: fetchError } = useQuery<Array<LedgerEntry & { id: string }>>({
+  const { data: entries = [], isLoading: isFetching, error: queryError } = useQuery<Array<LedgerEntry & { id: string }>>({
     queryKey: ['entries', user?.uid],
     queryFn: async () => {
       if (!user) return [];
@@ -117,17 +115,12 @@ function DashboardContent() {
     },
   });
 
-  if (loading) {
-    console.log('Showing loading spinner');
+  if (loading || isFetching || !user) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <LoadingSpinner />
       </div>
     );
-  }
-
-  if (isLoading || !user) {
-    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -228,7 +221,7 @@ function DashboardContent() {
             <div className="card overflow-hidden">
               <EntriesTable 
                 entries={entries} 
-                isLoading={isLoading} 
+                isLoading={isFetching} 
               />
             </div>
           </div>

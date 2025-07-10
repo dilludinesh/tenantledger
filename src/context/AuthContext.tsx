@@ -54,24 +54,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       await signInWithPopup(auth, provider);
       toast.success('Successfully signed in!');
-    } catch (error: any) {
-      console.error('Sign in error:', {
-        name: error.name,
-        message: error.message,
-        code: error.code,
-        stack: error.stack,
-        fullError: JSON.stringify(error, Object.getOwnPropertyNames(error))
-      });
+    } catch (error: unknown) {
+      const err = error as {
+        code?: string;
+        message?: string;
+        name?: string;
+        stack?: string;
+      };
+      const errorInfo = {
+        name: err.name,
+        message: err.message,
+        code: err.code,
+        stack: err.stack,
+        fullError: JSON.stringify(error, Object.getOwnPropertyNames(error as object))
+      };
+      console.error('Sign in error:', errorInfo);
       
       // Handle different error cases
-      if (error.code === 'auth/popup-closed-by-user') {
+      if (err.code === 'auth/popup-closed-by-user') {
         const message = 'Sign in was cancelled';
         setAuthError(message);
         toast.error(message);
-      } else if (error.code === 'auth/popup-blocked' || error.message === 'popup-blocked') {
-        const message = 'Please allow popups for this site to sign in with Google';
-        setAuthError(message);
-        toast.error(message, { 
+      } else if (err.code === 'auth/popup-blocked' || err.message === 'popup-blocked') {
+        const errorMessage = err.message || 'An unknown error occurred';
+        setAuthError(errorMessage);
+        toast.error(errorMessage, { 
           duration: 6000,
           icon: '🔔',
           style: {
@@ -83,9 +90,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Handle other errors with more detailed information
         let message = 'Failed to sign in with Google';
         
-        if (error.code) {
+        if (err.code) {
           // Handle Firebase auth errors
-          switch (error.code) {
+          switch (err.code) {
             case 'auth/account-exists-with-different-credential':
               message = 'An account already exists with the same email but different sign-in credentials';
               break;
