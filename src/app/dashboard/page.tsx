@@ -130,7 +130,16 @@ function DashboardContent() {
                   <div className={`${styles.glassCard} text-sm`}>
                     <div className="flex items-baseline space-x-1.5">
                       <span className="text-xs text-gray-400 dark:text-gray-500">Welcome,</span>
-                      <span className="text-[15px] font-semibold text-gray-900 dark:text-white">
+                      <span 
+                        className="text-[15px] font-semibold"
+                        style={{
+                          background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          display: 'inline-block',
+                          textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                        }}
+                      >
                         {user.displayName || user.email?.split('@')[0] || 'User'}
                       </span>
                     </div>
@@ -141,9 +150,18 @@ function DashboardContent() {
                         </div>
                       )}
                       <div className="flex items-center">
-                        <span className="text-[11px] font-mono text-gray-500 dark:text-gray-300 px-2 py-0.5 rounded">
-                          <span className="text-gray-400 dark:text-gray-500">UID:</span>{' '}
-                          <span className="text-gray-600 dark:text-gray-200 font-medium">{user.uid}</span>
+                        <span 
+                          className="text-[11px] font-mono px-2 py-0.5 rounded"
+                          style={{
+                            background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            display: 'inline-block',
+                            textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                          }}
+                        >
+                          <span>UID:</span>{' '}
+                          <span className="font-medium">{user.uid}</span>
                         </span>
                       </div>
                     </div>
