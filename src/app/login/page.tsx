@@ -8,7 +8,6 @@ import styles from '../dashboard/glass.module.css';
 // Removed GoogleButton import
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false);
   const { user, signInWithGoogle, authError } = useAuth();
   const router = useRouter();
 
@@ -28,18 +27,6 @@ export default function LoginPage() {
       });
     }
   }, [authError]);
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    try {
-      await signInWithGoogle();
-      // No need to redirect here, the useEffect will handle it when user changes
-    } catch (error) {
-      console.error('Error in Google sign in:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex flex-col h-screen justify-start">
