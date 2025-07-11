@@ -60,11 +60,11 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-6 flex justify-center">
-            <div className="w-full max-w-[250px]">
+            <div className="max-w-[160px]">
               <button
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className={`${styles.glassButton} !rounded-full w-full inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium text-white`}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-flex items-center"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
