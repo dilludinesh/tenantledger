@@ -126,7 +126,7 @@ function DashboardContent() {
           {/* Title Section */}
           <div className="text-center mb-8">
             <h1 
-              className="text-4xl md:text-5xl font-bold mb-6"
+              className="text-3xl md:text-4xl font-bold mb-6"
               style={{
                 background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                 WebkitBackgroundClip: 'text',
