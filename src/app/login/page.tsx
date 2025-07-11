@@ -46,7 +46,7 @@ export default function LoginPage() {
         <div className={`${styles.glass} py-8 px-6 sm:px-8`}>
           <div className="text-center mb-8">
             <h1 
-              className="text-3xl font-bold"
+              className="text-4xl font-bold"
               style={{
                 background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                 WebkitBackgroundClip: 'text',
