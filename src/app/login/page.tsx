@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -8,7 +8,7 @@ import styles from '../dashboard/glass.module.css';
 // Removed GoogleButton import
 
 export default function LoginPage() {
-  const { user, signInWithGoogle, authError } = useAuth();
+  const { user, authError } = useAuth();
   const router = useRouter();
 
   // Redirect if already logged in
