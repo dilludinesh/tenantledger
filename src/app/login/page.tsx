@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import styles from '../dashboard/glass.module.css';
 
