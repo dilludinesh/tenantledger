@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 function RootLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <title>Tenant Ledger</title>
+        <meta name="description" content="Manage tenant finances" />
+      </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Providers>
           <ClientBody>
