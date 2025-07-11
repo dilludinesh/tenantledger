@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'react-hot-toast';
 import styles from '../dashboard/glass.module.css';
-import GoogleButton from '../components/GoogleButton'; // Assuming the GoogleButton component is in this location
+// Removed GoogleButton import
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -60,12 +60,7 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <div className="mt-6 flex justify-center">
-            <GoogleButton
-              onClick={handleGoogleLogin}
-              disabled={loading}
-            />
-          </div>
+          {/* Removed GoogleButton */}
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export default function GoogleButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-4 rounded-full inline-flex items-center whitespace-nowrap"
+      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-6 rounded-full inline-flex items-center whitespace-nowrap shadow"
     >
       <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24">
         <path
