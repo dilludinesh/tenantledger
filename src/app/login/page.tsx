@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'react-hot-toast';
+import GoogleButton from '@/components/GoogleButton';
 import styles from '../dashboard/glass.module.css';
-// Removed GoogleButton import
 
 export default function LoginPage() {
-  const { user, authError } = useAuth();
+  const { user, loading, signInWithGoogle, authError } = useAuth();
   const router = useRouter();
 
   // Redirect if already logged in
@@ -47,7 +47,10 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          {/* Removed GoogleButton */}
+          <GoogleButton 
+            onClick={signInWithGoogle}
+            disabled={loading}
+          />
         </div>
       </div>
     </div>
