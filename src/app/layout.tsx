@@ -14,6 +14,7 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
       <head>
         <title>Tenant Ledger</title>
         <meta name="description" content="Manage tenant finances" />
+        <link rel="icon" href="data:image/x-icon;,0" />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Providers>
