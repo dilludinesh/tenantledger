@@ -64,7 +64,7 @@ export default function LoginPage() {
               <button
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full inline-flex items-center"
+                className="bg-blue-50 text-blue-700 font-medium py-2 px-4 rounded-full inline-flex items-center border border-blue-200 hover:bg-blue-100"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
