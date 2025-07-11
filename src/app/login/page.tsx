@@ -2,16 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import styles from '../dashboard/glass.module.css';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { user, signInWithGoogle, authError } = useAuth();
   const router = useRouter();
@@ -33,25 +29,6 @@ export default function LoginPage() {
     }
   }, [authError]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Successfully signed in!');
-      // No need to redirect here, the useEffect will handle it when user changes
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-      toast.error(errorMessage, {
-        duration: 5000,
-        position: 'bottom-center'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
@@ -65,9 +42,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className={`w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden ${styles.glass}`}>
-        <div className="p-8">
+    <div className="flex flex-col h-screen justify-start">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className={`${styles.glass} py-8 px-6 sm:px-10`}>
           <div className="text-center mb-8">
             <h1 
               className="text-3xl font-bold"
@@ -79,79 +56,16 @@ export default function LoginPage() {
                 textShadow: '0 2px 4px rgba(0,0,0,0.05)'
               }}
             >
-              Welcome Back
+              Tenant Ledger
             </h1>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">Sign in to your account</p>
           </div>
 
-          {authError && (
-            <div className="mb-4 p-3 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300 rounded-md text-sm">
-              {authError}
-            </div>
-          )}
-
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/70 dark:bg-gray-700/50 dark:text-white"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Password
-                </label>
-                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline dark:text-blue-400">
-                  Forgot password?
-                </Link>
-              </div>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/70 dark:bg-gray-700/50 dark:text-white"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className={`${styles.glassButton} w-full flex justify-center py-3 px-4 rounded-md shadow-sm text-sm font-medium text-white`}
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-transparent text-gray-500 dark:text-gray-400">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-3">
+          <div className="mt-6 flex justify-center">
+            <div className="w-full max-w-[250px]">
               <button
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className={`${styles.glassButton} w-full inline-flex justify-center py-3 px-4 rounded-md shadow-sm text-sm font-medium text-white`}
+                className={`${styles.glassButton} !rounded-full w-full inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium text-white`}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -175,15 +89,6 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
-        </div>
-
-        <div className="bg-gray-50/70 dark:bg-gray-800/50 px-8 py-6 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-blue-600 hover:underline dark:text-blue-400">
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </div>
