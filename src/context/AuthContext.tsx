@@ -45,44 +45,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setAuthError(null);
       const provider = new GoogleAuthProvider();
-      
+
       // Check if popups might be blocked
       const isPopupBlocked = window.open('', '_blank') === null;
       if (isPopupBlocked) {
         throw new Error('popup-blocked');
       }
-      
+
       await signInWithPopup(auth, provider);
       toast.success('Successfully signed in!');
-    } catch (error: unknown) {
-      const err = error as {
-        code?: string;
-        message?: string;
-        name?: string;
-        stack?: string;
-      };
-      const errorInfo = {
-        name: err.name,
-        message: err.message,
-        code: err.code,
-        stack: err.stack,
-        fullError: JSON.stringify(error, Object.getOwnPropertyNames(error as object))
-      };
-      console.error('Sign in error:', errorInfo);
-      
-      // Initialize error message with a default
-      let errorMessage = 'Failed to sign in with Google';
-      
-      // Handle different error cases
-      if (err.code) {
+    } catch (error) {
+      console.error('Sign in error:', error);
+      let errorMessage = 'An error occurred during sign in';
+
+      // Handle Firebase auth errors
+      if (error && typeof error === 'object' && 'code' in error) {
+        const err = error as { code: string; message?: string };
         switch (err.code) {
-          case 'auth/account-exists-with-different-credential':
-            errorMessage = 'An account already exists with the same email but different sign-in credentials';
-            break;
           case 'auth/popup-closed-by-user':
-            errorMessage = 'Sign in was cancelled';
-            break;
-          case 'auth/cancelled-popup-request':
             errorMessage = 'Sign in was cancelled';
             break;
           case 'auth/popup-blocked':
@@ -100,16 +80,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           default:
             errorMessage = err.message || errorMessage;
         }
-      } else if (err.message) {
-        errorMessage = err.message;
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as { message: string }).message;
       }
-      
+
       setAuthError(errorMessage);
       toast.error(errorMessage, { 
         duration: 6000,
         position: 'top-center'
       });
-      
+
       // Re-throw the error so it can be caught by the login page if needed
       throw error;
     }
