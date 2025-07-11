@@ -42,8 +42,8 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col h-screen justify-start">
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className={`${styles.glass} py-8 px-6 sm:px-10`}>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xs">
+        <div className={`${styles.glass} py-8 px-6 sm:px-8`}>
           <div className="text-center mb-8">
             <h1 
               className="text-3xl font-bold"
