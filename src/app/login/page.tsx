@@ -47,10 +47,12 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <GoogleButton 
-            onClick={signInWithGoogle}
-            disabled={loading}
-          />
+          <div className="flex justify-center">
+            <GoogleButton 
+              onClick={signInWithGoogle}
+              disabled={loading}
+            />
+          </div>
         </div>
       </div>
     </div>
