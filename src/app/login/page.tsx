@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -10,6 +10,7 @@ import styles from '../dashboard/glass.module.css';
 export default function LoginPage() {
   const { user, loading, signInWithGoogle, authError } = useAuth();
   const router = useRouter();
+  const [signingIn, setSigningIn] = useState(false);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -21,12 +22,20 @@ export default function LoginPage() {
   // Show error toast if there's an auth error
   useEffect(() => {
     if (authError) {
-      toast.error(authError, { 
-        duration: 5000,
-        position: 'bottom-center'
-      });
+      setSigningIn(false); // Reset signing in state on error
     }
   }, [authError]);
+
+  const handleSignIn = async () => {
+    setSigningIn(true);
+    try {
+      await signInWithGoogle();
+    } catch {
+      // Error is handled by AuthContext and toast
+    } finally {
+      setSigningIn(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen justify-start">
@@ -49,12 +58,23 @@ export default function LoginPage() {
 
           <div className="flex flex-col items-center">
             <GoogleButton 
-              onClick={signInWithGoogle}
-              disabled={loading}
+              onClick={handleSignIn}
+              disabled={loading || signingIn}
+              loading={signingIn}
             />
             {authError === 'Sign in was cancelled' && (
-              <div className="mt-4 text-sm text-yellow-700 bg-yellow-100 border border-yellow-300 rounded px-3 py-2 w-full text-center">
-                Sign in was cancelled. Please try again and complete the sign-in process.
+              <div className="mt-4 w-full flex justify-center">
+                <div
+                  className="bg-gradient-to-r from-rose-100 to-rose-50 border border-rose-300 rounded-lg px-4 py-3 shadow-sm flex items-center gap-2"
+                  style={{ maxWidth: 340 }}
+                >
+                  <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                  </svg>
+                  <span className="text-rose-800 text-sm font-medium text-center">
+                    Sign-in was cancelled. Please click the button above and complete the sign-in process to continue.
+                  </span>
+                </div>
               </div>
             )}
           </div>
