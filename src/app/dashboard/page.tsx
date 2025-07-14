@@ -143,46 +143,36 @@ function DashboardContent() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
             {user && (
               <div className={`${styles.glassCard} text-sm w-full sm:w-auto`}>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-400 dark:text-gray-500">Welcome,</span>
-                    <span 
-                      className="text-[15px] font-semibold"
-                      style={{
-                        background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                      }}
-                    >
-                      {user.displayName || user.email?.split('@')[0] || 'User'}
+                <div className="flex flex-col gap-2 p-3">
+                  <span className="text-xs text-gray-400 dark:text-gray-500">Welcome</span>
+                  <span 
+                    className="text-[15px] font-semibold"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    {user.displayName || user.email?.split('@')[0] || 'User'}
+                  </span>
+                  {user.email && (
+                    <span className="text-gray-500 dark:text-gray-400 text-xs truncate max-w-[200px] sm:max-w-[180px]">
+                      {user.email}
                     </span>
-                  </div>
-                  
-                  <div className="hidden sm:block w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                  
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs">
-                    {user.email && (
-                      <div className="text-gray-500 dark:text-gray-400 truncate max-w-[200px] sm:max-w-[180px]">
-                        {user.email}
-                      </div>
-                    )}
-                    <div className="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                    <div className="flex items-center">
-                      <span 
-                        className="font-mono"
-                        style={{
-                          background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                        }}
-                      >
-                        <span className="text-gray-400 dark:text-gray-500">UID: </span>
-                        <span className="font-medium">{user.uid.substring(0, 8)}...</span>
-                      </span>
-                    </div>
-                  </div>
+                  )}
+                  <span 
+                    className="font-mono text-xs"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    <span className="text-gray-400 dark:text-gray-500">UID: </span>
+                    <span className="font-medium">{user.uid.substring(0, 8)}...</span>
+                  </span>
                 </div>
               </div>
             )}
