@@ -184,8 +184,8 @@ function DashboardContent() {
             <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
               <button
                 onClick={() => setShowSignOutConfirm(true)}
-                className="btn-signout flex items-center space-x-2"
-                style={{ minWidth: 120, background: undefined }}
+                className="btn-signout flex items-center space-x-2 bg-transparent"
+                style={{ minWidth: 120 }}
               >
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
@@ -203,7 +203,7 @@ function DashboardContent() {
                   <button
                     onClick={handleSignOut}
                     className="btn-signout"
-                    style={{ background: undefined }}
+                    style={{ backgroundColor: 'transparent' }}
                   >
                     Confirm Sign Out
                   </button>
