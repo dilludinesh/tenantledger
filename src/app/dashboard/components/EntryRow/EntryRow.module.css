@@ -12,18 +12,10 @@
   transform: translateX(2px);
 }
 
-.dark .row:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
 .cell {
   padding: 0.75rem 1.5rem;
   white-space: nowrap;
   vertical-align: middle;
-}
-
-.text {
-  font-size: 0.9375rem;
   line-height: 1.25rem;
   font-weight: 400;
   color: #1f2937;

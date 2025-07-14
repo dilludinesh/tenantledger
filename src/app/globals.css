@@ -1,32 +1,9 @@
 @import "tailwindcss";
-
-/* TenantLedger Modern UI Redesign */
-
 :root {
-  --color-bg: #f8fafc;
-  --color-bg-dark: #181a20;
-  --color-primary: #6366f1;
-  --color-primary-dark: #818cf8;
-  --color-accent: #a21caf;
   --color-accent-dark: #c026d3;
-  --color-card: #fff;
-  --color-card-dark: #23263a;
-  --color-text: #1e293b;
-  --color-text-dark: #f3f4f6;
-  --color-border: #e5e7eb;
-  --color-border-dark: #23263a;
   --radius: 18px;
-  --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
-  --shadow-dark: 0 8px 32px 0 rgba(0,0,0,0.22);
-}
 
-html, body {
-  background: var(--color-bg);
-  color: var(--color-text);
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  font-size: 17px;
-  min-height: 100vh;
-  margin: 0;
   padding: 0;
   transition: background 0.3s, color 0.3s;
 }
