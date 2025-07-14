@@ -120,36 +120,30 @@ function DashboardContent() {
   }
 
   return (
-    <div className={`min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-50 to-purple-50`}>
+    <div className="min-h-screen p-6 md:p-12 bg-gradient-to-br from-blue-50 to-purple-100">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <header className="mb-8">
+        <header className="mb-10">
           {/* Title Section */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <h1 
-              className="text-3xl md:text-4xl font-bold mb-6"
-              style={{
-                background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                display: 'inline-block',
-                textShadow: '0 2px 4px rgba(0,0,0,0.05)'
-              }}
+              className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight title-gradient"
+              aria-label="Tenant Ledger Dashboard"
             >
-              Tenant Ledger
+              <span style={{letterSpacing: '0.01em'}}>Tenant Ledger</span>
             </h1>
           </div>
 
           {/* User Info and Sign Out Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 w-full">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-10 w-full">
             {/* Welcome/User Info left */}
             <div className="flex flex-col w-full sm:w-auto">
               {user && (
-                <div className={`${styles.glassCard} text-sm w-full sm:w-auto`}>
-                  <div className="flex flex-col gap-2 p-3">
+                <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-lg`} style={{borderRadius: 24}}>
+                  <div className="flex flex-col gap-2 p-4">
                     <span className="text-xs text-gray-400">Welcome</span>
                     <span 
-                      className="text-[15px] font-semibold"
+                      className="text-lg font-semibold"
                       style={{
                         background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                         WebkitBackgroundClip: 'text',
@@ -184,7 +178,8 @@ function DashboardContent() {
             <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
               <button
                 onClick={() => setShowSignOutConfirm(true)}
-                className="btn-signout flex items-center space-x-2 bg-transparent"
+                className="btn-signout flex items-center space-x-2 px-6 py-2 text-base font-bold shadow-md"
+                aria-label="Sign out"
                 style={{ minWidth: 120 }}
               >
                 <svg 
@@ -202,14 +197,15 @@ function DashboardContent() {
                 <div className="mt-3 flex flex-row gap-3">
                   <button
                     onClick={handleSignOut}
-                    className="btn-signout"
-                    style={{ backgroundColor: 'transparent' }}
+                    className="btn-signout px-6 py-2 text-base font-bold shadow-md"
+                    aria-label="Confirm sign out"
                   >
                     Confirm Sign Out
                   </button>
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
-                    className="px-6 py-2 rounded-full bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 font-semibold shadow-md transition-all duration-200 hover:from-gray-400 hover:to-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                    className="btn btn-outline"
+                    aria-label="Cancel sign out"
                   >
                     Cancel
                   </button>
@@ -218,11 +214,11 @@ function DashboardContent() {
             </div>
           </div>
         </header>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Entry Form */}
           <div className="lg:col-span-1">
-            <div className={styles.glassCard}>
+            <div className={styles.glassCard} style={{borderRadius: 24, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
               <EntryForm 
                 onSubmit={async (data) => {
                   await addEntryMutation.mutateAsync(data);
@@ -231,10 +227,9 @@ function DashboardContent() {
               />
             </div>
           </div>
-          
           {/* Entries Table */}
           <div className="lg:col-span-2">
-            <div className={styles.glassCard}>
+            <div className={styles.glassCard} style={{borderRadius: 24, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
               <EntriesTable 
                 entries={entries} 
                 isLoading={isFetching} 
