@@ -3,7 +3,7 @@
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  /* border removed for borderless look */
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
   border-radius: 12px;
 }
@@ -11,7 +11,7 @@
 /* Dark mode glass effect */
 .dark .glass {
   background: rgba(17, 25, 40, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* border removed for borderless look */
 }
 
 /* Card with glass effect */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 // Firebase auth is now handled by AuthContext
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -21,6 +21,7 @@ function DashboardContent() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
   // Update the LedgerEntry type to make the id field required
   type LedgerEntry = {
@@ -141,57 +142,77 @@ function DashboardContent() {
 
           {/* User Info Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-            {user && (
-              <div className={`${styles.glassCard} text-sm w-full sm:w-auto`}>
-                <div className="flex flex-col gap-2 p-3">
-                  <span className="text-xs text-gray-400 dark:text-gray-500">Welcome</span>
-                  <span 
-                    className="text-[15px] font-semibold"
-                    style={{
-                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                    }}
-                  >
-                    {user.displayName || user.email?.split('@')[0] || 'User'}
-                  </span>
-                  {user.email && (
-                    <span className="text-gray-500 dark:text-gray-400 text-xs truncate max-w-[200px] sm:max-w-[180px]">
-                      {user.email}
+            <div className="flex flex-col sm:flex-row w-full items-start gap-4">
+              {user && (
+                <div className={`${styles.glassCard} text-sm w-full sm:w-auto`}>
+                  <div className="flex flex-col gap-2 p-3">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">Welcome</span>
+                    <span 
+                      className="text-[15px] font-semibold"
+                      style={{
+                        background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                      }}
+                    >
+                      {user.displayName || user.email?.split('@')[0] || 'User'}
                     </span>
-                  )}
-                  <span 
-                    className="font-mono text-xs break-all"
-                    style={{
-                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                    }}
-                  >
-                    <span className="text-gray-400 dark:text-gray-500">UID: </span>
-                    <span className="font-medium">{user.uid}</span>
-                  </span>
+                    {user.email && (
+                      <span className="text-gray-500 dark:text-gray-400 text-xs truncate max-w-[200px] sm:max-w-[180px]">
+                        {user.email}
+                      </span>
+                    )}
+                    <span 
+                      className="font-mono text-xs break-all"
+                      style={{
+                        background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                      }}
+                    >
+                      <span className="text-gray-400 dark:text-gray-500">UID: </span>
+                      <span className="font-medium">{user.uid}</span>
+                    </span>
+                  </div>
                 </div>
+              )}
+              <div className="flex flex-col items-start mt-2 sm:mt-0 sm:self-start">
+                <button
+                  onClick={() => setShowSignOutConfirm(true)}
+                  className="flex items-center space-x-2 px-6 py-2 rounded-full bg-gradient-to-r from-rose-500 to-amber-400 text-white font-semibold shadow-md transition-all duration-200 hover:from-rose-600 hover:to-amber-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"
+                  style={{ minWidth: 120 }}
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
+                {showSignOutConfirm && (
+                  <div className="mt-3 flex flex-row gap-3">
+                    <button
+                      onClick={handleSignOut}
+                      className="px-6 py-2 rounded-full bg-gradient-to-r from-rose-500 to-amber-400 text-white font-semibold shadow-md transition-all duration-200 hover:from-rose-600 hover:to-amber-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"
+                    >
+                      Confirm Sign Out
+                    </button>
+                    <button
+                      onClick={() => setShowSignOutConfirm(false)}
+                      className="px-6 py-2 rounded-full bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 font-semibold shadow-md transition-all duration-200 hover:from-gray-400 hover:to-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-            
-            <button
-              onClick={handleSignOut}
-              className={`${styles.glassButton} flex items-center space-x-2 group w-full sm:w-auto justify-center`}
-            >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              <span>Sign Out</span>
-            </button>
+            </div>
           </div>
         </header>
         
