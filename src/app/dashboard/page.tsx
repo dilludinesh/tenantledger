@@ -162,7 +162,7 @@ function DashboardContent() {
                     </span>
                   )}
                   <span 
-                    className="font-mono text-xs"
+                    className="font-mono text-xs break-all"
                     style={{
                       background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                       WebkitBackgroundClip: 'text',
@@ -171,7 +171,7 @@ function DashboardContent() {
                     }}
                   >
                     <span className="text-gray-400 dark:text-gray-500">UID: </span>
-                    <span className="font-medium">{user.uid.substring(0, 8)}...</span>
+                    <span className="font-medium">{user.uid}</span>
                   </span>
                 </div>
               </div>
