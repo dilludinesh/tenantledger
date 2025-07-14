@@ -1,92 +1,90 @@
-/* Modern Glassmorphism effect */
+
+/* --- GLASSMORPHISM REDESIGN --- */
+
 .glass {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 1.5px 6px 0 rgba(0,0,0,0.04);
-  border-radius: 18px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 6px 32px 0 rgba(31,38,135,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.03);
+  border-radius: 22px;
   border: none;
-  transition: box-shadow 0.2s, background 0.2s;
+  transition: box-shadow 0.18s, background 0.18s;
 }
 
 .dark .glass {
-  background: rgba(24, 28, 40, 0.65);
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.22), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+  background: rgba(24,28,40,0.72);
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.19), 0 1.5px 6px 0 rgba(0,0,0,0.07);
 }
 
-/* Card with glass effect */
 .glassCard {
-  background: linear-gradient(135deg, rgba(255,255,255,0.22) 60%, rgba(139,92,246,0.08) 100%);
-  box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.10);
-  border-radius: 20px;
-  padding: 2rem 2.5rem;
-  transition: box-shadow 0.2s, background 0.2s;
+  background: linear-gradient(120deg, rgba(255,255,255,0.22) 60%, rgba(139,92,246,0.10) 100%);
+  box-shadow: 0 2px 18px 0 rgba(31,38,135,0.09);
+  border-radius: 26px;
+  padding: 2.2rem 2.7rem;
+  transition: box-shadow 0.18s, background 0.18s;
+  border: none;
 }
 
 .dark .glassCard {
-  background: linear-gradient(135deg, rgba(24,28,40,0.85) 60%, rgba(139,92,246,0.13) 100%);
+  background: linear-gradient(120deg, rgba(24,28,40,0.92) 60%, rgba(139,92,246,0.15) 100%);
+  box-shadow: 0 2px 18px 0 rgba(0,0,0,0.18);
 }
 
-
-
-/* Glass button */
 .glassButton {
-  padding: 0.6rem 2rem;
-  font-weight: 600;
-  font-size: 1rem;
+  padding: 0.7rem 2.2rem;
+  font-weight: 700;
+  font-size: 1.05rem;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #6366f1 0%, #a21caf 100%);
+  background: linear-gradient(90deg, #7c3aed 0%, #f472b6 100%);
   color: #fff;
   border: none;
-  box-shadow: 0 2px 8px 0 rgba(99,102,241,0.08);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 10px 0 rgba(124,58,237,0.10);
+  transition: background 0.18s, box-shadow 0.18s;
   cursor: pointer;
   letter-spacing: 0.01em;
 }
 
 .glassButton:hover {
-  background: linear-gradient(90deg, #818cf8 0%, #c026d3 100%);
-  box-shadow: 0 4px 16px 0 rgba(99,102,241,0.13);
+  background: linear-gradient(90deg, #a78bfa 0%, #f9a8d4 100%);
+  box-shadow: 0 4px 16px 0 rgba(124,58,237,0.13);
 }
 
-/* Glass input */
 .glassInput {
-  background: rgba(255,255,255,0.35);
-  border-radius: 14px;
+  background: rgba(255,255,255,0.32);
+  border-radius: 16px;
   border: none;
-  padding: 0.85rem 1.2rem;
-  font-size: 1rem;
+  padding: 0.95rem 1.3rem;
+  font-size: 1.02rem;
   color: #1e293b;
-  box-shadow: 0 1px 4px 0 rgba(31,38,135,0.06);
-  transition: box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 1px 4px 0 rgba(31,38,135,0.05);
+  transition: box-shadow 0.18s, background 0.18s;
 }
 
 .glassInput:focus {
   outline: none;
   background: rgba(255,255,255,0.55);
-  box-shadow: 0 0 0 2px #818cf8;
+  box-shadow: 0 0 0 2px #a78bfa;
 }
 
 .dark .glassInput {
-  background: rgba(24,28,40,0.7);
+  background: rgba(24,28,40,0.82);
   color: #f3f4f6;
 }
 
 .dark .glassInput:focus {
-  background: rgba(24,28,40,0.9);
-  box-shadow: 0 0 0 2px #a78bfa;
+  background: rgba(24,28,40,0.97);
+  box-shadow: 0 0 0 2px #f472b6;
 }
 
-/* Glass select */
 .glassSelect {
-  background: rgba(255,255,255,0.35);
-  border-radius: 14px;
+  background: rgba(255,255,255,0.32);
+  border-radius: 16px;
   border: none;
-  padding: 0.85rem 1.2rem;
-  font-size: 1rem;
+  padding: 0.95rem 1.3rem;
+  font-size: 1.02rem;
   color: #1e293b;
-  box-shadow: 0 1px 4px 0 rgba(31,38,135,0.06);
-  transition: box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 1px 4px 0 rgba(31,38,135,0.05);
+  transition: box-shadow 0.18s, background 0.18s;
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 1rem center;
@@ -96,7 +94,7 @@
 }
 
 .dark .glassSelect {
-  background: rgba(24,28,40,0.7);
+  background: rgba(24,28,40,0.82);
   color: #f3f4f6;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
 }
