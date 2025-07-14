@@ -3,6 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
+// TODO: For security, move these credentials to environment variables and do not commit them to public repositories.
 const firebaseConfig = {
   apiKey: "AIzaSyAswyBBqVVdV9_ext83khlYHPdNgLaBaDY",
   authDomain: "tenantledgerio.firebaseapp.com",
