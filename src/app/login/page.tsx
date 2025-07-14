@@ -47,11 +47,16 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center">
             <GoogleButton 
               onClick={signInWithGoogle}
               disabled={loading}
             />
+            {authError === 'Sign in was cancelled' && (
+              <div className="mt-4 text-sm text-yellow-700 bg-yellow-100 border border-yellow-300 rounded px-3 py-2 w-full text-center">
+                Sign in was cancelled. Please try again and complete the sign-in process.
+              </div>
+            )}
           </div>
         </div>
       </div>
