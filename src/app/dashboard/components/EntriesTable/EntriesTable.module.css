@@ -9,10 +9,9 @@
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 }
 
-:global(.dark) .tableContainer {
-  background: rgba(17, 25, 40, 0.75);
+.dark .tableContainer {
+  background: rgba(17, 25, 40, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 .table {
@@ -23,18 +22,14 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
-:global(.dark) .table {
-  background: rgba(17, 25, 40, 0.75);
+.dark .table {
+  background: rgba(17, 25, 40, 0.5);
 }
 
 .tableHead {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.95), rgba(124, 58, 237, 0.95));
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(139, 92, 246, 0.8));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-:global(.dark) .tableHead {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.8), rgba(124, 58, 237, 0.8));
 }
 
 .tableHeader {
@@ -45,7 +40,6 @@
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .tableBody {
@@ -54,8 +48,8 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
-:global(.dark) .tableBody {
-  background: rgba(17, 25, 40, 0.5);
+.dark .tableBody {
+  background: rgba(17, 25, 40, 0.3);
 }
 
 .emptyState {
@@ -67,8 +61,8 @@
   border-radius: 12px;
 }
 
-:global(.dark) .emptyState {
-  background: rgba(17, 25, 40, 0.5);
+.dark .emptyState {
+  background: rgba(17, 25, 40, 0.3);
 }
 
 .emptyIcon {
@@ -78,10 +72,6 @@
   color: #9ca3af;
 }
 
-:global(.dark) .emptyIcon {
-  color: #6b7280;
-}
-
 .emptyTitle {
   margin-top: 1rem;
   font-size: 0.875rem;
@@ -89,7 +79,7 @@
   color: #374151;
 }
 
-:global(.dark) .emptyTitle {
+.dark .emptyTitle {
   color: #e5e7eb;
 }
 
@@ -99,7 +89,7 @@
   color: #6b7280;
 }
 
-:global(.dark) .emptyDescription {
+.dark .emptyDescription {
   color: #9ca3af;
 }
 
@@ -112,6 +102,6 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
-:global(.dark) .loadingRow {
-  background: rgba(17, 25, 40, 0.5);
+.dark .loadingRow {
+  background: rgba(17, 25, 40, 0.3);
 }

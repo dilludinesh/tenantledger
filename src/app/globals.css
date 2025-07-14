@@ -13,18 +13,6 @@
   --table-header-gradient: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    --muted: #1e293b;
-    --border: #334155;
-    --card: #1e293b;
-    --card-foreground: #f8fafc;
-    --table-header-gradient: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
-  }
-}
-
 /* Title gradient */
 .title-gradient {
   background: linear-gradient(90deg, #2563eb, #4f46e5, #7c3aed);
@@ -88,9 +76,9 @@ table {
 }
 
 .table-header-row th {
-  background: var(--table-header-gradient) !important;
+  background: transparent !important;
   color: white !important;
-  font-family: var(--font-sans) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: 0.03em !important;
   -webkit-font-smoothing: antialiased;
@@ -119,6 +107,17 @@ table td:last-child {
 /* Amount header alignment */
 .table-header-row th:last-child {
   text-align: right !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --muted: #1e293b;
+    --border: #334155;
+    --card: #1e293b;
+    --card-foreground: #f8fafc;
+  }
 }
 
 body {
