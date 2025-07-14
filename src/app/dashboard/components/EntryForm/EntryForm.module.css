@@ -1,38 +1,78 @@
 .formInput {
-  composes: glassInput from '@/app/dashboard/glass.module.css';
   width: 100%;
   padding: 0.75rem 1rem;
   margin-bottom: 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  color: #1f2937;
+}
+
+:global(.dark) .formInput {
+  background: rgba(17, 25, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
+}
+
+.formInput:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  outline: none;
+}
+
+:global(.dark) .formInput:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
 }
 
 .formSelect {
-  composes: glassInput from '@/app/dashboard/glass.module.css';
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  color: #1f2937;
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
+  background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-  width: 100%;
-  margin-bottom: 0.5rem;
-  border-radius: 0.5rem;
 }
 
-.dark .formSelect {
+:global(.dark) .formSelect {
+  background-color: rgba(17, 25, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
 }
 
 .formTextarea {
-  composes: glassInput from '@/app/dashboard/glass.module.css';
   width: 100%;
   min-height: 100px;
   resize: vertical;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  color: #1f2937;
+}
+
+:global(.dark) .formTextarea {
+  background: rgba(17, 25, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
 }
 
 .label {
@@ -44,8 +84,8 @@
   transition: color 0.2s ease;
 }
 
-.dark .label {
-  color: #d1d5db;
+:global(.dark) .label {
+  color: #e5e7eb;
 }
 
 .errorText {
@@ -54,37 +94,56 @@
   color: #ef4444;
 }
 
+:global(.dark) .errorText {
+  color: #f87171;
+}
+
 .buttonPrimary {
-  composes: glassButton from '@/app/dashboard/glass.module.css';
-  background: rgba(59, 130, 246, 0.7) !important;
+  background: rgba(59, 130, 246, 0.9) !important;
   color: white !important;
   padding: 0.5rem 1.5rem;
   font-weight: 500;
   transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
 }
 
 .buttonPrimary:hover {
-  background: rgba(37, 99, 235, 0.8) !important;
+  background: rgba(37, 99, 235, 0.95) !important;
   transform: translateY(-1px);
 }
 
+:global(.dark) .buttonPrimary {
+  background: rgba(59, 130, 246, 0.8) !important;
+}
+
+:global(.dark) .buttonPrimary:hover {
+  background: rgba(37, 99, 235, 0.9) !important;
+}
+
 .buttonSecondary {
-  composes: glassButton from '@/app/dashboard/glass.module.css';
+  background: rgba(255, 255, 255, 0.1);
   color: #4b5563;
   padding: 0.5rem 1.5rem;
   font-weight: 500;
   transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(209, 213, 219, 0.3);
+  cursor: pointer;
 }
 
 .buttonSecondary:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
 
-.dark .buttonSecondary {
+:global(.dark) .buttonSecondary {
+  background: rgba(255, 255, 255, 0.05);
   color: #d1d5db;
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-.dark .buttonSecondary:hover {
-  background: rgba(255, 255, 255, 0.15);
+:global(.dark) .buttonSecondary:hover {
+  background: rgba(255, 255, 255, 0.1);
 }

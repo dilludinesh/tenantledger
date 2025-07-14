@@ -12,7 +12,7 @@
   transform: translateX(2px);
 }
 
-.dark .row:hover {
+:global(.dark) .row:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -29,7 +29,7 @@
   color: #1f2937;
 }
 
-.dark .text {
+:global(.dark) .text {
   color: #f3f4f6;
 }
 
@@ -47,7 +47,7 @@
   color: #6b7280;
 }
 
-.dark .currencySymbol {
+:global(.dark) .currencySymbol {
   color: #9ca3af;
 }
 
@@ -62,52 +62,52 @@
 }
 
 .categoryRent {
-  background-color: rgba(168, 85, 247, 0.1);
+  background-color: rgba(168, 85, 247, 0.15);
   color: #8b5cf6;
 }
 
-.dark .categoryRent {
-  background-color: rgba(168, 85, 247, 0.2);
+:global(.dark) .categoryRent {
+  background-color: rgba(168, 85, 247, 0.25);
   color: #c4b5fd;
 }
 
 .categoryMaintenance {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: rgba(59, 130, 246, 0.15);
   color: #3b82f6;
 }
 
-.dark .categoryMaintenance {
-  background-color: rgba(59, 130, 246, 0.2);
+:global(.dark) .categoryMaintenance {
+  background-color: rgba(59, 130, 246, 0.25);
   color: #93c5fd;
 }
 
 .categorySecurity {
-  background-color: rgba(16, 185, 129, 0.1);
+  background-color: rgba(16, 185, 129, 0.15);
   color: #10b981;
 }
 
-.dark .categorySecurity {
-  background-color: rgba(16, 185, 129, 0.2);
+:global(.dark) .categorySecurity {
+  background-color: rgba(16, 185, 129, 0.25);
   color: #6ee7b7;
 }
 
 .categoryUtilities {
-  background-color: rgba(245, 158, 11, 0.1);
+  background-color: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
 }
 
-.dark .categoryUtilities {
-  background-color: rgba(245, 158, 11, 0.2);
+:global(.dark) .categoryUtilities {
+  background-color: rgba(245, 158, 11, 0.25);
   color: #fcd34d;
 }
 
 .categoryOther {
-  background-color: rgba(156, 163, 175, 0.1);
+  background-color: rgba(156, 163, 175, 0.15);
   color: #6b7280;
 }
 
-.dark .categoryOther {
-  background-color: rgba(156, 163, 175, 0.2);
+:global(.dark) .categoryOther {
+  background-color: rgba(156, 163, 175, 0.25);
   color: #9ca3af;
 }
 
@@ -119,7 +119,7 @@
   line-height: 1.375rem;
 }
 
-.dark .description {
+:global(.dark) .description {
   color: #d1d5db;
 }
 
@@ -128,6 +128,6 @@
   font-style: italic;
 }
 
-.dark .emptyDescription {
+:global(.dark) .emptyDescription {
   color: #6b7280;
 }
