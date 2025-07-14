@@ -120,7 +120,7 @@ function DashboardContent() {
   }
 
   return (
-    <div className={`min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800`}>
+    <div className={`min-h-screen p-4 md:p-8 bg-gradient-to-br from-blue-50 to-purple-50`}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="mb-8">
@@ -147,7 +147,7 @@ function DashboardContent() {
               {user && (
                 <div className={`${styles.glassCard} text-sm w-full sm:w-auto`}>
                   <div className="flex flex-col gap-2 p-3">
-                    <span className="text-xs text-gray-400 dark:text-gray-500">Welcome</span>
+                    <span className="text-xs text-gray-400">Welcome</span>
                     <span 
                       className="text-[15px] font-semibold"
                       style={{
@@ -160,7 +160,7 @@ function DashboardContent() {
                       {user.displayName || user.email?.split('@')[0] || 'User'}
                     </span>
                     {user.email && (
-                      <span className="text-gray-500 dark:text-gray-400 text-xs truncate max-w-[200px] sm:max-w-[180px]">
+                      <span className="text-gray-500 text-xs truncate max-w-[200px] sm:max-w-[180px]">
                         {user.email}
                       </span>
                     )}
@@ -173,7 +173,7 @@ function DashboardContent() {
                         textShadow: '0 1px 2px rgba(0,0,0,0.05)'
                       }}
                     >
-                      <span className="text-gray-400 dark:text-gray-500">UID: </span>
+                      <span className="text-gray-400">UID: </span>
                       <span className="font-medium">{user.uid}</span>
                     </span>
                   </div>
@@ -249,7 +249,7 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <QueryClientProvider client={queryClient}>
         <DashboardContent />
       </QueryClientProvider>
