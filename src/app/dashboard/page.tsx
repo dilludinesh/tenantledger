@@ -185,7 +185,7 @@ function DashboardContent() {
               <button
                 onClick={() => setShowSignOutConfirm(true)}
                 className="btn-signout flex items-center space-x-2"
-                style={{ minWidth: 120 }}
+                style={{ minWidth: 120, background: undefined }}
               >
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
@@ -203,6 +203,7 @@ function DashboardContent() {
                   <button
                     onClick={handleSignOut}
                     className="btn-signout"
+                    style={{ background: undefined }}
                   >
                     Confirm Sign Out
                   </button>
