@@ -1,100 +1,135 @@
 
-/* --- GLASSMORPHISM REDESIGN --- */
+
+/* --- PREMIUM GLASSMORPHISM 2025 --- */
 
 .glass {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: 0 6px 32px 0 rgba(31,38,135,0.10), 0 1.5px 6px 0 rgba(0,0,0,0.03);
-  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22) 60%, rgba(0,210,255,0.10) 100%),
+              linear-gradient(120deg, rgba(255,255,255,0.10) 0%, rgba(255,0,150,0.08) 100%);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow: 0 10px 40px 0 rgba(31,38,135,0.13), 0 2px 8px 0 rgba(0,0,0,0.04);
+  border-radius: 28px;
   border: none;
-  transition: box-shadow 0.18s, background 0.18s;
+  transition: box-shadow 0.22s, background 0.22s;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  pointer-events: none;
+  box-shadow: 0 0 0 1.5px rgba(255,255,255,0.13) inset, 0 1.5px 12px 0 rgba(0,0,0,0.04) inset;
 }
 
 .dark .glass {
-  background: rgba(24,28,40,0.72);
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.19), 0 1.5px 6px 0 rgba(0,0,0,0.07);
+  background: linear-gradient(135deg, rgba(24,28,40,0.92) 60%, rgba(0,210,255,0.13) 100%),
+              linear-gradient(120deg, rgba(24,28,40,0.85) 0%, rgba(255,0,150,0.10) 100%);
+  box-shadow: 0 10px 40px 0 rgba(0,0,0,0.22), 0 2px 8px 0 rgba(0,0,0,0.09);
 }
 
 .glassCard {
-  background: linear-gradient(120deg, rgba(255,255,255,0.22) 60%, rgba(139,92,246,0.10) 100%);
-  box-shadow: 0 2px 18px 0 rgba(31,38,135,0.09);
-  border-radius: 26px;
-  padding: 2.2rem 2.7rem;
-  transition: box-shadow 0.18s, background 0.18s;
+  background: linear-gradient(120deg, rgba(255,255,255,0.28) 60%, rgba(0,210,255,0.13) 100%),
+              linear-gradient(100deg, rgba(255,0,150,0.09) 0%, rgba(139,92,246,0.10) 100%);
+  box-shadow: 0 4px 32px 0 rgba(31,38,135,0.11);
+  border-radius: 32px;
+  padding: 2.5rem 3rem;
+  transition: box-shadow 0.22s, background 0.22s;
   border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.glassCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  pointer-events: none;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.10) inset, 0 2px 16px 0 rgba(0,0,0,0.05) inset;
 }
 
 .dark .glassCard {
-  background: linear-gradient(120deg, rgba(24,28,40,0.92) 60%, rgba(139,92,246,0.15) 100%);
-  box-shadow: 0 2px 18px 0 rgba(0,0,0,0.18);
+  background: linear-gradient(120deg, rgba(24,28,40,0.97) 60%, rgba(0,210,255,0.16) 100%),
+              linear-gradient(100deg, rgba(255,0,150,0.13) 0%, rgba(139,92,246,0.13) 100%);
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.22);
 }
 
 .glassButton {
-  padding: 0.7rem 2.2rem;
+  padding: 0.85rem 2.5rem;
   font-weight: 700;
-  font-size: 1.05rem;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, #7c3aed 0%, #f472b6 100%);
+  font-size: 1.08rem;
+  border-radius: 2rem;
+  background: linear-gradient(90deg, #00d2ff 0%, #ff0096 100%);
   color: #fff;
   border: none;
-  box-shadow: 0 2px 10px 0 rgba(124,58,237,0.10);
+  box-shadow: 0 2px 14px 0 rgba(0,210,255,0.13);
   transition: background 0.18s, box-shadow 0.18s;
   cursor: pointer;
   letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
 }
 
-.glassButton:hover {
-  background: linear-gradient(90deg, #a78bfa 0%, #f9a8d4 100%);
-  box-shadow: 0 4px 16px 0 rgba(124,58,237,0.13);
+.glassButton:active {
+  background: linear-gradient(90deg, #00b4d8 0%, #c026d3 100%);
+  box-shadow: 0 1px 6px 0 rgba(0,210,255,0.10);
+}
+
+.glassButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #00d2ff;
 }
 
 .glassInput {
-  background: rgba(255,255,255,0.32);
-  border-radius: 16px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.38) 60%, rgba(0,210,255,0.13) 100%);
+  border-radius: 1.2rem;
   border: none;
-  padding: 0.95rem 1.3rem;
-  font-size: 1.02rem;
+  padding: 1.1rem 1.5rem;
+  font-size: 1.06rem;
   color: #1e293b;
-  box-shadow: 0 1px 4px 0 rgba(31,38,135,0.05);
+  box-shadow: 0 1px 6px 0 rgba(31,38,135,0.07);
   transition: box-shadow 0.18s, background 0.18s;
+  position: relative;
 }
 
 .glassInput:focus {
   outline: none;
-  background: rgba(255,255,255,0.55);
-  box-shadow: 0 0 0 2px #a78bfa;
+  background: linear-gradient(90deg, rgba(255,255,255,0.55) 60%, rgba(0,210,255,0.18) 100%);
+  box-shadow: 0 0 0 2px #00d2ff;
 }
 
 .dark .glassInput {
-  background: rgba(24,28,40,0.82);
+  background: linear-gradient(90deg, rgba(24,28,40,0.92) 60%, rgba(0,210,255,0.18) 100%);
   color: #f3f4f6;
 }
 
 .dark .glassInput:focus {
-  background: rgba(24,28,40,0.97);
-  box-shadow: 0 0 0 2px #f472b6;
+  background: linear-gradient(90deg, rgba(24,28,40,1) 60%, rgba(0,210,255,0.22) 100%);
+  box-shadow: 0 0 0 2px #ff0096;
 }
 
 .glassSelect {
-  background: rgba(255,255,255,0.32);
-  border-radius: 16px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.38) 60%, rgba(0,210,255,0.13) 100%);
+  border-radius: 1.2rem;
   border: none;
-  padding: 0.95rem 1.3rem;
-  font-size: 1.02rem;
+  padding: 1.1rem 1.5rem;
+  font-size: 1.06rem;
   color: #1e293b;
-  box-shadow: 0 1px 4px 0 rgba(31,38,135,0.05);
+  box-shadow: 0 1px 6px 0 rgba(31,38,135,0.07);
   transition: box-shadow 0.18s, background 0.18s;
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 1rem center;
+  background-position: right 1.2rem center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
+  padding-right: 2.7rem;
 }
 
 .dark .glassSelect {
-  background: rgba(24,28,40,0.82);
+  background: linear-gradient(90deg, rgba(24,28,40,0.92) 60%, rgba(0,210,255,0.18) 100%);
   color: #f3f4f6;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
 }
