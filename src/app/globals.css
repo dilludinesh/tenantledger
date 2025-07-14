@@ -1,3 +1,22 @@
+/* Sign out button with smooth red/pink gradient */
+.btn-signout {
+  background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.7rem 2.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(255,65,108,0.10);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  letter-spacing: 0.01em;
+}
+.btn-signout:hover {
+  background: linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%);
+  box-shadow: 0 4px 16px 0 rgba(255,65,108,0.18);
+  transform: translateY(-2px) scale(1.03);
+}
 @import "tailwindcss";
 :root {
   --color-accent-dark: #c026d3;

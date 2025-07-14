@@ -184,7 +184,7 @@ function DashboardContent() {
             <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
               <button
                 onClick={() => setShowSignOutConfirm(true)}
-                className="flex items-center space-x-2 px-6 py-2 rounded-full bg-gradient-to-r from-rose-500 to-amber-400 text-white font-semibold shadow-md transition-all duration-200 hover:from-rose-600 hover:to-amber-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"
+                className="btn-signout flex items-center space-x-2"
                 style={{ minWidth: 120 }}
               >
                 <svg 
@@ -202,7 +202,7 @@ function DashboardContent() {
                 <div className="mt-3 flex flex-row gap-3">
                   <button
                     onClick={handleSignOut}
-                    className="px-6 py-2 rounded-full bg-gradient-to-r from-rose-500 to-amber-400 text-white font-semibold shadow-md transition-all duration-200 hover:from-rose-600 hover:to-amber-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"
+                    className="btn-signout"
                   >
                     Confirm Sign Out
                   </button>
