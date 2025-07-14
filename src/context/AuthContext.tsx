@@ -46,11 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthError(null);
       const provider = new GoogleAuthProvider();
 
-      // Check if popups might be blocked
-      const isPopupBlocked = window.open('', '_blank') === null;
-      if (isPopupBlocked) {
-        throw new Error('popup-blocked');
-      }
+      // Removed manual popup-blocked check to prevent extra blank tab. signInWithPopup will handle popup blocking natively.
 
       await signInWithPopup(auth, provider);
       toast.success('Successfully signed in!');
