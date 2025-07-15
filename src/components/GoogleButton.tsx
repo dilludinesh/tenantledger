@@ -13,7 +13,7 @@ export default function GoogleButton({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="google-signin-btn flex items-center whitespace-nowrap shadow-lg transition-all duration-200 hover:shadow-xl"
+      className="google-signin-btn flex items-center justify-center whitespace-nowrap shadow-lg transition-all duration-200 hover:shadow-xl"
       style={{
         borderRadius: '50px',
         background: '#1a73e8',
@@ -32,7 +32,27 @@ export default function GoogleButton({
         overflow: 'hidden',
       }}
     >
-      {loading ? 'Please wait...' : 'Sign in with Google'}
+      {/* Official Google G logo, flush left */}
+      <span style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#fff',
+        height: 44,
+        width: 44,
+        borderTopLeftRadius: 50,
+        borderBottomLeftRadius: 50,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+        marginRight: 8,
+        flexShrink: 0,
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/src/components/GoogleLogo.svg" alt="Google logo" width={18} height={18} style={{ display: 'block' }} />
+      </span>
+      <span style={{ flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 44 }}>
+        {loading ? 'Please wait...' : 'Sign in with Google'}
+      </span>
     </button>
   );
 }
