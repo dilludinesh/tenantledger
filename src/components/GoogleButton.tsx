@@ -46,9 +46,11 @@ export default function GoogleButton({
         borderBottomRightRadius: 0,
         marginRight: 8,
         flexShrink: 0,
+        border: 'none',
+        boxShadow: 'none',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/GoogleLogo.svg" alt="Google logo" width={18} height={18} style={{ display: 'block' }} />
+        <img src="/GoogleLogo.svg" alt="Google logo" width={18} height={18} style={{ display: 'block', border: 'none', boxShadow: 'none', margin: 0, padding: 0 }} />
       </span>
       <span style={{ flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 44 }}>
         {loading ? 'Please wait...' : 'Sign in with Google'}
