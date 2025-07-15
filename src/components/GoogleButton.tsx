@@ -18,74 +18,61 @@ export default function GoogleButton({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '280px',
-        height: '56px',
+        width: '220px', // Reduced width to be shorter than "Tenant Ledger" title
+        height: '48px',
         backgroundColor: '#fff',
-        border: '2px solid #dadce0',
-        borderRadius: '28px', // Perfect capsule shape (half of height)
+        border: '1px solid #dadce0',
+        borderRadius: '24px', // Perfect capsule shape (half of height)
         color: '#3c4043',
         cursor: disabled || loading ? 'not-allowed' : 'pointer',
         fontFamily: '"Google Sans", Roboto, arial, sans-serif',
-        fontSize: '16px',
-        fontWeight: 600,
-        letterSpacing: '0.5px',
+        fontSize: '15px',
+        fontWeight: 400, // Regular font weight (not bold)
+        letterSpacing: '0.25px',
         outline: 'none',
         position: 'relative',
         textAlign: 'center',
-        transition: 'all 0.218s cubic-bezier(0.4, 0.0, 0.2, 1)',
+        transition: 'background-color 0.218s ease',
         verticalAlign: 'middle',
         whiteSpace: 'nowrap',
         opacity: disabled || loading ? 0.6 : 1,
-        boxShadow: '0 2px 4px 0 rgba(60,64,67,0.30), 0 1px 6px 0 rgba(60,64,67,0.15)',
-        transform: 'translateY(0)',
+        boxShadow: 'none', // No shadow
       }}
       onMouseEnter={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.backgroundColor = '#f8f9fa';
-          e.currentTarget.style.borderColor = '#4285f4';
-          e.currentTarget.style.boxShadow = '0 4px 8px 0 rgba(60,64,67,0.30), 0 2px 12px 0 rgba(60,64,67,0.15)';
-          e.currentTarget.style.transform = 'translateY(-2px)';
         }
       }}
       onMouseLeave={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.backgroundColor = '#fff';
-          e.currentTarget.style.borderColor = '#dadce0';
-          e.currentTarget.style.boxShadow = '0 2px 4px 0 rgba(60,64,67,0.30), 0 1px 6px 0 rgba(60,64,67,0.15)';
-          e.currentTarget.style.transform = 'translateY(0)';
         }
       }}
       onMouseDown={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.backgroundColor = '#f1f3f4';
-          e.currentTarget.style.borderColor = '#1a73e8';
-          e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15)';
-          e.currentTarget.style.transform = 'translateY(0) scale(0.98)';
         }
       }}
       onMouseUp={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.backgroundColor = '#f8f9fa';
-          e.currentTarget.style.borderColor = '#4285f4';
-          e.currentTarget.style.boxShadow = '0 4px 8px 0 rgba(60,64,67,0.30), 0 2px 12px 0 rgba(60,64,67,0.15)';
-          e.currentTarget.style.transform = 'translateY(-2px)';
         }
       }}
     >
       {/* Google G Logo */}
       <div
         style={{
-          height: '24px',
-          marginRight: '16px',
-          minWidth: '24px',
-          width: '24px',
+          height: '20px',
+          marginRight: '12px',
+          minWidth: '20px',
+          width: '20px',
         }}
       >
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 48 48"
-          style={{ display: 'block', height: '24px', width: '24px' }}
+          style={{ display: 'block', height: '20px', width: '20px' }}
         >
           <path
             fill="#EA4335"
@@ -106,14 +93,14 @@ export default function GoogleButton({
           <path fill="none" d="M0 0h48v48H0z" />
         </svg>
       </div>
-      
+
       {/* Button Text */}
-      <span style={{ 
+      <span style={{
         flexGrow: 1,
         fontFamily: '"Google Sans", Roboto, arial, sans-serif',
-        fontSize: '16px',
-        fontWeight: 600,
-        letterSpacing: '0.5px',
+        fontSize: '15px',
+        fontWeight: 400, // Regular font weight
+        letterSpacing: '0.25px',
         color: '#3c4043',
         textAlign: 'center'
       }}>
