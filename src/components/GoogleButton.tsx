@@ -13,47 +13,105 @@ export default function GoogleButton({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="google-signin-btn flex items-center justify-center whitespace-nowrap shadow-lg transition-all duration-200 hover:shadow-xl"
+      className="google-signin-btn"
       style={{
-        borderRadius: '50px',
-        background: '#1a73e8',
-        color: '#fff',
-        fontWeight: 600,
-        fontSize: '1rem',
-        padding: 0,
-        minHeight: 44,
-        minWidth: 220,
-        boxShadow: '0 2px 8px 0 rgba(26,115,232,0.10)',
-        letterSpacing: '0.01em',
-        border: 'none',
-        outline: 'none',
-        cursor: disabled || loading ? 'not-allowed' : 'pointer',
-        opacity: disabled || loading ? 0.7 : 1,
-        overflow: 'hidden',
-      }}
-    >
-      {/* Official Google G logo, flush left */}
-      <span style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#fff',
-        height: 44,
-        width: 44,
-        borderTopLeftRadius: 50,
-        borderBottomLeftRadius: 50,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        marginRight: 8,
-        flexShrink: 0,
-        border: 'none',
-        boxShadow: 'none',
+        width: '240px',
+        height: '40px',
+        backgroundColor: '#fff',
+        border: '1px solid #dadce0',
+        borderRadius: '4px',
+        color: '#3c4043',
+        cursor: disabled || loading ? 'not-allowed' : 'pointer',
+        fontFamily: '"Google Sans", Roboto, arial, sans-serif',
+        fontSize: '14px',
+        fontWeight: 500,
+        letterSpacing: '0.25px',
+        outline: 'none',
+        position: 'relative',
+        textAlign: 'center',
+        transition: 'background-color 0.218s, border-color 0.218s, box-shadow 0.218s',
+        verticalAlign: 'middle',
+        whiteSpace: 'nowrap',
+        opacity: disabled || loading ? 0.6 : 1,
+        boxShadow: '0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15)',
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.backgroundColor = '#f8f9fa';
+          e.currentTarget.style.borderColor = '#dadce0';
+          e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(60,64,67,0.30), 0 4px 8px 3px rgba(60,64,67,0.15)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.backgroundColor = '#fff';
+          e.currentTarget.style.borderColor = '#dadce0';
+          e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15)';
+        }
+      }}
+      onMouseDown={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.backgroundColor = '#f1f3f4';
+          e.currentTarget.style.borderColor = '#5f6368';
+          e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(60,64,67,0.30), 0 2px 6px 2px rgba(60,64,67,0.15)';
+        }
+      }}
+      onMouseUp={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.backgroundColor = '#f8f9fa';
+          e.currentTarget.style.borderColor = '#dadce0';
+          e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(60,64,67,0.30), 0 4px 8px 3px rgba(60,64,67,0.15)';
+        }
+      }}
+    >
+      {/* Google G Logo */}
+      <div
+        style={{
+          height: '20px',
+          marginRight: '12px',
+          minWidth: '20px',
+          width: '20px',
+        }}
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 48 48"
+          style={{ display: 'block', height: '20px', width: '20px' }}
+        >
+          <path
+            fill="#EA4335"
+            d="m24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+          />
+          <path
+            fill="#4285F4"
+            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+          />
+          <path
+            fill="#34A853"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+          />
+          <path fill="none" d="M0 0h48v48H0z" />
+        </svg>
+      </div>
+      
+      {/* Button Text */}
+      <span style={{ 
+        flexGrow: 1,
+        fontFamily: '"Google Sans", Roboto, arial, sans-serif',
+        fontSize: '14px',
+        fontWeight: 500,
+        letterSpacing: '0.25px',
+        color: '#3c4043'
       }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/GoogleLogo.svg" alt="Google logo" width={18} height={18} style={{ display: 'block', border: 'none', boxShadow: 'none', margin: 0, padding: 0 }} />
-      </span>
-      <span style={{ flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 44 }}>
-        {loading ? 'Please wait...' : 'Sign in with Google'}
+        {loading ? 'Signing in...' : 'Sign in with Google'}
       </span>
     </button>
   );
