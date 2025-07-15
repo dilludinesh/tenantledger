@@ -33,7 +33,6 @@ export default function GoogleButton({
       }}
     >
       {loading ? 'Please wait...' : 'Sign in with Google'}
-      {loading ? 'Please wait...' : 'Sign in with Google'}
     </button>
   );
 }
