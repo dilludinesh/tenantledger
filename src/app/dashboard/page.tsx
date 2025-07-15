@@ -2,39 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-// Firebase auth is now handled by AuthContext
-import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getEntries, addEntry } from '@/services/ledgerService';
-// LedgerEntry type is defined locally
+import { LedgerEntry } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { useAuth } from '@/context/AuthContext';
 import styles from './glass.module.css';
 
-// User type is available from AuthContext
-
-// Create a client
-const queryClient = new QueryClient();
-
 function DashboardContent() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
-
-  // Update the LedgerEntry type to make the id field required
-  type LedgerEntry = {
-    id: string;
-    tenant: string;
-    amount: number;
-    category: string;
-    description: string;
-    date: Date;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: string;
-  };
 
   // State managed by React Query
 
@@ -245,9 +226,7 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <QueryClientProvider client={queryClient}>
-        <DashboardContent />
-      </QueryClientProvider>
+      <DashboardContent />
     </div>
   );
 }

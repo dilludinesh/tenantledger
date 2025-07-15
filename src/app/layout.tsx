@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Providers from './Providers';
 import ClientBody from './ClientBody';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: 'Tenant Ledger',
@@ -16,11 +17,13 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
         <meta name="description" content="Manage tenant finances" />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Providers>
-          <ClientBody>
-            {children}
-          </ClientBody>
-        </Providers>
+        <ErrorBoundary>
+          <Providers>
+            <ClientBody>
+              {children}
+            </ClientBody>
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   );

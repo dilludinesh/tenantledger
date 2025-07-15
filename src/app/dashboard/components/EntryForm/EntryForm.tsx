@@ -141,7 +141,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500 dark:text-gray-400">$</span>
+              <span className="text-gray-500 dark:text-gray-400">₹</span>
             </div>
             <input
               type="number"

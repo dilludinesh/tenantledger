@@ -1,11 +1,4 @@
-# Stage all changes
-git add .
-
-# Commit the changes with a message
-git commit -m "Add Google sign-in button, improve alignment, and increase font size"
-
-# Push to the main branch on GitHub
-git push origin main# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
