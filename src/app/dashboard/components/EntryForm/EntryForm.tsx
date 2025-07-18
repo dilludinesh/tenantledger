@@ -1,14 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { format } from 'date-fns';
+import { CATEGORIES } from '@/types/ledger';
 import styles from './EntryForm.module.css';
-
-const CATEGORIES = [
-  'Rent',
-  'Maintenance',
-  'Security Deposit',
-  'Utilities',
-  'Other'
-] as const;
 
 interface EntryFormProps {
   onSubmit: (data: {
