@@ -27,7 +27,7 @@ export default function GoogleButton({
         cursor: disabled || loading ? 'not-allowed' : 'pointer',
         fontFamily: '"Google Sans", Roboto, arial, sans-serif',
         fontSize: '15px',
-        fontWeight: 400, // Regular font weight (not bold)
+        fontWeight: 500, // Medium font weight
         letterSpacing: '0.25px',
         outline: 'none',
         position: 'relative',
@@ -99,7 +99,7 @@ export default function GoogleButton({
         flexGrow: 1,
         fontFamily: '"Google Sans", Roboto, arial, sans-serif',
         fontSize: '15px',
-        fontWeight: 400, // Regular font weight
+        fontWeight: 500, // Medium font weight
         letterSpacing: '0.25px',
         color: '#3c4043',
         textAlign: 'center'
