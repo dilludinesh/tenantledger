@@ -18,13 +18,22 @@ export default function GoogleButton({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '220px', // Reduced width to be shorter than "Tenant Ledger" title
+        width: '100%',
+        maxWidth: '280px', // Responsive width with max limit
         height: '48px',
         backgroundColor: '#fff',
         border: '1px solid #dadce0',
         borderRadius: '24px', // Perfect capsule shape (half of height)
         color: '#3c4043',
         cursor: disabled || loading ? 'not-allowed' : 'pointer',
+        // Better mobile touch target
+        minHeight: '48px',
+        touchAction: 'manipulation',
+        // Prevent text selection on mobile
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        // Better mobile tap highlighting
+        WebkitTapHighlightColor: 'rgba(0,0,0,0.1)',
         fontFamily: '"Google Sans", Roboto, arial, sans-serif',
         fontSize: '15px',
         fontWeight: 500, // Medium font weight
@@ -38,12 +47,24 @@ export default function GoogleButton({
         opacity: disabled || loading ? 0.6 : 1,
         boxShadow: 'none', // No shadow
       }}
+      // Desktop hover effects
       onMouseEnter={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.backgroundColor = '#f8f9fa';
         }
       }}
       onMouseLeave={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.backgroundColor = '#fff';
+        }
+      }}
+      // Touch and click effects for mobile
+      onTouchStart={(e) => {
+        if (!disabled && !loading) {
+          e.currentTarget.style.backgroundColor = '#f1f3f4';
+        }
+      }}
+      onTouchEnd={(e) => {
         if (!disabled && !loading) {
           e.currentTarget.style.backgroundColor = '#fff';
         }

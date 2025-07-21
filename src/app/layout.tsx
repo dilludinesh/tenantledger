@@ -16,7 +16,7 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
         <title>Tenant Ledger</title>
         <meta name="description" content="Manage tenant finances" />
       </head>
-      <body className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <body className="min-h-screen bg-gray-50 dark:bg-gray-900" suppressHydrationWarning={true}>
         <ErrorBoundary>
           <Providers>
             <ClientBody>
