@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 // Validate required environment variables
 const missingVars = Object.entries(firebaseConfig)
-  .filter(([_, value]) => !value)
+  .filter(([, value]) => !value)
   .map(([key]) => `NEXT_PUBLIC_FIREBASE_${key.toUpperCase()}`);
 
 if (missingVars.length > 0) {

@@ -42,7 +42,7 @@ export function validateEntryForm(data: EntryFormData): ValidationError[] {
   // Category validation
   if (!data.category) {
     errors.push({ field: 'category', message: 'Category is required' });
-  } else if (!CATEGORIES.includes(data.category as any)) {
+  } else if (!CATEGORIES.includes(data.category as typeof CATEGORIES[number])) {
     errors.push({ field: 'category', message: 'Invalid category selected' });
   }
 

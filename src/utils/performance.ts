@@ -42,7 +42,7 @@ export class PerformanceMonitor {
 }
 
 // Web Vitals monitoring
-export const reportWebVitals = (metric: any) => {
+export const reportWebVitals = (metric: { name: string; value: number; id: string }) => {
   if (process.env.NODE_ENV === 'development') {
     console.log('📊 Web Vital:', metric);
   }
@@ -61,7 +61,7 @@ export const reportWebVitals = (metric: any) => {
 // Memory usage monitoring
 export const logMemoryUsage = () => {
   if (typeof window !== 'undefined' && 'memory' in performance) {
-    const memory = (performance as any).memory;
+    const memory = (performance as { memory: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
     console.log('🧠 Memory Usage:', {
       used: `${Math.round(memory.usedJSHeapSize / 1024 / 1024)} MB`,
       total: `${Math.round(memory.totalJSHeapSize / 1024 / 1024)} MB`,
@@ -103,7 +103,7 @@ export const analyzeBundleSize = () => {
         const size = parseInt(response.headers.get('content-length') || '0');
         totalSize += size;
         console.log(`📦 Script: ${(script as HTMLScriptElement).src.split('/').pop()} - ${(size / 1024).toFixed(2)} KB`);
-      } catch (error) {
+      } catch {
         // Ignore CORS errors for external scripts
       }
     });
