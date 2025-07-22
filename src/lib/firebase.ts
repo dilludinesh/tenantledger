@@ -20,7 +20,7 @@ const firebaseConfig = {
 };
 
 // Log a warning if we're using fallback values
-if (process.env.NODE_ENV === 'production') {
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
   const missingVars = [];
   if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY && !process.env.NEXT_PUBLIC_FIREBASE_APIKEY) missingVars.push('API_KEY');
   if (!process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN && !process.env.NEXT_PUBLIC_FIREBASE_AUTHDOMAIN) missingVars.push('AUTH_DOMAIN');
@@ -35,7 +35,6 @@ if (process.env.NODE_ENV === 'production') {
       'For production deployment, add these variables in your deployment platform under Environment Variables.'
     );
   }
-}
 }
 
 // Initialize Firebase
