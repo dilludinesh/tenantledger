@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { isProduction } from '@/utils/environment';
 
 import GoogleButton from '@/components/GoogleButton';
 import styles from '../dashboard/glass.module.css';
@@ -30,10 +31,16 @@ export default function LoginPage() {
     setSigningIn(true);
     try {
       await signInWithGoogle();
+      // For redirect method, the user will stay on this page until redirect completes
+      // For popup method, success is handled by the signInWithGoogle function
     } catch {
       // Error is handled by AuthContext and toast
     } finally {
-      setSigningIn(false);
+      // Only set signing in to false for popup method
+      // For redirect method, the page will reload anyway
+      if (!isProduction()) {
+        setSigningIn(false);
+      }
     }
   };
 

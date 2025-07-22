@@ -1,9 +1,18 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
-import { User, onAuthStateChanged, signOut as firebaseSignOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { 
+  User, 
+  onAuthStateChanged, 
+  signOut as firebaseSignOut, 
+  signInWithPopup, 
+  signInWithRedirect, 
+  getRedirectResult,
+  GoogleAuthProvider 
+} from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
+import { isProduction, isLocalhost } from '@/utils/environment';
 
 type AuthContextType = {
   user: User | null;
@@ -19,6 +28,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+
+  // Handle redirect result when the app loads
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        setLoading(true);
+        const result = await getRedirectResult(auth);
+        if (result) {
+          // User successfully authenticated via redirect
+          toast.success('Successfully signed in!');
+        }
+      } catch (error) {
+        console.error('Redirect sign-in error:', error);
+        handleAuthError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleRedirectResult();
+  }, []);
 
   useEffect(() => {
     console.log('Auth state changed listener registered');
@@ -41,51 +71,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Helper function to handle authentication errors consistently
+  const handleAuthError = (error: unknown) => {
+    console.error('Auth error:', error);
+    let errorMessage = 'An error occurred during sign in';
+
+    // Handle Firebase auth errors
+    if (error && typeof error === 'object' && 'code' in error) {
+      const err = error as { code: string; message?: string };
+      switch (err.code) {
+        case 'auth/popup-closed-by-user':
+          errorMessage = 'Sign in was cancelled';
+          break;
+        case 'auth/popup-blocked':
+          errorMessage = 'Sign in popup was blocked. Please allow popups for this site.';
+          break;
+        case 'auth/auth-domain-config-required':
+          errorMessage = 'Authentication domain configuration is required';
+          break;
+        case 'auth/operation-not-allowed':
+          errorMessage = 'Google sign-in is not enabled for this project';
+          break;
+        case 'auth/unauthorized-domain':
+          errorMessage = 'This domain is not authorized for authentication';
+          break;
+        default:
+          errorMessage = err.message || errorMessage;
+      }
+    } else if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = (error as { message: string }).message;
+    }
+
+    setAuthError(errorMessage);
+    toast.error(errorMessage, { 
+      duration: 6000,
+      position: 'top-center'
+    });
+
+    return errorMessage;
+  };
+
+  // Try sign-in with redirect first, fallback to popup if needed
   const signInWithGoogle = useCallback(async () => {
     try {
       setAuthError(null);
       const provider = new GoogleAuthProvider();
-
-      // Removed manual popup-blocked check to prevent extra blank tab. signInWithPopup will handle popup blocking natively.
-
-      await signInWithPopup(auth, provider);
-      toast.success('Successfully signed in!');
-    } catch (error) {
-      console.error('Sign in error:', error);
-      let errorMessage = 'An error occurred during sign in';
-
-      // Handle Firebase auth errors
-      if (error && typeof error === 'object' && 'code' in error) {
-        const err = error as { code: string; message?: string };
-        switch (err.code) {
-          case 'auth/popup-closed-by-user':
-            errorMessage = 'Sign in was cancelled';
-            break;
-          case 'auth/popup-blocked':
-            errorMessage = 'Sign in popup was blocked. Please allow popups for this site.';
-            break;
-          case 'auth/auth-domain-config-required':
-            errorMessage = 'Authentication domain configuration is required';
-            break;
-          case 'auth/operation-not-allowed':
-            errorMessage = 'Google sign-in is not enabled for this project';
-            break;
-          case 'auth/unauthorized-domain':
-            errorMessage = 'This domain is not authorized for authentication';
-            break;
-          default:
-            errorMessage = err.message || errorMessage;
-        }
-      } else if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = (error as { message: string }).message;
+      
+      // Use redirect for production or non-localhost environments
+      if (isProduction() || !isLocalhost()) {
+        // Use redirect method for production (more reliable for deployed sites)
+        await signInWithRedirect(auth, provider);
+        // Note: Result will be handled by the useEffect that calls getRedirectResult
+      } else {
+        // Use popup for development (faster feedback loop)
+        await signInWithPopup(auth, provider);
+        toast.success('Successfully signed in!');
       }
-
-      setAuthError(errorMessage);
-      toast.error(errorMessage, { 
-        duration: 6000,
-        position: 'top-center'
-      });
-
+    } catch (error) {
+      handleAuthError(error);
       // Re-throw the error so it can be caught by the login page if needed
       throw error;
     }
