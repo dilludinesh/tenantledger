@@ -6,13 +6,10 @@ import {
   onAuthStateChanged, 
   signOut as firebaseSignOut, 
   signInWithPopup, 
-  signInWithRedirect, 
-  getRedirectResult,
   GoogleAuthProvider 
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
-import { isProduction, isLocalhost } from '@/utils/environment';
 
 type AuthContextType = {
   user: User | null;
@@ -28,27 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
-
-  // Handle redirect result when the app loads
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        setLoading(true);
-        const result = await getRedirectResult(auth);
-        if (result) {
-          // User successfully authenticated via redirect
-          toast.success('Successfully signed in!');
-        }
-      } catch (error) {
-        console.error('Redirect sign-in error:', error);
-        handleAuthError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    handleRedirectResult();
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -108,22 +84,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return errorMessage;
   };
 
-  // Try sign-in with redirect first, fallback to popup if needed
+  // Use popup authentication for both development and production
   const signInWithGoogle = useCallback(async () => {
     try {
       setAuthError(null);
       const provider = new GoogleAuthProvider();
       
-      // Use redirect for production or non-localhost environments
-      if (isProduction() || !isLocalhost()) {
-        // Use redirect method for production (more reliable for deployed sites)
-        await signInWithRedirect(auth, provider);
-        // Note: Result will be handled by the useEffect that calls getRedirectResult
-      } else {
-        // Use popup for development (faster feedback loop)
-        await signInWithPopup(auth, provider);
-        toast.success('Successfully signed in!');
-      }
+      // Use popup method for both development and production
+      // This is more reliable and provides immediate feedback
+      await signInWithPopup(auth, provider);
+      toast.success('Successfully signed in!');
     } catch (error) {
       handleAuthError(error);
       // Re-throw the error so it can be caught by the login page if needed
