@@ -51,9 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    console.log('Auth state changed listener registered');
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log('Auth state changed:', currentUser);
       setUser(currentUser);
       setLoading(false);
     });
@@ -63,7 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      console.log('Logging out');
       await firebaseSignOut(auth);
       window.location.assign('/');
     } catch (error) {

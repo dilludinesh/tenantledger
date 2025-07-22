@@ -33,7 +33,7 @@ A modern web application for managing tenant payments and financial records. Bui
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/dilludinesh/tenantledger.git
 cd tenant-ledger-next
 ```
 
@@ -43,16 +43,11 @@ npm install
 ```
 
 3. Set up environment variables:
-Create a `.env.local` file in the root directory and add your Firebase configuration:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-```
+   - Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+   - Edit `.env.local` with your Firebase configuration
 
 4. Run the development server:
 ```bash
@@ -60,6 +55,16 @@ npm run dev
 ```
 
 5. Open [http://localhost:3012](http://localhost:3012) in your browser.
+
+### Automated Setup
+
+You can also use the provided setup script to configure Firebase:
+
+```bash
+node setup-firebase.js
+```
+
+This script will prompt you for your Firebase configuration values and create the `.env.local` file automatically.
 
 ### Firebase Setup
 
@@ -81,7 +86,12 @@ src/
 ├── context/             # React context providers
 ├── lib/                # Utility libraries (Firebase config)
 ├── services/           # API services (Firestore operations)
-└── types/             # TypeScript type definitions
+├── types/             # TypeScript type definitions
+└── utils/            # Utility functions
+
+docs/                  # Documentation files
+├── FIREBASE_AUTH_GUIDE.md  # Guide for Firebase authentication
+└── SETUP.md               # Detailed setup instructions
 ```
 
 ## Usage
@@ -126,3 +136,20 @@ src/
 ## License
 
 This project is private and proprietary.
+## Deployment
+
+### Vercel Deployment
+
+This project is configured for easy deployment on Vercel:
+
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Add your Firebase environment variables in the Vercel dashboard
+4. Deploy
+
+For detailed instructions on fixing authentication in production, see [Firebase Authentication Guide](docs/FIREBASE_AUTH_GUIDE.md).
+
+## Documentation
+
+- [Setup Guide](docs/SETUP.md) - Detailed setup instructions
+- [Firebase Authentication Guide](docs/FIREBASE_AUTH_GUIDE.md) - Fixing authentication issues in production
