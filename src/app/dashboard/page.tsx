@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getEntries, addEntry } from '@/services/ledgerService';
-import { LedgerEntry } from '@/types/ledger';
+import { LedgerEntry, CATEGORIES } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'react-hot-toast';
 import styles from './glass.module.css';
 
 function DashboardContent() {

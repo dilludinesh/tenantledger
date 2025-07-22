@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { format } from 'date-fns';
 import { CATEGORIES } from '@/types/ledger';
+import { validateLedgerEntry, sanitizeInput } from '@/utils/validation';
 import styles from './EntryForm.module.css';
 
 interface EntryFormProps {
@@ -26,10 +27,15 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // Sanitize input for security
+    const sanitizedValue = name === 'amount' ? value : sanitizeInput(value);
+    
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: sanitizedValue
     }));
+    
     // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({
@@ -40,22 +46,9 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
   };
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.tenant.trim()) {
-      newErrors.tenant = 'Tenant name is required';
-    }
-    
-    if (!formData.amount || isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
-      newErrors.amount = 'Please enter a valid amount';
-    }
-    
-    if (!formData.date) {
-      newErrors.date = 'Date is required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const validation = validateLedgerEntry(formData);
+    setErrors(validation.errors);
+    return validation.isValid;
   };
 
   const handleSubmit = async (e: FormEvent) => {
