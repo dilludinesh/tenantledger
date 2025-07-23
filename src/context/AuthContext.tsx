@@ -81,93 +81,81 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
-    const initAuth = async () => {
-      console.log('Initializing authentication...');
-      console.log('Current URL:', window.location.href);
-      
-      // Check if we just returned from a redirect
-      const redirectInitiated = sessionStorage.getItem('authRedirectInitiated');
-      if (redirectInitiated) {
-        console.log('Detected return from auth redirect');
-        sessionStorage.removeItem('authRedirectInitiated');
-      }
-      
-      // Set up auth state listener first
-      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        console.log('Auth state changed - User:', currentUser ? `Authenticated: ${currentUser.email}` : 'Not authenticated');
-        console.log('Full user object:', currentUser);
-        if (isMounted) {
-          setUser(currentUser);
-          setLoading(false);
-        }
-      });
+    // Skip Firebase initialization during build time
+    if (typeof window === 'undefined') {
+      setLoading(false);
+      return;
+    }
 
-      // Check for redirect result with extended timeout
-      const checkRedirectResult = async () => {
-        console.log('Checking for redirect result...');
+    // Check if Firebase config is valid (not dummy values)
+    const isValidConfig = !(
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.includes('dummy') ||
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'your_api_key_here' ||
+      !process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+    );
+
+    if (!isValidConfig) {
+      console.warn('Invalid Firebase configuration detected');
+      setLoading(false);
+      return;
+    }
+
+    const initAuth = async () => {
+      try {
+        console.log('Initializing authentication...');
+        console.log('Current URL:', window.location.href);
         
-        try {
-          // Wait longer for Firebase to process the redirect
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          const result = await getRedirectResult(auth);
-          
-          if (result && result.user && isMounted) {
-            console.log('Redirect authentication successful:', result.user.email);
-            toast.success('Successfully signed in!');
-            return true;
-          } else if (result === null) {
-            console.log('No redirect result found - checking current auth state...');
+        // Check if we just returned from a redirect
+        const redirectInitiated = sessionStorage.getItem('authRedirectInitiated');
+        if (redirectInitiated) {
+          console.log('Detected return from auth redirect');
+          sessionStorage.removeItem('authRedirectInitiated');
+        }
+        
+        // Set up auth state listener first
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          console.log('Auth state changed - User:', currentUser ? `Authenticated: ${currentUser.email}` : 'Not authenticated');
+          if (isMounted) {
+            setUser(currentUser);
+            setLoading(false);
+          }
+        });
+
+        // Check for redirect result with extended timeout
+        const checkRedirectResult = async () => {
+          try {
+            const result = await getRedirectResult(auth);
             
-            // If no redirect result but we returned from redirect, check current user
-            if (redirectInitiated) {
-              console.log('Checking if user is already authenticated...');
-              const currentUser = auth.currentUser;
-              console.log('Current user from auth.currentUser:', currentUser);
-              
-              if (currentUser) {
-                console.log('User is already authenticated:', currentUser.email);
-                toast.success('Successfully signed in!');
-                return true;
-              } else {
-                console.log('No current user found, authentication may have failed');
-                console.log('Auth state:', auth);
-                console.log('Trying to wait for auth state to settle...');
-                
-                // Wait a bit more and check again
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                const currentUserAfterWait = auth.currentUser;
-                console.log('Current user after waiting:', currentUserAfterWait);
-                
-                if (currentUserAfterWait) {
-                  console.log('User found after waiting:', currentUserAfterWait.email);
-                  toast.success('Successfully signed in!');
-                  return true;
-                }
-              }
+            if (result && result.user && isMounted) {
+              console.log('Redirect authentication successful:', result.user.email);
+              toast.success('Successfully signed in!');
+              return true;
             }
             return false;
-          } else {
-            console.log('Redirect result exists but no user:', result);
+          } catch (error) {
+            console.error('Error checking redirect result:', error);
+            if (isMounted) {
+              handleAuthError(error);
+            }
             return false;
           }
-        } catch (error) {
-          console.error('Error checking redirect result:', error);
-          if (isMounted) {
-            handleAuthError(error);
-          }
-          return false;
-        }
-      };
+        };
 
-      // Only check for redirect result if we detected a return from redirect
-      if (redirectInitiated) {
-        await checkRedirectResult();
-      } else {
-        console.log('No redirect detected, normal page load');
+        // Only check for redirect result if we detected a return from redirect
+        if (redirectInitiated) {
+          await checkRedirectResult();
+        } else {
+          console.log('No redirect detected, normal page load');
+        }
+        
+        return unsubscribe;
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (isMounted) {
+          setLoading(false);
+        }
+        return () => {};
       }
-      
-      return unsubscribe;
     };
 
     const unsubscribePromise = initAuth();

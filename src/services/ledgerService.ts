@@ -36,6 +36,13 @@ export const deleteEntry = async (userId: string, id: string) => {
 
 export const getEntries = async (userId: string) => {
   try {
+    // Skip during build time or if Firebase is not properly configured
+    if (typeof window === 'undefined' || 
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.includes('dummy') ||
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'your_api_key_here') {
+      return [];
+    }
+
     const userLedgerPath = getUserLedgerPath(userId);
     const q = query(
       collection(db, userLedgerPath),
@@ -77,6 +84,10 @@ export const getEntries = async (userId: string) => {
     return entries;
   } catch (error) {
     console.error('Error fetching entries:', error);
+    // Return empty array during build time or if Firebase is not configured
+    if (typeof window === 'undefined') {
+      return [];
+    }
     throw new Error('Failed to fetch entries');
   }
 };
