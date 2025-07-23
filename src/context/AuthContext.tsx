@@ -10,7 +10,7 @@ import {
   getRedirectResult,
   GoogleAuthProvider 
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getFirebaseAuth } from '@/lib/firebase';
 import { toast } from 'react-hot-toast';
 
 type AuthContextType = {
@@ -71,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      const auth = getFirebaseAuth();
       await firebaseSignOut(auth);
       window.location.assign('/');
     } catch (error) {
@@ -111,6 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.log('Detected return from auth redirect');
           sessionStorage.removeItem('authRedirectInitiated');
         }
+        
+        const auth = getFirebaseAuth();
         
         // Set up auth state listener first
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -180,10 +183,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       provider.addScope('email');
       provider.addScope('profile');
       
+      const auth = getFirebaseAuth();
+      
       console.log('Starting redirect authentication...');
       console.log('Current URL before redirect:', window.location.href);
       console.log('Auth instance:', auth);
-      console.log('Auth app name:', auth.app.name);
+      console.log('Auth app name:', auth.name);
       console.log('Auth config:', auth.config);
       console.log('Provider:', provider);
       

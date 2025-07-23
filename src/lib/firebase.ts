@@ -29,29 +29,38 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only in browser environment
-let app: any = null;
-let auth: any = null;
-let db: any = null;
+import type { FirebaseApp } from 'firebase/app';
+import type { Auth } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
 
-// Only initialize Firebase in browser environment
-if (typeof window !== 'undefined') {
-  try {
-    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    auth = getAuth(app);
-    db = getFirestore(app);
-  } catch (error) {
-    console.warn('Firebase initialization failed:', error);
-    // Return mock objects for build time
-    app = { name: 'dummy-app' };
-    auth = { currentUser: null };
-    db = { collection: () => ({}) };
+const isBrowser = typeof window !== 'undefined';
+
+// Export functions that safely handle Firebase initialization
+export const getFirebaseApp = (): FirebaseApp => {
+  if (!isBrowser) {
+    throw new Error('Firebase not available during SSR');
   }
-} else {
-  // Mock objects for SSR/build time
-  app = { name: 'ssr-app' };
-  auth = { currentUser: null };
-  db = { collection: () => ({}) };
-}
+  return !getApps().length ? initializeApp(firebaseConfig) : getApp();
+};
 
-export { app, auth, db };
-export const appId = typeof window !== 'undefined' ? firebaseConfig.projectId : 'ssr-project';
+export const getFirebaseAuth = (): Auth => {
+  if (!isBrowser) {
+    throw new Error('Firebase Auth not available during SSR');
+  }
+  const app = getFirebaseApp();
+  return getAuth(app);
+};
+
+export const getFirebaseFirestore = (): Firestore => {
+  if (!isBrowser) {
+    throw new Error('Firebase Firestore not available during SSR');
+  }
+  const app = getFirebaseApp();
+  return getFirestore(app);
+};
+
+// Backward compatibility exports - these will throw in SSR but that's expected
+export const app = isBrowser ? (!getApps().length ? initializeApp(firebaseConfig) : getApp()) : null as any;
+export const auth = isBrowser ? getAuth(app as FirebaseApp) : null as any;
+export const db = isBrowser ? getFirestore(app as FirebaseApp) : null as any;
+export const appId = isBrowser ? firebaseConfig.projectId : 'ssr-project';

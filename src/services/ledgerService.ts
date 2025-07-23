@@ -1,12 +1,18 @@
 
 import { collection, addDoc, getDocs, query, doc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseFirestore } from '@/lib/firebase';
 import { LedgerEntry } from '@/types/ledger';
 
 // Centralized function for user ledger path
 const getUserLedgerPath = (userId: string) => `artifacts/tenantledgerio/users/${userId}/ledgerEntries`;
 
 export const addEntry = async (entry: Omit<LedgerEntry, 'id'>, userId: string) => {
+  // Skip during build time
+  if (typeof window === 'undefined') {
+    throw new Error('Cannot add entry during SSR');
+  }
+  
+  const db = getFirebaseFirestore();
   const entryWithTimestamp = {
     ...entry,
     userId,
@@ -22,6 +28,11 @@ export const addEntry = async (entry: Omit<LedgerEntry, 'id'>, userId: string) =
 
 // Now requires userId to update correct path
 export const updateEntry = async (userId: string, id: string, updates: Partial<LedgerEntry>) => {
+  if (typeof window === 'undefined') {
+    throw new Error('Cannot update entry during SSR');
+  }
+  
+  const db = getFirebaseFirestore();
   const entryRef = doc(db, getUserLedgerPath(userId), id);
   await updateDoc(entryRef, {
     ...updates,
@@ -31,6 +42,11 @@ export const updateEntry = async (userId: string, id: string, updates: Partial<L
 
 // Now requires userId to delete correct path
 export const deleteEntry = async (userId: string, id: string) => {
+  if (typeof window === 'undefined') {
+    throw new Error('Cannot delete entry during SSR');
+  }
+  
+  const db = getFirebaseFirestore();
   await deleteDoc(doc(db, getUserLedgerPath(userId), id));
 };
 
@@ -43,6 +59,7 @@ export const getEntries = async (userId: string) => {
       return [];
     }
 
+    const db = getFirebaseFirestore();
     const userLedgerPath = getUserLedgerPath(userId);
     const q = query(
       collection(db, userLedgerPath),
@@ -95,6 +112,11 @@ export const getEntries = async (userId: string) => {
 // Get a single entry by ID
 export const getEntry = async (userId: string, entryId: string) => {
   try {
+    if (typeof window === 'undefined') {
+      throw new Error('Cannot fetch entry during SSR');
+    }
+    
+    const db = getFirebaseFirestore();
     const docSnap = await getDocs(query(collection(db, getUserLedgerPath(userId))));
     const entry = docSnap.docs.find(doc => doc.id === entryId);
     
