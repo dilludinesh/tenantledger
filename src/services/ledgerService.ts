@@ -77,6 +77,31 @@ export const getEntries = async (userId: string) => {
     return entries;
   } catch (error) {
     console.error('Error fetching entries:', error);
-    return [];
+    throw new Error('Failed to fetch entries');
+  }
+};
+
+// Get a single entry by ID
+export const getEntry = async (userId: string, entryId: string) => {
+  try {
+    const entryRef = doc(db, getUserLedgerPath(userId), entryId);
+    const docSnap = await getDocs(query(collection(db, getUserLedgerPath(userId))));
+    const entry = docSnap.docs.find(doc => doc.id === entryId);
+    
+    if (!entry || !entry.exists()) {
+      throw new Error('Entry not found');
+    }
+    
+    const data = entry.data();
+    return {
+      id: entry.id,
+      ...data,
+      date: data.date?.toDate ? data.date.toDate() : new Date(),
+      createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
+      updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : new Date(),
+    } as LedgerEntry & { id: string };
+  } catch (error) {
+    console.error('Error fetching entry:', error);
+    throw new Error('Failed to fetch entry');
   }
 };

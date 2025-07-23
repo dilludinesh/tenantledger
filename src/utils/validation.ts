@@ -34,8 +34,8 @@ export function validateEntryForm(data: EntryFormData): ValidationError[] {
       errors.push({ field: 'amount', message: 'Amount must be a valid number' });
     } else if (amount <= 0) {
       errors.push({ field: 'amount', message: 'Amount must be greater than 0' });
-    } else if (amount > 1000000) {
-      errors.push({ field: 'amount', message: 'Amount must be less than $1,000,000' });
+    } else if (amount > 10000000) {
+      errors.push({ field: 'amount', message: 'Amount must be less than ₹1,00,00,000' });
     }
   }
 
@@ -93,9 +93,9 @@ export function sanitizeInput(input: string): string {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
   }).format(amount);
 }
 

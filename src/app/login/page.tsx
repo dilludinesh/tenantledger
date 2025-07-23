@@ -14,10 +14,12 @@ export default function LoginPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
+    console.log('Login page - user state changed:', user, 'loading:', loading);
+    if (user && !loading) {
+      console.log('Redirecting to dashboard...');
       router.push('/dashboard');
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
   // Show error toast if there's an auth error
   useEffect(() => {
@@ -27,14 +29,18 @@ export default function LoginPage() {
   }, [authError]);
 
   const handleSignIn = async () => {
+    console.log('Login button clicked');
     setSigningIn(true);
     try {
+      console.log('Calling signInWithGoogle...');
       await signInWithGoogle();
-      // Success is handled by the signInWithGoogle function
-      // User will be redirected by the useEffect when user state changes
-    } catch {
+      console.log('signInWithGoogle completed (should redirect to Google)');
+      // For redirect method, the page will navigate away to Google
+      // and then return here, so we don't need to reset signingIn
+      // The page will reload when coming back from Google
+    } catch (error) {
+      console.error('Sign in failed:', error);
       // Error is handled by AuthContext and toast
-    } finally {
       setSigningIn(false);
     }
   };

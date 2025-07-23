@@ -6,9 +6,18 @@ import styles from './EntriesTable.module.css';
 interface EntriesTableProps {
   entries: Array<LedgerEntry & { id: string }>;
   isLoading?: boolean;
+  onEdit: (entry: LedgerEntry & { id: string }) => void;
+  onDelete: (entryId: string) => void;
+  deletingEntryId?: string | null;
 }
 
-export const EntriesTable: React.FC<EntriesTableProps> = ({ entries, isLoading = false }) => {
+export const EntriesTable: React.FC<EntriesTableProps> = ({
+  entries,
+  isLoading = false,
+  onEdit,
+  onDelete,
+  deletingEntryId,
+}) => {
   if (isLoading) {
     return (
       <div className={styles.loadingRow}>
@@ -73,11 +82,20 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({ entries, isLoading =
             <th scope="col" className={styles.tableHeader}>
               Description
             </th>
+            <th scope="col" className={`${styles.tableHeader} text-right`}>
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
           {entries.map((entry) => (
-            <EntryRow key={entry.id} entry={entry} />
+            <EntryRow
+              key={entry.id}
+              entry={entry}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              isDeleting={deletingEntryId === entry.id}
+            />
           ))}
         </tbody>
       </table>

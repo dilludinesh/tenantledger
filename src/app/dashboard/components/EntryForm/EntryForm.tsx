@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { format } from 'date-fns';
-import { CATEGORIES } from '@/types/ledger';
+import { CATEGORIES, LedgerEntry } from '@/types/ledger';
 import { validateLedgerEntry, sanitizeInput } from '@/utils/validation';
 import styles from './EntryForm.module.css';
 
@@ -11,11 +11,18 @@ interface EntryFormProps {
     category: string;
     description: string;
     date: string;
-  }) => Promise<void>;
+  }) => void;
   isLoading?: boolean;
+  entryToEdit?: (LedgerEntry & { id: string }) | null;
+  onCancelEdit?: () => void;
 }
 
-export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = false }) => {
+export const EntryForm: React.FC<EntryFormProps> = ({
+  onSubmit,
+  isLoading = false,
+  entryToEdit,
+  onCancelEdit,
+}) => {
   const [formData, setFormData] = useState({
     date: format(new Date(), 'yyyy-MM-dd'),
     tenant: '',
@@ -24,6 +31,26 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
     description: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (entryToEdit) {
+      setFormData({
+        date: format(new Date(entryToEdit.date), 'yyyy-MM-dd'),
+        tenant: entryToEdit.tenant,
+        amount: entryToEdit.amount.toString(),
+        category: entryToEdit.category,
+        description: entryToEdit.description,
+      });
+    } else {
+      setFormData({
+        date: format(new Date(), 'yyyy-MM-dd'),
+        tenant: '',
+        amount: '',
+        category: 'Rent',
+        description: '',
+      });
+    }
+  }, [entryToEdit]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -51,16 +78,18 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
     return validation.isValid;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       return;
     }
-    
-    try {
-      await onSubmit(formData);
-      // Reset form on successful submission
+    onSubmit(formData);
+  };
+
+  const handleReset = () => {
+    if (entryToEdit && onCancelEdit) {
+      onCancelEdit();
+    } else {
       setFormData({
         date: format(new Date(), 'yyyy-MM-dd'),
         tenant: '',
@@ -68,19 +97,8 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
         category: 'Rent',
         description: '',
       });
-    } catch (error) {
-      console.error('Error submitting form:', error);
+      setErrors({});
     }
-  };
-
-  const handleReset = () => {
-    setFormData({
-      date: format(new Date(), 'yyyy-MM-dd'),
-      tenant: '',
-      amount: '',
-      category: 'Rent',
-      description: '',
-    });
   };
 
   return (
@@ -187,14 +205,20 @@ export const EntryForm: React.FC<EntryFormProps> = ({ onSubmit, isLoading = fals
           className={styles.buttonSecondary}
           disabled={isLoading}
         >
-          Reset
+          {entryToEdit ? 'Cancel' : 'Reset'}
         </button>
         <button
           type="submit"
           className={styles.buttonPrimary}
           disabled={isLoading}
         >
-          {isLoading ? 'Adding...' : 'Add Entry'}
+          {isLoading
+            ? entryToEdit
+              ? 'Updating...'
+              : 'Adding...'
+            : entryToEdit
+            ? 'Update Entry'
+            : 'Add Entry'}
         </button>
       </div>
     </form>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getEntries, addEntry } from '@/services/ledgerService';
+import { getEntries, addEntry, updateEntry, deleteEntry } from '@/services/ledgerService';
 import { LedgerEntry } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
@@ -16,8 +16,7 @@ function DashboardContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
-
-  // State managed by React Query
+  const [editingEntry, setEditingEntry] = useState<LedgerEntry & { id: string } | null>(null);
 
   const handleSignOut = async () => {
     try {
@@ -62,35 +61,58 @@ function DashboardContent() {
   });
 
   // Add entry mutation
-  const addEntryMutation = useMutation({
+  const mutation = useMutation({
     mutationFn: async (data: {
-      tenant: string;
-      amount: string;
-      category: string;
-      description: string;
-      date: string;
+      values: {
+        tenant: string;
+        amount: string;
+        category: string;
+        description: string;
+        date: string;
+      };
+      entryId?: string;
     }) => {
       if (!user) throw new Error('User not authenticated');
-      
-      const entryToAdd: Omit<LedgerEntry, 'id'> = {
-        tenant: data.tenant,
-        amount: Number(data.amount) || 0,
-        category: data.category,
-        description: data.description,
-        date: new Date(data.date),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        userId: user.uid
+      const { values, entryId } = data;
+
+      const entryData: Omit<LedgerEntry, 'id' | 'createdAt' | 'updatedAt'> = {
+        tenant: values.tenant,
+        amount: Number(values.amount) || 0,
+        category: values.category,
+        description: values.description,
+        date: new Date(values.date),
+        userId: user.uid,
       };
-      
-      await addEntry(entryToAdd, user.uid);
-      return; // Explicitly return void
+
+      if (entryId) {
+        await updateEntry(user.uid, entryId, entryData);
+      } else {
+        await addEntry(entryData, user.uid);
+      }
     },
     onSuccess: () => {
-      // Invalidate and refetch entries after successful addition
-      queryClient.invalidateQueries({ queryKey: ['entries'] });
+      queryClient.invalidateQueries({ queryKey: ['entries', user?.uid] });
+      setEditingEntry(null);
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (entryId: string) => {
+      if (!user) throw new Error('User not authenticated');
+      await deleteEntry(user.uid, entryId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entries', user?.uid] });
+    },
+  });
+
+  const handleEdit = (entry: LedgerEntry & { id: string }) => {
+    setEditingEntry(entry);
+  };
+
+  const handleDelete = (entryId: string) => {
+    deleteMutation.mutate(entryId);
+  };
 
   if (loading || isFetching || !user) {
     return (
@@ -200,20 +222,23 @@ function DashboardContent() {
           {/* Entry Form */}
           <div className="lg:col-span-1">
             <div className={styles.glassCard} style={{borderRadius: 24, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
-              <EntryForm 
-                onSubmit={async (data) => {
-                  await addEntryMutation.mutateAsync(data);
-                }}
-                isLoading={addEntryMutation.isPending}
+              <EntryForm
+                onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
+                isLoading={mutation.isPending}
+                entryToEdit={editingEntry}
+                onCancelEdit={() => setEditingEntry(null)}
               />
             </div>
           </div>
           {/* Entries Table */}
           <div className="lg:col-span-2">
             <div className={styles.glassCard} style={{borderRadius: 24, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
-              <EntriesTable 
-                entries={entries} 
-                isLoading={isFetching} 
+              <EntriesTable
+                entries={entries}
+                isLoading={isFetching}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                deletingEntryId={deleteMutation.isPending ? deleteMutation.variables : undefined}
               />
             </div>
           </div>
