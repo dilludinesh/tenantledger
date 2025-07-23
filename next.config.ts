@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
   },
   // Other Next.js config options
   reactStrictMode: true,
-  swcMinify: true,
 };
 
 export default nextConfig;

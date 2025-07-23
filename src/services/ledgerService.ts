@@ -84,7 +84,6 @@ export const getEntries = async (userId: string) => {
 // Get a single entry by ID
 export const getEntry = async (userId: string, entryId: string) => {
   try {
-    const entryRef = doc(db, getUserLedgerPath(userId), entryId);
     const docSnap = await getDocs(query(collection(db, getUserLedgerPath(userId))));
     const entry = docSnap.docs.find(doc => doc.id === entryId);
     
