@@ -9,9 +9,11 @@ import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { useAuth } from '@/context/AuthContext';
+import toast from 'react-hot-toast';
+import { processLedgerEntries } from '@/utils/ledgerUtils';
 import styles from './glass.module.css';
 
-function DashboardContent() {
+export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -41,21 +43,7 @@ function DashboardContent() {
     queryFn: async () => {
       if (!user) return [];
       const ledgerEntries = await getEntries(user.uid);
-      // Ensure each entry has an id and proper types
-      return ledgerEntries
-        .filter((entry): entry is LedgerEntry & { id: string } => {
-          if (!entry.id) {
-            console.warn('Entry is missing required id, skipping:', entry);
-            return false;
-          }
-          return true;
-        })
-        .map(entry => ({
-          ...entry,
-          userId: entry.userId || user.uid,
-          createdAt: entry.createdAt || new Date(),
-          updatedAt: entry.updatedAt || new Date(),
-        }));
+      return processLedgerEntries(ledgerEntries, user.uid);
     },
     enabled: !!user,
   });
@@ -93,25 +81,15 @@ function DashboardContent() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['entries', user?.uid] });
       setEditingEntry(null);
+      toast.success('Entry saved successfully!');
     },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (entryId: string) => {
-      if (!user) throw new Error('User not authenticated');
-      await deleteEntry(user.uid, entryId);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['entries', user?.uid] });
+    onError: (error) => {
+      toast.error(`Error saving entry: ${error.message}`);
     },
   });
 
   const handleEdit = (entry: LedgerEntry & { id: string }) => {
     setEditingEntry(entry);
-  };
-
-  const handleDelete = (entryId: string) => {
-    deleteMutation.mutate(entryId);
   };
 
   if (loading || isFetching || !user) {
@@ -237,21 +215,11 @@ function DashboardContent() {
                 entries={entries}
                 isLoading={isFetching}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
-                deletingEntryId={deleteMutation.isPending ? deleteMutation.variables : undefined}
               />
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardContent />
     </div>
   );
 }

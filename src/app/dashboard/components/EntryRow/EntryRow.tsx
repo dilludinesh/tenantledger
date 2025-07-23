@@ -87,7 +87,7 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
                 <button
                   onClick={handleEdit}
                   className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                  title="Edit entry"
+                  aria-label="Edit entry"
                   disabled={isDeleting}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
-                  title="Delete entry"
+                  aria-label="Delete entry"
                   disabled={isDeleting}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

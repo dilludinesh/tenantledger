@@ -1,5 +1,9 @@
 import React from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import { LedgerEntry } from '@/types/ledger';
+import { deleteEntry } from '@/services/ledgerService';
+import { useAuth } from '@/context/AuthContext';
 import { EntryRow } from '../EntryRow/EntryRow';
 import styles from './EntriesTable.module.css';
 
@@ -7,17 +11,33 @@ interface EntriesTableProps {
   entries: Array<LedgerEntry & { id: string }>;
   isLoading?: boolean;
   onEdit: (entry: LedgerEntry & { id: string }) => void;
-  onDelete: (entryId: string) => void;
-  deletingEntryId?: string | null;
 }
 
 export const EntriesTable: React.FC<EntriesTableProps> = ({
   entries,
   isLoading = false,
   onEdit,
-  onDelete,
-  deletingEntryId,
 }) => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: async (entryId: string) => {
+      if (!user) throw new Error('User not authenticated');
+      await deleteEntry(user.uid, entryId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entries', user?.uid] });
+      toast.success('Entry deleted successfully!');
+    },
+    onError: (error) => {
+      toast.error(`Error deleting entry: ${error.message}`);
+    },
+  });
+
+  const handleDelete = (entryId: string) => {
+    deleteMutation.mutate(entryId);
+  };
   if (isLoading) {
     return (
       <div className={styles.loadingRow}>
@@ -93,8 +113,8 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
               key={entry.id}
               entry={entry}
               onEdit={onEdit}
-              onDelete={onDelete}
-              isDeleting={deletingEntryId === entry.id}
+              onDelete={handleDelete}
+              isDeleting={deleteMutation.isPending && deleteMutation.variables === entry.id}
             />
           ))}
         </tbody>
