@@ -60,7 +60,7 @@ export const getFirebaseFirestore = (): Firestore => {
 };
 
 // Backward compatibility exports - these will throw in SSR but that's expected
-export const app = isBrowser ? (!getApps().length ? initializeApp(firebaseConfig) : getApp()) : null as any;
-export const auth = isBrowser ? getAuth(app as FirebaseApp) : null as any;
-export const db = isBrowser ? getFirestore(app as FirebaseApp) : null as any;
+export const app = isBrowser ? (!getApps().length ? initializeApp(firebaseConfig) : getApp()) : undefined;
+export const auth = isBrowser ? getAuth(app as FirebaseApp) : undefined;
+export const db = isBrowser ? getFirestore(app as FirebaseApp) : undefined;
 export const appId = isBrowser ? firebaseConfig.projectId : 'ssr-project';
