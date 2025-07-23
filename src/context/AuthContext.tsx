@@ -89,14 +89,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Check if Firebase config is valid (not dummy values)
-    const isValidConfig = !(
-      process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.includes('dummy') ||
-      process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'your_api_key_here' ||
-      !process.env.NEXT_PUBLIC_FIREBASE_API_KEY
-    );
+    const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_APIKEY;
+    const authDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || process.env.NEXT_PUBLIC_FIREBASE_AUTHDOMAIN;
+    
+    console.log('Firebase config check:', {
+      hasApiKey: !!apiKey,
+      hasAuthDomain: !!authDomain,
+      apiKeyLength: apiKey?.length,
+      isValid: apiKey && !apiKey.includes('dummy') && apiKey !== 'your_api_key_here'
+    });
+
+    const isValidConfig = apiKey && !apiKey.includes('dummy') && apiKey !== 'your_api_key_here';
 
     if (!isValidConfig) {
-      console.warn('Invalid Firebase configuration detected');
+      console.warn('Invalid Firebase configuration detected', {
+        apiKey: apiKey?.substring(0, 10) + '...',
+        authDomain
+      });
       setLoading(false);
       return;
     }
