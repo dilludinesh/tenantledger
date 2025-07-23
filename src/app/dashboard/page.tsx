@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getEntries, addEntry, updateEntry, deleteEntry } from '@/services/ledgerService';
+import { getEntries, addEntry, updateEntry } from '@/services/ledgerService';
 import { LedgerEntry } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
