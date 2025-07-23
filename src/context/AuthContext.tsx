@@ -194,32 +194,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       const auth = getFirebaseAuth();
       
-      console.log('Starting redirect authentication...');
-      console.log('Current URL before redirect:', window.location.href);
-      console.log('Auth instance:', auth);
-      console.log('Auth app name:', auth.name);
-      console.log('Auth config:', auth.config);
-      console.log('Provider:', provider);
-      
       // Store a flag to indicate we initiated a redirect
       sessionStorage.setItem('authRedirectInitiated', 'true');
-      
+
       try {
         // Use redirect method - user will be redirected to Google and back
         await signInWithRedirect(auth, provider);
-        console.log('Redirect initiated successfully');
+        console.log('Redirect authentication initiated');
       } catch (redirectError) {
-        console.error('Redirect failed, trying popup as fallback:', redirectError);
+        console.error('Redirect authentication failed, trying popup as fallback');
         sessionStorage.removeItem('authRedirectInitiated');
-        
+
         // Fallback to popup if redirect fails
-        const result = await signInWithPopup(auth, provider);
-        console.log('Popup authentication successful:', result.user.email);
-        toast.success('Successfully signed in!');
+        try {
+          const result = await signInWithPopup(auth, provider);
+          console.log('Popup authentication successful');
+          toast.success('Successfully signed in!');
+        } catch (popupError) {
+          console.error('Popup authentication failed');
+          handleAuthError(popupError);
+          throw popupError;
+        }
       }
       // Note: The result will be handled by getRedirectResult in the useEffect
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('Authentication error');
       sessionStorage.removeItem('authRedirectInitiated');
       handleAuthError(error);
       // Re-throw the error so it can be caught by the login page if needed

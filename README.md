@@ -9,6 +9,87 @@ A modern web application for managing tenant payments and financial records. Bui
 - 📊 **Categorized Entries** - Organize transactions by category (Rent, Maintenance, Security Deposit, Utilities, Other)
 - 👤 **User-Specific Data** - Each user's data is completely isolated and secure
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **UI/UX**: TailwindCSS, Glassmorphism design
+- **Authentication**: Firebase Auth with Google OAuth
+- **Database**: Firestore
+- **State Management**: TanStack React Query
+- **Testing**: Jest, ts-jest
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Firebase account and project
+
+### Setup
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/tenantledger.git
+   cd tenantledger
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables
+   - Copy `.env.example` to `.env.local`
+   ```bash
+   cp .env.example .env.local
+   ```
+   - Fill in your Firebase configuration details in `.env.local`
+
+4. Run the development server
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to see the application
+
+### Firebase Setup
+
+1. Create a new Firebase project at [firebase.google.com](https://firebase.google.com)
+2. Enable Authentication with Google provider
+3. Create a Firestore database
+4. Add your Firebase configuration to the environment variables
+
+## Project Structure
+
+```
+/src
+  /app             # Next.js app router components
+  /components      # Reusable UI components
+  /context         # React context providers
+  /lib             # Core libraries and configurations
+  /services        # API services
+  /types           # TypeScript type definitions
+  /utils           # Utility functions
+```
+
+## Deployment
+
+This project is configured for deployment with Vercel:
+
+```bash
+npm run build
+```
+
+Or connect your GitHub repository to Vercel for automatic deployments.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+- 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
 - ✨ **Modern UI** - Beautiful glassmorphism design with smooth animations
 - ⚡ **Real-time Updates** - Powered by React Query for optimal performance
 
