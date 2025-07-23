@@ -28,10 +28,30 @@ const firebaseConfig = {
   appId: getEnvVar('NEXT_PUBLIC_FIREBASE_APP_ID', 'NEXT_PUBLIC_FIREBASE_APPID')
 };
 
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Initialize Firebase only in browser environment
+let app: any = null;
+let auth: any = null;
+let db: any = null;
+
+// Only initialize Firebase in browser environment
+if (typeof window !== 'undefined') {
+  try {
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } catch (error) {
+    console.warn('Firebase initialization failed:', error);
+    // Return mock objects for build time
+    app = { name: 'dummy-app' };
+    auth = { currentUser: null };
+    db = { collection: () => ({}) };
+  }
+} else {
+  // Mock objects for SSR/build time
+  app = { name: 'ssr-app' };
+  auth = { currentUser: null };
+  db = { collection: () => ({}) };
+}
 
 export { app, auth, db };
-export const appId = firebaseConfig.projectId;
+export const appId = typeof window !== 'undefined' ? firebaseConfig.projectId : 'ssr-project';
