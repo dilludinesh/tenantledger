@@ -5,8 +5,7 @@ import {
   User, 
   onAuthStateChanged, 
   signOut as firebaseSignOut, 
-  signInWithRedirect, // Changed back to signInWithRedirect
-  getRedirectResult, // Re-added getRedirectResult
+  signInWithRedirect, 
   GoogleAuthProvider,
   getAuth 
 } from 'firebase/auth';
@@ -110,7 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!auth) {
         throw new Error('Firebase Auth object is not initialized.');
       }
-      await signInWithRedirect(auth, provider); // Changed to signInWithRedirect
+      await signInWithRedirect(auth, provider); 
     } catch (error) {
       console.error('Error during signInWithRedirect:', error);
       handleAuthError(error);

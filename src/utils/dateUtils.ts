@@ -44,16 +44,23 @@ export const getCurrentDateForInput = (): string => {
   return formatDateForInput(new Date());
 };
 
+<<<<<<< HEAD
 interface FirebaseTimestamp {
   toDate: () => Date;
 }
 
+=======
+>>>>>>> cc38116fe4f50469e6c0fa669105f6111b1e16fa
 /**
  * Convert Firebase timestamp to Date object
  * @param timestamp Firebase timestamp or date object
  * @returns JavaScript Date object
  */
+<<<<<<< HEAD
 export const firebaseTimestampToDate = (timestamp: FirebaseTimestamp | Date | string | null | undefined): Date => {
+=======
+export const firebaseTimestampToDate = (timestamp: any): Date => {
+>>>>>>> cc38116fe4f50469e6c0fa669105f6111b1e16fa
   if (!timestamp) return new Date();
 
   // Handle Firebase Timestamp
