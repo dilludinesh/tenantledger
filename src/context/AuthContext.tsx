@@ -6,6 +6,7 @@ import {
   onAuthStateChanged, 
   signOut as firebaseSignOut, 
   signInWithRedirect, 
+  getRedirectResult, 
   GoogleAuthProvider,
   getAuth 
 } from 'firebase/auth';
@@ -83,6 +84,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const auth = getAuth(getFirebaseApp());
+
+    // Handle redirect result first
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result && result.user) {
+          console.log('getRedirectResult - user:', result.user);
+          setUser(result.user);
+          toast.success(`Welcome, ${result.user.displayName || result.user.email}!`);
+        }
+      })
+      .catch((error) => {
+        console.error('Error from getRedirectResult:', error);
+        handleAuthError(error);
+      });
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       console.log('onAuthStateChanged - currentUser:', currentUser);
