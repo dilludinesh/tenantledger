@@ -64,3 +64,44 @@ jspm_packages/
 *~
 *.orig
 *.bak
+
+# System files
+.DS_Store
+desktop.ini
+
+# Firebase
+.firebase/
+
+# Testing
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor files
+*.swp
+*.swo
+
+# Debug files
+debug/
+debug.log
+debug.txt
+
+# Documentation generation
+docs/_book
+
+# Package manager
+package-lock.json
+yarn.lock
+
+# Firebase emulator
+firebase-debug.log
+.firestore/
+
+# Next.js
+.next
+.swc
+.turbo
+
+# Local configuration files
+.env*.local
