@@ -57,14 +57,11 @@ service cloud.firestore {
 
 ## Environment Variables
 
-Sensitive configuration is stored in environment variables:
+Sensitive configuration is stored in environment variables. The application follows security best practices by:
 
-- `NEXT_PUBLIC_FIREBASE_API_KEY`
-- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- Storing actual configuration values in `.env.local` which is excluded from version control
+- Using Firebase configuration variables which are designed to be public (not secrets)
+- Following the 12-factor app methodology for configuration management
 
 ## Security Best Practices
 
