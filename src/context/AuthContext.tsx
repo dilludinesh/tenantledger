@@ -122,15 +122,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       provider.addScope('email');
       provider.addScope('profile');
       
-      const auth = getAuth(getFirebaseApp());
-      const { signInWithPopup } = await import('firebase/auth');
+      // Configure provider for better popup handling
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
       
-      await signInWithPopup(auth, provider);
-      logAuthSuccess('google_signin');
+      const auth = getAuth(getFirebaseApp());
+      const { signInWithPopup, signInWithRedirect } = await import('firebase/auth');
+      
+      // Try popup first, fallback to redirect on mobile or if popup fails
+      try {
+        await signInWithPopup(auth, provider);
+        logAuthSuccess('google_signin_popup');
+      } catch (popupError: unknown) {
+        // If popup fails due to blocking or mobile, try redirect
+        const errorCode = popupError && typeof popupError === 'object' && 'code' in popupError 
+          ? (popupError as { code: string }).code 
+          : '';
+        
+        if (errorCode === 'auth/popup-blocked' || 
+            errorCode === 'auth/popup-closed-by-user' ||
+            /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)) {
+          
+          toast('Redirecting to Google Sign-In...', { 
+            duration: 2000,
+            icon: 'ℹ️'
+          });
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+        throw popupError;
+      }
     } catch (error) {
       logAuthFailure(error instanceof Error ? error.message : 'Unknown error');
       handleAuthError(error);
     }
+  }, [handleAuthError]);
+
+  // Handle redirect result on page load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleRedirectResult = async () => {
+      try {
+        const auth = getAuth(getFirebaseApp());
+        const { getRedirectResult } = await import('firebase/auth');
+        const result = await getRedirectResult(auth);
+        
+        if (result) {
+          logAuthSuccess('google_signin_redirect');
+          toast.success('Successfully signed in!');
+        }
+      } catch (error) {
+        logAuthFailure(error instanceof Error ? error.message : 'Redirect error');
+        handleAuthError(error);
+      }
+    };
+
+    handleRedirectResult();
   }, [handleAuthError]);
 
   return (

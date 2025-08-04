@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { initializeAuth, browserLocalPersistence } from 'firebase/auth';
+import { initializeAuth, browserLocalPersistence, getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import type { FirebaseApp } from 'firebase/app';
 import type { Auth } from 'firebase/auth';
@@ -48,13 +48,15 @@ export const getFirebaseAuth = (): Auth => {
     throw new Error('Firebase Auth not available during SSR');
   }
   if (!_firebaseAuth) {
+    const app = getFirebaseApp();
     try {
-      const app = getFirebaseApp();
       _firebaseAuth = initializeAuth(app, {
         persistence: browserLocalPersistence,
+        popupRedirectResolver: undefined, // Let Firebase handle popup resolution
       });
-    } catch (error) {
-      throw error;
+    } catch {
+      // If initializeAuth fails (already initialized), get existing auth
+      _firebaseAuth = getAuth(app);
     }
   }
   return _firebaseAuth;
