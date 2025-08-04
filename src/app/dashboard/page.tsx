@@ -356,18 +356,27 @@ export default function DashboardPage() {
                 </p>
                 
                 {/* Buttons */}
-                <div className="flex gap-4 justify-center">
+                <div className="flex gap-8 justify-center">
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
                     className="px-6 py-3 rounded-full transition-colors"
                     style={{
-                      backgroundColor: '#2563eb',
+                      background: 'linear-gradient(to bottom, #2563eb, #1d4ed8)',
                       color: 'white',
                       fontWeight: '600',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      transform: 'none'
                     }}
-                    onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#1d4ed8'}
-                    onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#2563eb'}
+                    onMouseEnter={(e) => {
+                      const target = e.target as HTMLElement;
+                      target.style.background = 'linear-gradient(to bottom, #1d4ed8, #2563eb)';
+                      target.style.transform = 'none';
+                    }}
+                    onMouseLeave={(e) => {
+                      const target = e.target as HTMLElement;
+                      target.style.background = 'linear-gradient(to bottom, #2563eb, #1d4ed8)';
+                      target.style.transform = 'none';
+                    }}
                   >
                     Cancel
                   </button>
