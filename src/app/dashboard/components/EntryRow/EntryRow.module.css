@@ -21,10 +21,6 @@
   color: #1f2937;
 }
 
-.dark .text {
-  color: #f3f4f6;
-}
-
 .amount {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-feature-settings: "tnum";
@@ -37,10 +33,6 @@
   font-weight: 400;
   margin-right: 0.125rem;
   color: #6b7280;
-}
-
-.dark .currencySymbol {
-  color: #9ca3af;
 }
 
 .category {
@@ -58,19 +50,9 @@
   color: #8b5cf6;
 }
 
-.dark .categoryRent {
-  background-color: rgba(168, 85, 247, 0.2);
-  color: #c4b5fd;
-}
-
 .categoryMaintenance {
   background-color: rgba(59, 130, 246, 0.1);
   color: #3b82f6;
-}
-
-.dark .categoryMaintenance {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
 }
 
 .categorySecurity {
@@ -78,29 +60,14 @@
   color: #10b981;
 }
 
-.dark .categorySecurity {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #6ee7b7;
-}
-
 .categoryUtilities {
   background-color: rgba(245, 158, 11, 0.1);
   color: #f59e0b;
 }
 
-.dark .categoryUtilities {
-  background-color: rgba(245, 158, 11, 0.2);
-  color: #fcd34d;
-}
-
 .categoryOther {
   background-color: rgba(156, 163, 175, 0.1);
   color: #6b7280;
-}
-
-.dark .categoryOther {
-  background-color: rgba(156, 163, 175, 0.2);
-  color: #9ca3af;
 }
 
 .description {
@@ -111,15 +78,7 @@
   line-height: 1.375rem;
 }
 
-.dark .description {
-  color: #d1d5db;
-}
-
 .emptyDescription {
   color: #9ca3af;
   font-style: italic;
-}
-
-.dark .emptyDescription {
-  color: #6b7280;
 }

@@ -9,18 +9,9 @@
   transition: box-shadow 0.2s, background 0.2s;
 }
 
-.dark .glass {
-  background: rgba(24, 28, 40, 0.65);
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.22), 0 1.5px 6px 0 rgba(0,0,0,0.08);
-}
-
 /* Card with glass effect */
 .glassCard {
   background: linear-gradient(135deg, rgba(255,255,255,0.22) 60%, rgba(139,92,246,0.08) 100%);
-}
-
-.dark .glassCard {
-  background: linear-gradient(135deg, rgba(24,28,40,0.85) 60%, rgba(139,92,246,0.13) 100%);
 }
 
 .glassCard:hover {
@@ -62,16 +53,6 @@
   box-shadow: 0 0 0 2px #818cf8;
 }
 
-.dark .glassInput {
-  background: rgba(24,28,40,0.7);
-  color: #f3f4f6;
-}
-
-.dark .glassInput:focus {
-  background: rgba(24,28,40,0.9);
-  box-shadow: 0 0 0 2px #a78bfa;
-}
-
 /* Glass select */
 .glassSelect {
   background: rgba(255,255,255,0.35);
@@ -88,10 +69,4 @@
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
   padding-right: 2.5rem;
-}
-
-.dark .glassSelect {
-  background: rgba(24,28,40,0.7);
-  color: #f3f4f6;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
 }

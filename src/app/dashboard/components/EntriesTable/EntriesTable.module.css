@@ -9,21 +9,12 @@
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 }
 
-.dark .tableContainer {
-  background: rgba(17, 25, 40, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .table {
   width: 100%;
   border-collapse: collapse;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.dark .table {
-  background: rgba(17, 25, 40, 0.5);
 }
 
 .tableHead {
@@ -48,10 +39,6 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
-.dark .tableBody {
-  background: rgba(17, 25, 40, 0.3);
-}
-
 .emptyState {
   padding: 3rem 1rem;
   text-align: center;
@@ -59,10 +46,6 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
-}
-
-.dark .emptyState {
-  background: rgba(17, 25, 40, 0.3);
 }
 
 .emptyIcon {
@@ -79,18 +62,10 @@
   color: #374151;
 }
 
-.dark .emptyTitle {
-  color: #e5e7eb;
-}
-
 .emptyDescription {
   margin-top: 0.5rem;
   font-size: 0.875rem;
   color: #6b7280;
-}
-
-.dark .emptyDescription {
-  color: #9ca3af;
 }
 
 .loadingRow {
@@ -100,8 +75,4 @@
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.dark .loadingRow {
-  background: rgba(17, 25, 40, 0.3);
 }
