@@ -71,7 +71,7 @@ export const BulkActions: React.FC<BulkActionsProps> = ({
         <div className="flex space-x-3">
           <button
             onClick={onExportSelected}
-            className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium"
+            className="flex-1 px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors text-sm font-medium"
           >
             <span className="flex items-center justify-center space-x-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@ export const BulkActions: React.FC<BulkActionsProps> = ({
 
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
+            className="flex-1 px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors text-sm font-medium"
             disabled={bulkDeleteMutation.isPending}
           >
             <span className="flex items-center justify-center space-x-2">
@@ -116,7 +116,7 @@ export const BulkActions: React.FC<BulkActionsProps> = ({
               <div className="flex space-x-3">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium"
+                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors text-sm font-medium"
                   disabled={bulkDeleteMutation.isPending}
                 >
                   Cancel
@@ -124,7 +124,7 @@ export const BulkActions: React.FC<BulkActionsProps> = ({
                 
                 <button
                   onClick={handleBulkDelete}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
+                  className="flex-1 px-6 py-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors text-sm font-medium"
                   disabled={bulkDeleteMutation.isPending}
                 >
                   {bulkDeleteMutation.isPending ? 'Deleting...' : 'Delete'}
