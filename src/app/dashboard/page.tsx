@@ -206,10 +206,18 @@ export default function DashboardPage() {
           {/* Title Section */}
           <div className="text-center mb-10">
             <h1 
-              className="text-3xl md:text-4xl font-extrabold mb-6 tracking-tight title-gradient"
+              className="text-3xl md:text-4xl font-extrabold mb-6 tracking-tight"
               aria-label="Tenant Ledger Dashboard"
+              style={{
+                background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block',
+                textShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                letterSpacing: '0.01em'
+              }}
             >
-              <span style={{letterSpacing: '0.01em'}}>Tenant Ledger</span>
+              Tenant Ledger
             </h1>
           </div>
 
