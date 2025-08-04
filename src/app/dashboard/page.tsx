@@ -8,7 +8,6 @@ import { LedgerEntry, LedgerCategory } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
-import { SummaryCards } from '@/components/SummaryCards';
 import { FilterPanel } from '@/components/FilterPanel';
 import { FilterBadge } from '@/components/FilterBadge';
 import { HelpModal } from '@/components/HelpModal';
@@ -207,7 +206,7 @@ export default function DashboardPage() {
           {/* Title Section */}
           <div className="text-center mb-10">
             <h1 
-              className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight title-gradient"
+              className="text-3xl md:text-4xl font-extrabold mb-6 tracking-tight title-gradient"
               aria-label="Tenant Ledger Dashboard"
             >
               <span style={{letterSpacing: '0.01em'}}>Tenant Ledger</span>
@@ -294,9 +293,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </header>
-
-        {/* Summary Cards */}
-        <SummaryCards entries={entries} />
 
         {/* Action Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
