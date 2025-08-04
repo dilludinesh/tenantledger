@@ -8,9 +8,12 @@ import { LedgerEntry, LedgerCategory } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
+import { DashboardHeader } from './components/DashboardHeader';
+import { DashboardActionBar } from './components/DashboardActionBar';
 import { FilterPanel } from '@/components/FilterPanel';
 import { FilterBadge } from '@/components/FilterBadge';
 import { HelpModal } from '@/components/HelpModal';
+import { BulkActions } from '@/components/BulkActions';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 import { processLedgerEntries } from '@/utils/ledgerUtils';
@@ -27,6 +30,8 @@ export default function DashboardPage() {
   const [editingEntry, setEditingEntry] = useState<LedgerEntry & { id: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({ categories: [] });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedEntries, setSelectedEntries] = useState<Array<LedgerEntry & { id: string }>>([]);
   const [showHelp, setShowHelp] = useState(false);
 
   const handleSignOut = async () => {
@@ -99,8 +104,8 @@ export default function DashboardPage() {
     setEditingEntry(entry);
   };
 
-  // Filter entries based on current filters
-  const filteredEntries = useMemo(() => filterEntries(entries, filters), [entries, filters]);
+  // Filter entries based on current filters and search term
+  const filteredEntries = useMemo(() => filterEntries(entries, filters, searchTerm), [entries, filters, searchTerm]);
 
   // Get unique tenants for filter dropdown
   const uniqueTenants = useMemo(() => {
@@ -148,136 +153,25 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <header className="mb-10">
-          {/* Title Section */}
-          <div className="text-center mb-10">
-            <h1 
-              className="text-3xl md:text-4xl font-extrabold mb-6 tracking-tight"
-              aria-label="Tenant Ledger Dashboard"
-              style={{
-                background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                display: 'inline-block',
-                textShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                letterSpacing: '0.01em'
-              }}
-            >
-              Tenant Ledger
-            </h1>
-          </div>
+        <DashboardHeader
+          currentUser={user}
+          demoUser={null}
+          showSignOutConfirm={showSignOutConfirm}
+          setShowSignOutConfirm={setShowSignOutConfirm}
+          onSignOut={handleSignOut}
+          onCancelSignOut={() => setShowSignOutConfirm(false)}
+        />
 
-          {/* User Info and Sign Out Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-10 w-full">
-            {/* Welcome/User Info left */}
-            <div className="flex flex-col w-full sm:w-auto">
-              {user && (
-                <div className="flex flex-col gap-1 p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-sm">
-                  <span className="text-xs font-medium text-gray-500">Welcome</span>
-                  <span 
-                    className="text-xl font-normal"
-                    style={{
-                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                    }}
-                  >
-                    {user.displayName || user.email?.split('@')[0] || 'User'}
-                  </span>
-                  {user.email && (
-                    <span className="text-gray-600 text-sm font-medium truncate max-w-[220px]">
-                      {user.email}
-                    </span>
-                  )}
-                  <span 
-                    className="font-mono text-xs font-normal mt-1"
-                    style={{
-                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                    }}
-                  >
-                    <span className="text-gray-500">User ID: </span>
-                    <span>{user.uid}</span>
-                  </span>
-                </div>
-              )}
-            </div>
-            {/* Sign Out right */}
-            <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
-              <button
-                onClick={() => setShowSignOutConfirm(true)}
-                className="btn-signout flex items-center space-x-2 px-6 py-2 text-base font-bold shadow-md"
-                aria-label="Sign out"
-                style={{ minWidth: 120 }}
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Sign Out</span>
-              </button>
+        <DashboardActionBar
+          showFilters={showFilters}
+          onToggleFilters={() => setShowFilters(!showFilters)}
+          onExportCSV={handleExportCSV}
+          onShowHelp={() => setShowHelp(true)}
+          filteredEntriesCount={filteredEntries.length}
+          totalEntriesCount={entries.length}
+        />
 
-            </div>
-          </div>
-        </header>
-
-        {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`px-4 py-2 rounded-full font-medium transition-colors ${
-                showFilters 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
-                </svg>
-                Filters {filteredEntries.length !== entries.length && `(${filteredEntries.length})`}
-              </span>
-            </button>
-            
-            <button
-              onClick={handleExportCSV}
-              className="px-4 py-2 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors"
-            >
-              <span className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Export CSV
-              </span>
-            </button>
-
-            <button
-              onClick={() => setShowHelp(true)}
-              className="px-4 py-2 bg-gray-600 text-white rounded-full font-medium hover:bg-gray-700 transition-colors"
-            >
-              <span className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Help
-              </span>
-            </button>
-          </div>
-          
-          <div className="text-sm text-gray-600">
-            Showing {filteredEntries.length} of {entries.length} entries
-          </div>
-        </div>
+        
 
         {/* Filter Badge */}
         <FilterBadge 
@@ -287,7 +181,7 @@ export default function DashboardPage() {
         />
 
         {/* Filters Panel */}
-        {showFilters && (
+        {showFilters && !showSignOutConfirm && (
           <div className="mb-6">
             <FilterPanel 
               onFilterChange={handleFilterChange}
@@ -315,14 +209,26 @@ export default function DashboardPage() {
                 entries={filteredEntries}
                 isLoading={isFetching}
                 onEdit={handleEdit}
+                selectedEntries={selectedEntries}
+                setSelectedEntries={setSelectedEntries}
               />
             </div>
           </div>
         </div>
 
+        {/* Bulk Actions */}
+        <BulkActions
+          selectedEntries={selectedEntries}
+          onClearSelection={() => setSelectedEntries([])}
+          onExportSelected={() => {
+            exportToCSV(selectedEntries, `tenant-ledger-selected-${new Date().toISOString().split('T')[0]}.csv`);
+            toast.success(`Exported ${selectedEntries.length} selected entries to CSV`);
+          }}
+        />
+
         {/* Help Modal */}
         <HelpModal 
-          isOpen={showHelp}
+          isOpen={showHelp && !showSignOutConfirm}
           onClose={() => setShowHelp(false)}
         />
 

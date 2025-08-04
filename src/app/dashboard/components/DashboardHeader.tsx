@@ -26,6 +26,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <h1 
           className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight title-gradient"
           aria-label="Tenant Ledger Dashboard"
+          style={{
+            display: 'inline-block',
+            textShadow: '0 2px 4px rgba(0,0,0,0.05)'
+          }}
         >
           <span style={{letterSpacing: '0.01em'}}>Tenant Ledger</span>
         </h1>
@@ -91,24 +95,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </svg>
             <span>Sign Out</span>
           </button>
-          {showSignOutConfirm && (
-            <div className="mt-3 flex flex-row gap-3">
-              <button
-                onClick={onSignOut}
-                className="btn-signout px-6 py-3 rounded-full text-base font-bold shadow-md"
-                aria-label="Confirm sign out"
-              >
-                Confirm Sign Out
-              </button>
-              <button
-                onClick={onCancelSignOut}
-                className="btn btn-outline px-6 py-3 rounded-full"
-                aria-label="Cancel sign out"
-              >
-                Cancel
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </header>

@@ -7,6 +7,8 @@ interface EntryRowProps {
   onEdit?: (entry: LedgerEntry & { id: string }) => void;
   onDelete?: (entryId: string) => void;
   isDeleting?: boolean;
+  onSelect: (entry: LedgerEntry & { id: string }, isSelected: boolean) => void;
+  isSelected: boolean;
 }
 
 const getCategoryStyle = (category: string) => {
@@ -24,7 +26,7 @@ const getCategoryStyle = (category: string) => {
   }
 };
 
-export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isDeleting = false }) => {
+export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isDeleting = false, onSelect, isSelected }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const categoryStyle = getCategoryStyle(entry.category);
 
@@ -40,9 +42,21 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
       setShowDeleteConfirm(false);
     }
   };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSelect(entry, e.target.checked);
+  };
   
   return (
     <tr className={styles.row}>
+      <td className="w-12 px-4 py-3">
+        <input
+          type="checkbox"
+          className="form-checkbox h-4 w-4 text-blue-600 rounded"
+          checked={isSelected}
+          onChange={handleCheckboxChange}
+        />
+      </td>
       <td className={styles.cell}>
         <div className={styles.text}>
           {new Date(entry.date).toLocaleDateString('en-IN', {

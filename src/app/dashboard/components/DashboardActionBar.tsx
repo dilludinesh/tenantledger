@@ -61,10 +61,6 @@ export const DashboardActionBar: React.FC<DashboardActionBarProps> = ({
           </span>
         </button>
       </div>
-      
-      <div className="text-sm text-gray-600">
-        Showing {filteredEntriesCount} of {totalEntriesCount} entries
-      </div>
     </div>
   );
 };
