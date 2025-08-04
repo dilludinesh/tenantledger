@@ -95,14 +95,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <div className="mt-3 flex flex-row gap-3">
               <button
                 onClick={onSignOut}
-                className="btn-signout px-6 py-2 text-base font-bold shadow-md"
+                className="btn-signout px-6 py-3 rounded-full text-base font-bold shadow-md"
                 aria-label="Confirm sign out"
               >
                 Confirm Sign Out
               </button>
               <button
                 onClick={onCancelSignOut}
-                className="btn btn-outline"
+                className="btn btn-outline px-6 py-3 rounded-full"
                 aria-label="Cancel sign out"
               >
                 Cancel
