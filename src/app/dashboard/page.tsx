@@ -16,17 +16,8 @@ import toast from 'react-hot-toast';
 import { processLedgerEntries } from '@/utils/ledgerUtils';
 import { exportToCSV } from '@/utils/export';
 import { useKeyboardShortcuts, createCommonShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { filterEntries, FilterOptions } from '@/utils/filterUtils';
 import styles from './glass.module.css';
-
-interface FilterOptions {
-  dateFrom?: string;
-  dateTo?: string;
-  tenant?: string;
-  categories: string[];
-  amountMin?: number;
-  amountMax?: number;
-  searchTerm?: string;
-}
 
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
@@ -109,51 +100,7 @@ export default function DashboardPage() {
   };
 
   // Filter entries based on current filters
-  const filteredEntries = useMemo(() => {
-    return entries.filter(entry => {
-      // Date range filter
-      if (filters.dateFrom) {
-        const entryDate = new Date(entry.date);
-        const fromDate = new Date(filters.dateFrom);
-        if (entryDate < fromDate) return false;
-      }
-      
-      if (filters.dateTo) {
-        const entryDate = new Date(entry.date);
-        const toDate = new Date(filters.dateTo);
-        if (entryDate > toDate) return false;
-      }
-
-      // Tenant filter
-      if (filters.tenant && entry.tenant !== filters.tenant) {
-        return false;
-      }
-
-      // Category filter
-      if (filters.categories.length > 0 && !filters.categories.includes(entry.category)) {
-        return false;
-      }
-
-      // Amount range filter
-      if (filters.amountMin !== undefined && entry.amount < filters.amountMin) {
-        return false;
-      }
-      
-      if (filters.amountMax !== undefined && entry.amount > filters.amountMax) {
-        return false;
-      }
-
-      // Search term filter
-      if (filters.searchTerm) {
-        const searchLower = filters.searchTerm.toLowerCase();
-        const matchesDescription = entry.description.toLowerCase().includes(searchLower);
-        const matchesTenant = entry.tenant.toLowerCase().includes(searchLower);
-        if (!matchesDescription && !matchesTenant) return false;
-      }
-
-      return true;
-    });
-  }, [entries, filters]);
+  const filteredEntries = useMemo(() => filterEntries(entries, filters), [entries, filters]);
 
   // Get unique tenants for filter dropdown
   const uniqueTenants = useMemo(() => {

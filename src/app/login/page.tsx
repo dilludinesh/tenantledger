@@ -1,23 +1,16 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 import GoogleButton from '@/components/GoogleButton';
 import styles from '../dashboard/glass.module.css';
 
 export default function LoginPage() {
-  const { user, loading, signInWithGoogle, authError } = useAuth();
-  const router = useRouter();
+  useAuthRedirect();
+  const { loading, signInWithGoogle, authError } = useAuth();
   const [signingIn, setSigningIn] = useState(false);
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user && !loading) {
-      router.push('/dashboard');
-    }
-  }, [user, loading, router]);
 
   // Show error toast if there's an auth error
   useEffect(() => {
@@ -63,15 +56,20 @@ export default function LoginPage() {
             {authError === 'Sign in was cancelled' && (
               <div className="mt-4 w-full flex justify-center">
                 <div
-                  className="bg-gradient-to-r from-rose-100 to-rose-50 border border-rose-300 rounded-lg px-4 py-3 shadow-sm flex items-center gap-2"
+                  className="bg-gradient-to-r from-rose-100 to-rose-50 border border-rose-300 rounded-lg px-4 py-3 shadow-sm flex flex-col items-center gap-2"
                   style={{ maxWidth: 340 }}
                 >
-                  <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
-                  </svg>
-                  <span className="text-rose-800 text-sm font-medium text-center">
-                    Sign-in was cancelled. Please click the button above and complete the sign-in process to continue.
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                    </svg>
+                    <span className="text-rose-800 text-sm font-medium text-center">
+                      Sign-in was cancelled.
+                    </span>
+                  </div>
+                  <button onClick={handleSignIn} className="text-sm text-blue-600 hover:underline font-semibold">
+                    Please try again.
+                  </button>
                 </div>
               </div>
             )}
