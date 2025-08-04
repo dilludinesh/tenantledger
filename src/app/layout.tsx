@@ -18,6 +18,82 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
         <meta name="description" content="Manage tenant finances" />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900" suppressHydrationWarning={true}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Comprehensive error filtering for extensions and COOP issues
+              (function() {
+                if (typeof window === 'undefined') return;
+                
+                // Filter console.error
+                const originalError = console.error;
+                console.error = function(...args) {
+                  const message = args[0]?.toString?.() || '';
+                  
+                  // Extension errors
+                  if (message.includes('runtime.lastError') || 
+                      message.includes('message port closed') ||
+                      message.includes('Extension context invalidated') ||
+                      message.includes('chrome-extension://') ||
+                      message.includes('moz-extension://')) {
+                    return;
+                  }
+                  
+                  // COOP/Firebase Auth errors (these are warnings, not breaking errors)
+                  if (message.includes('Cross-Origin-Opener-Policy') ||
+                      message.includes('window.closed call') ||
+                      message.includes('window.close call')) {
+                    return;
+                  }
+                  
+                  originalError.apply(console, args);
+                };
+                
+                // Filter console.warn for COOP warnings
+                const originalWarn = console.warn;
+                console.warn = function(...args) {
+                  const message = args[0]?.toString?.() || '';
+                  
+                  if (message.includes('Cross-Origin-Opener-Policy') ||
+                      message.includes('window.closed call') ||
+                      message.includes('window.close call')) {
+                    return;
+                  }
+                  
+                  originalWarn.apply(console, args);
+                };
+                
+                // Handle window errors
+                const originalOnError = window.onerror;
+                window.onerror = function(message, source, lineno, colno, error) {
+                  const msg = message?.toString?.() || '';
+                  
+                  if (msg.includes('runtime.lastError') ||
+                      msg.includes('message port closed') ||
+                      msg.includes('Cross-Origin-Opener-Policy')) {
+                    return true; // Suppress error
+                  }
+                  
+                  if (originalOnError) {
+                    return originalOnError(message, source, lineno, colno, error);
+                  }
+                  return false;
+                };
+                
+                // Handle unhandled promise rejections
+                window.addEventListener('unhandledrejection', function(event) {
+                  const message = event.reason?.toString?.() || '';
+                  
+                  if (message.includes('runtime.lastError') ||
+                      message.includes('message port closed') ||
+                      message.includes('Cross-Origin-Opener-Policy')) {
+                    event.preventDefault();
+                  }
+                });
+              })();
+            `,
+          }}
+        />
         <ErrorBoundary>
           <Providers>
             <ClientBody>
