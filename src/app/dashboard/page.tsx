@@ -200,7 +200,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12 bg-gradient-to-br from-blue-50 to-purple-100">
+    <div className="min-h-screen p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="mb-10">

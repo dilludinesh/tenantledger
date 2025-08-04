@@ -54,7 +54,7 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
           }}
         />
       </head>
-      <body className="min-h-screen bg-gray-50 dark:bg-gray-900" suppressHydrationWarning={true}>
+      <body className="min-h-screen" suppressHydrationWarning={true}>
         <script
           dangerouslySetInnerHTML={{
             __html: `
