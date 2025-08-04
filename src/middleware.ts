@@ -4,7 +4,10 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  // Minimal security headers for Firebase Auth compatibility
+  // Explicitly disable COOP for Firebase Auth compatibility
+  response.headers.set('Cross-Origin-Opener-Policy', 'unsafe-none');
+  
+  // Minimal security headers
   response.headers.set('X-DNS-Prefetch-Control', 'off');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');

@@ -14,12 +14,16 @@ const nextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
-  // Minimal security headers for Firebase Auth compatibility
+  // Headers optimized for Firebase Auth - explicitly disable COOP
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'unsafe-none',
+          },
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',

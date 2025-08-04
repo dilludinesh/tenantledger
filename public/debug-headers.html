@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Debug Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .header-value {
+            color: #666;
+            font-family: monospace;
+            background: #f8f8f8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Header Debug Tool</h1>
+    <p>This tool helps debug HTTP headers that might be affecting Firebase Authentication.</p>
+    
+    <div id="results">
+        <div class="status">Loading header information...</div>
+    </div>
+
+    <script>
+        async function checkHeaders() {
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                // Fetch current page to check headers
+                const response = await fetch(window.location.href, {
+                    method: 'HEAD'
+                });
+                
+                const headers = {};
+                for (let [key, value] of response.headers.entries()) {
+                    headers[key] = value;
+                }
+                
+                let html = '<h2>📋 Current Response Headers</h2>';
+                
+                // Check for problematic headers
+                const coopHeader = headers['cross-origin-opener-policy'];
+                const frameOptions = headers['x-frame-options'];
+                
+                if (coopHeader) {
+                    const isProblematic = coopHeader !== 'unsafe-none' && coopHeader !== '';
+                    html += `<div class="header-info">
+                        <div class="header-name">Cross-Origin-Opener-Policy</div>
+                        <div class="header-value">${coopHeader}</div>
+                        <div class="status ${isProblematic ? 'error' : 'success'}">
+                            ${isProblematic ? '❌ This may cause Firebase Auth issues' : '✅ Should work with Firebase Auth'}
+                        </div>
+                    </div>`;
+                } else {
+                    html += `<div class="header-info">
+                        <div class="header-name">Cross-Origin-Opener-Policy</div>
+                        <div class="header-value">Not set</div>
+                        <div class="status success">✅ No COOP restrictions</div>
+                    </div>`;
+                }
+                
+                if (frameOptions) {
+                    html += `<div class="header-info">
+                        <div class="header-name">X-Frame-Options</div>
+                        <div class="header-value">${frameOptions}</div>
+                    </div>`;
+                }
+                
+                // Show all headers
+                html += '<h3>🔧 All Headers</h3>';
+                Object.entries(headers).sort().forEach(([key, value]) => {
+                    html += `<div class="header-info">
+                        <div class="header-name">${key}</div>
+                        <div class="header-value">${value}</div>
+                    </div>`;
+                });
+                
+                // Add recommendations
+                html += `<div class="status warning">
+                    <h3>💡 Firebase Auth Recommendations</h3>
+                    <ul>
+                        <li>Cross-Origin-Opener-Policy should be "unsafe-none" or not set</li>
+                        <li>X-Frame-Options should be "SAMEORIGIN" or not set for popups</li>
+                        <li>If you see COOP errors, the headers above show what's being sent</li>
+                    </ul>
+                </div>`;
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="status error">
+                    ❌ Error checking headers: ${error.message}
+                </div>`;
+            }
+        }
+        
+        // Check headers when page loads
+        checkHeaders();
+        
+        // Add refresh button
+        document.body.innerHTML += `
+            <button onclick="checkHeaders()" style="
+                background: #007bff; 
+                color: white; 
+                border: none; 
+                padding: 10px 20px; 
+                border-radius: 4px; 
+                cursor: pointer;
+                margin: 20px 0;
+            ">🔄 Refresh Headers</button>
+        `;
+    </script>
+</body>
+</html>
