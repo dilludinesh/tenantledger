@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { CATEGORIES } from '@/types/ledger';
 
 // Base entry schema
 export const ledgerEntrySchema = z.object({
@@ -19,9 +18,7 @@ export const ledgerEntrySchema = z.object({
     .max(10000000, 'Amount must be less than ₹1,00,00,000')
     .finite('Amount must be a valid number'),
   
-  category: z.enum(CATEGORIES, {
-    errorMap: () => ({ message: 'Please select a valid category' })
-  }),
+  category: z.enum(['Rent', 'Maintenance', 'Security Deposit', 'Utilities', 'Other']),
   
   description: z
     .string()
@@ -83,18 +80,18 @@ export const ledgerEntryFormSchema = z.object({
   return {
     tenant: data.tenant.trim(),
     amount,
-    category: data.category as typeof CATEGORIES[number],
+    category: data.category as 'Rent' | 'Maintenance' | 'Security Deposit' | 'Utilities' | 'Other',
     description: data.description?.trim() || '',
     date,
   };
-}).pipe(ledgerEntrySchema);
+});
 
 // Filter schema
 export const ledgerFiltersSchema = z.object({
   dateFrom: z.string().optional(),
   dateTo: z.string().optional(),
   tenant: z.string().optional(),
-  categories: z.array(z.enum(CATEGORIES)).default([]),
+  categories: z.array(z.enum(['Rent', 'Maintenance', 'Security Deposit', 'Utilities', 'Other'])).default([]),
   amountMin: z.number().positive().optional(),
   amountMax: z.number().positive().optional(),
   searchTerm: z.string().optional(),
@@ -158,9 +155,9 @@ export function validatePagination(data: unknown) {
 export function formatZodError(error: z.ZodError): Record<string, string> {
   const formattedErrors: Record<string, string> = {};
   
-  error.errors.forEach((err) => {
-    const path = err.path.join('.');
-    formattedErrors[path] = err.message;
+  error.issues.forEach((issue) => {
+    const path = issue.path.join('.');
+    formattedErrors[path] = issue.message;
   });
   
   return formattedErrors;

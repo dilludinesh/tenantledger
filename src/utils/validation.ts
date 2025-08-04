@@ -2,8 +2,7 @@ import { CATEGORIES } from '@/types/ledger';
 import { detectSQLInjection, detectXSS } from './security';
 import { 
   validateLedgerEntryForm, 
-  formatZodError, 
-  type LedgerEntryFormInput 
+  formatZodError
 } from '@/schemas/ledgerSchema';
 
 export interface ValidationError {

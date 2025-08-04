@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getEntries, addEntry, updateEntry } from '@/services/ledgerService';
-import { LedgerEntry } from '@/types/ledger';
+import { LedgerEntry, LedgerCategory } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
@@ -83,7 +83,7 @@ export default function DashboardPage() {
       const entryData: Omit<LedgerEntry, 'id' | 'createdAt' | 'updatedAt'> = {
         tenant: values.tenant,
         amount: Number(values.amount) || 0,
-        category: values.category,
+        category: values.category as LedgerCategory,
         description: values.description,
         date: new Date(values.date),
         userId: user.uid,

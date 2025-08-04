@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { LedgerEntry } from '@/types/ledger';
 import { useBulkDeleteEntries } from '@/hooks/useLedgerData';
-import toast from 'react-hot-toast';
 
 interface BulkActionsProps {
   selectedEntries: Array<LedgerEntry & { id: string }>;

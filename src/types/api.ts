@@ -68,9 +68,10 @@ export function createLedgerError(
 }
 
 // Helper to handle Firebase errors
-export function handleFirebaseError(error: any): LedgerError {
-  if (error.code) {
-    switch (error.code) {
+export function handleFirebaseError(error: unknown): LedgerError {
+  if (error && typeof error === 'object' && 'code' in error) {
+    const firebaseError = error as { code: string; message?: string };
+    switch (firebaseError.code) {
       case 'permission-denied':
         return createLedgerError(ERROR_CODES.PERMISSION_DENIED, 'Access denied');
       case 'not-found':
@@ -80,9 +81,10 @@ export function handleFirebaseError(error: any): LedgerError {
       case 'unavailable':
         return createLedgerError(ERROR_CODES.NETWORK_ERROR, 'Service temporarily unavailable');
       default:
-        return createLedgerError(ERROR_CODES.SERVER_ERROR, error.message || 'Database error');
+        return createLedgerError(ERROR_CODES.SERVER_ERROR, firebaseError.message || 'Database error');
     }
   }
   
-  return createLedgerError(ERROR_CODES.UNKNOWN_ERROR, error.message || 'An unexpected error occurred');
+  const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+  return createLedgerError(ERROR_CODES.UNKNOWN_ERROR, errorMessage);
 }

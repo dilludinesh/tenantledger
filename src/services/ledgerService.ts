@@ -16,8 +16,8 @@ import {
   DocumentSnapshot
 } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
-import { LedgerEntry, LedgerFilters } from '@/types/ledger';
-import { PaginationParams, PaginatedResponse, handleFirebaseError, createLedgerError, ERROR_CODES } from '@/types/api';
+import { LedgerEntry, LedgerFilters, LedgerCategory } from '@/types/ledger';
+import { PaginationParams, PaginatedResponse, handleFirebaseError, createLedgerError, ERROR_CODES, LedgerError } from '@/types/api';
 import { logDataAccess, logDataModification } from '@/utils/securityLogger';
 import { sanitizeInput } from '@/utils/validation';
 import { isSSR } from '@/utils/environment';
@@ -128,7 +128,7 @@ export const deleteMultipleEntries = async (userId: string, entryIds: string[]):
     
     await Promise.all(deletePromises);
     
-    logDataModification('ledger_entry', 'bulk_delete', userId, { count: entryIds.length });
+    logDataModification('ledger_entry', 'bulk_delete', userId);
   } catch (error) {
     throw handleFirebaseError(error);
   }
@@ -243,7 +243,7 @@ export const getEntriesPaginated = async (
 };
 
 // Helper function to normalize entry data
-function normalizeEntryData(docSnap: DocumentSnapshot, data: any, userId: string): LedgerEntry & { id: string } {
+function normalizeEntryData(docSnap: DocumentSnapshot, data: Record<string, unknown>, userId: string): LedgerEntry & { id: string } {
   const normalizeStringField = (primary: unknown, fallback: unknown, defaultValue: string): string => {
     if (typeof primary === 'string') return primary;
     if (typeof fallback === 'string') return fallback;
@@ -256,16 +256,26 @@ function normalizeEntryData(docSnap: DocumentSnapshot, data: any, userId: string
     return defaultValue;
   };
   
+  const normalizeDate = (primary: unknown, fallback: unknown): Date => {
+    if (primary && typeof primary === 'object' && 'toDate' in primary && typeof primary.toDate === 'function') {
+      return primary.toDate();
+    }
+    if (fallback && typeof fallback === 'object' && 'toDate' in fallback && typeof fallback.toDate === 'function') {
+      return fallback.toDate();
+    }
+    return new Date();
+  };
+
   return {
     id: docSnap.id,
     tenant: normalizeStringField(data.tenant, data.Tenant, 'Unknown'),
     amount: normalizeNumberField(data.amount, data.Amount, 0),
-    category: normalizeStringField(data.category, data.Category, 'Other'),
+    category: normalizeStringField(data.category, data.Category, 'Other') as LedgerCategory,
     description: normalizeStringField(data.description, data.Description, ''),
-    date: data.date?.toDate ? data.date.toDate() : (data.Date?.toDate ? data.Date.toDate() : new Date()),
-    createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.CreatedAt?.toDate ? data.CreatedAt.toDate() : new Date()),
-    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.UpdatedAt?.toDate ? data.UpdatedAt.toDate() : new Date()),
-    userId: data.userId || userId,
+    date: normalizeDate(data.date, data.Date),
+    createdAt: normalizeDate(data.createdAt, data.CreatedAt),
+    updatedAt: normalizeDate(data.updatedAt, data.UpdatedAt),
+    userId: (typeof data.userId === 'string' ? data.userId : userId),
   };
 }
 
@@ -387,7 +397,7 @@ export const searchEntries = async (
       ? processedEntries[processedEntries.length - 1].id 
       : undefined;
 
-    logDataAccess('ledger_search', userId, { filters, resultCount: processedEntries.length });
+    logDataAccess('ledger_search', userId);
 
     return {
       data: processedEntries,
