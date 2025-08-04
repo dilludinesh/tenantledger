@@ -227,7 +227,7 @@ export default function DashboardPage() {
             <div className="flex flex-col w-full sm:w-auto">
               {user && (
                 <div className="flex flex-col gap-1 p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-sm">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Welcome</span>
+                  <span className="text-xs font-medium text-gray-500">Welcome</span>
                   <span 
                     className="text-xl font-bold"
                     style={{
