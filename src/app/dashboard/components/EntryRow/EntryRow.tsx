@@ -112,14 +112,14 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
             <div className="flex items-center space-x-1">
               <button
                 onClick={handleDelete}
-                className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                className="px-2 py-1 text-xs bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
                 disabled={isDeleting}
               >
                 {isDeleting ? 'Deleting...' : 'Confirm'}
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+                className="px-2 py-1 text-xs bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition-colors"
                 disabled={isDeleting}
               >
                 Cancel

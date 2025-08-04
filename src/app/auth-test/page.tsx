@@ -90,7 +90,7 @@ export default function AuthTestPage() {
 
               <button
                 onClick={logout}
-                className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
+                className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition-colors font-medium"
               >
                 Sign Out
               </button>

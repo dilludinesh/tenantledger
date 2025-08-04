@@ -76,7 +76,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
           <button
             onClick={() => setShowSignOutConfirm(true)}
-            className="btn-signout flex items-center space-x-2 px-6 py-2 text-base font-bold shadow-md"
+            className="btn-signout flex items-center space-x-2 px-6 py-3 text-base font-bold shadow-md"
             aria-label="Sign out"
             style={{ minWidth: 120 }}
           >

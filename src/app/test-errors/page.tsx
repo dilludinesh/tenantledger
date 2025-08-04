@@ -66,7 +66,7 @@ export default function TestErrorsPage() {
                   console.error('🔴 Test real error');
                   console.log('✅ Manual test triggered');
                 }}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-colors font-medium"
               >
                 🔄 Test Error Filtering Again
               </button>
