@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { LedgerError, ERROR_CODES } from '@/types/api';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -35,10 +36,67 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Log error to an error reporting service
     console.error('Error caught by boundary:', error, errorInfo);
+    
+    // Log to external service in production
+    if (process.env.NODE_ENV === 'production') {
+      // TODO: Send to error tracking service (Sentry, etc.)
+      console.error('Production error:', {
+        error: error.message,
+        stack: error.stack,
+        errorInfo,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      });
+    }
+    
     this.setState({
       error,
       errorInfo,
     });
+  }
+
+  private getErrorMessage(error: Error): { title: string; message: string; actionable: boolean } {
+    if (error instanceof LedgerError) {
+      switch (error.code) {
+        case ERROR_CODES.NETWORK_ERROR:
+          return {
+            title: 'Connection Problem',
+            message: 'Please check your internet connection and try again.',
+            actionable: true
+          };
+        case ERROR_CODES.UNAUTHORIZED:
+          return {
+            title: 'Authentication Required',
+            message: 'Please sign in again to continue.',
+            actionable: true
+          };
+        case ERROR_CODES.PERMISSION_DENIED:
+          return {
+            title: 'Access Denied',
+            message: 'You don\'t have permission to access this resource.',
+            actionable: false
+          };
+        case ERROR_CODES.QUOTA_EXCEEDED:
+          return {
+            title: 'Service Limit Reached',
+            message: 'Please try again later or contact support.',
+            actionable: true
+          };
+        default:
+          return {
+            title: 'Something went wrong',
+            message: error.message || 'An unexpected error occurred.',
+            actionable: true
+          };
+      }
+    }
+    
+    return {
+      title: 'Unexpected Error',
+      message: 'We encountered an unexpected problem. Please try refreshing the page.',
+      actionable: true
+    };
   }
 
   render(): ReactNode {
@@ -69,13 +127,19 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 </svg>
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
-              Something went wrong
-            </h1>
-            <p className="text-gray-600 text-center mb-6">
-              We&apos;ve encountered an unexpected error. Please try refreshing the page or contact
-              support if the problem persists.
-            </p>
+            {(() => {
+              const errorInfo = this.state.error ? this.getErrorMessage(this.state.error) : { title: 'Something went wrong', message: 'An unexpected error occurred.', actionable: true };
+              return (
+                <>
+                  <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+                    {errorInfo.title}
+                  </h1>
+                  <p className="text-gray-600 text-center mb-6">
+                    {errorInfo.message}
+                  </p>
+                </>
+              );
+            })()}
             <div className="flex justify-center gap-3">
               <button
                 onClick={() => {

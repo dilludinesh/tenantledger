@@ -1,5 +1,10 @@
 import { CATEGORIES } from '@/types/ledger';
 import { detectSQLInjection, detectXSS } from './security';
+import { 
+  validateLedgerEntryForm, 
+  formatZodError, 
+  type LedgerEntryFormInput 
+} from '@/schemas/ledgerSchema';
 
 export interface ValidationError {
   field: string;
@@ -85,6 +90,19 @@ export function validateEntryForm(data: EntryFormData): ValidationError[] {
 }
 
 export function validateLedgerEntry(data: EntryFormData): { isValid: boolean; errors: Record<string, string> } {
+  // Use Zod validation first
+  const zodResult = validateLedgerEntryForm(data);
+  
+  if (zodResult.success) {
+    return { isValid: true, errors: {} };
+  }
+  
+  const errors = formatZodError(zodResult.error);
+  return { isValid: false, errors };
+}
+
+// Legacy function for backward compatibility
+export function validateLedgerEntryLegacy(data: EntryFormData): { isValid: boolean; errors: Record<string, string> } {
   const validationErrors = validateEntryForm(data);
   const errors: Record<string, string> = {};
   
