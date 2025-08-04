@@ -412,13 +412,13 @@ export default function DashboardPage() {
                 <div className="flex gap-4 justify-center">
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
-                    className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-xl transition-colors"
+                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-md"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors"
+                    className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-xl transition-colors"
                   >
                     Sign Out
                   </button>
