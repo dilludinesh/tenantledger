@@ -226,38 +226,36 @@ export default function DashboardPage() {
             {/* Welcome/User Info left */}
             <div className="flex flex-col w-full sm:w-auto">
               {user && (
-                <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-lg`} style={{borderRadius: 24}}>
-                  <div className="flex flex-col gap-2 p-4">
-                    <span className="text-xs text-gray-400">Welcome</span>
-                    <span 
-                      className="text-lg font-semibold"
-                      style={{
-                        background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                      }}
-                    >
-                      {user.displayName || user.email?.split('@')[0] || 'User'}
+                <div className="flex flex-col gap-1 p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-sm">
+                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Welcome</span>
+                  <span 
+                    className="text-xl font-bold"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    {user.displayName || user.email?.split('@')[0] || 'User'}
+                  </span>
+                  {user.email && (
+                    <span className="text-gray-600 text-sm font-medium truncate max-w-[220px]">
+                      {user.email}
                     </span>
-                    {user.email && (
-                      <span className="text-gray-500 text-xs truncate max-w-[200px] sm:max-w-[180px]">
-                        {user.email}
-                      </span>
-                    )}
-                    <span 
-                      className="font-mono text-xs break-all"
-                      style={{
-                        background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                      }}
-                    >
-                      <span className="text-gray-400">UID: </span>
-                      <span className="font-medium">{user.uid}</span>
-                    </span>
-                  </div>
+                  )}
+                  <span 
+                    className="font-mono text-xs font-semibold mt-1"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    <span className="text-gray-500">ID: </span>
+                    <span>{user.uid}</span>
+                  </span>
                 </div>
               )}
             </div>
