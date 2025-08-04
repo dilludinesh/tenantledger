@@ -412,13 +412,36 @@ export default function DashboardPage() {
                 <div className="flex gap-4 justify-center">
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-md"
+                    className="px-6 py-3 rounded-xl transition-colors"
+                    style={{
+                      backgroundColor: '#2563eb',
+                      color: 'white',
+                      fontWeight: '600',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-xl transition-colors"
+                    className="px-6 py-3 rounded-xl transition-colors"
+                    style={{
+                      backgroundColor: '#e5e7eb',
+                      color: '#374151',
+                      fontWeight: '500'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%)';
+                      e.target.style.color = 'white';
+                      e.target.style.boxShadow = '0 4px 16px 0 rgba(255,65,108,0.18)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = '#e5e7eb';
+                      e.target.style.color = '#374151';
+                      e.target.style.boxShadow = 'none';
+                    }}
                   >
                     Sign Out
                   </button>
