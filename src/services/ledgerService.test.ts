@@ -66,7 +66,7 @@ describe('ledgerService', () => {
       const mockEntryData = {
         tenant: 'John Doe',
         amount: 1000,
-        category: 'Rent',
+        category: 'Rent' as const,
         description: 'Test entry',
         date: new Date()
       };

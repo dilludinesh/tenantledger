@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EntryForm } from './EntryForm';
+import { LedgerEntry } from '@/types/ledger';
 
 // Mock the CSS module
 jest.mock('./EntryForm.module.css', () => ({

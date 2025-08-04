@@ -419,8 +419,8 @@ export default function DashboardPage() {
                       fontWeight: '600',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#2563eb'}
+                    onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#1d4ed8'}
+                    onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#2563eb'}
                   >
                     Cancel
                   </button>
@@ -433,14 +433,16 @@ export default function DashboardPage() {
                       fontWeight: '500'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = 'linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%)';
-                      e.target.style.color = 'white';
-                      e.target.style.boxShadow = '0 4px 16px 0 rgba(255,65,108,0.18)';
+                      const target = e.target as HTMLElement;
+                      target.style.background = 'linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%)';
+                      target.style.color = 'white';
+                      target.style.boxShadow = '0 4px 16px 0 rgba(255,65,108,0.18)';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.background = '#e5e7eb';
-                      e.target.style.color = '#374151';
-                      e.target.style.boxShadow = 'none';
+                      const target = e.target as HTMLElement;
+                      target.style.background = '#e5e7eb';
+                      target.style.color = '#374151';
+                      target.style.boxShadow = 'none';
                     }}
                   >
                     Sign Out
