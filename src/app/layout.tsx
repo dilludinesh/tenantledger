@@ -16,6 +16,43 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
       <head>
         <title>Tenant Ledger</title>
         <meta name="description" content="Manage tenant finances" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Immediate error filtering - must run synchronously
+              (function() {
+                const originalError = console.error;
+                const originalWarn = console.warn;
+                
+                const filterPatterns = [
+                  'runtime.lastError',
+                  'message port closed',
+                  'Cross-Origin-Opener-Policy',
+                  'window.closed call',
+                  'window.close call',
+                  'chrome-extension://',
+                  'Extension context invalidated'
+                ];
+                
+                function shouldFilter(message) {
+                  if (!message) return false;
+                  const str = String(message).toLowerCase();
+                  return filterPatterns.some(pattern => str.includes(pattern.toLowerCase()));
+                }
+                
+                console.error = function(...args) {
+                  if (shouldFilter(args[0])) return;
+                  originalError.apply(console, args);
+                };
+                
+                console.warn = function(...args) {
+                  if (shouldFilter(args[0])) return;
+                  originalWarn.apply(console, args);
+                };
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="min-h-screen bg-gray-50 dark:bg-gray-900" suppressHydrationWarning={true}>
         <script
