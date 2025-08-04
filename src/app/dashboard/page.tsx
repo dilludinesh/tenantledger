@@ -229,7 +229,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col gap-1 p-3 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/20 shadow-sm">
                   <span className="text-xs font-medium text-gray-500">Welcome</span>
                   <span 
-                    className="text-xl font-bold"
+                    className="text-xl font-normal"
                     style={{
                       background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                       WebkitBackgroundClip: 'text',
@@ -245,7 +245,7 @@ export default function DashboardPage() {
                     </span>
                   )}
                   <span 
-                    className="font-mono text-xs font-semibold mt-1"
+                    className="font-mono text-xs font-normal mt-1"
                     style={{
                       background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
                       WebkitBackgroundClip: 'text',
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                       textShadow: '0 1px 2px rgba(0,0,0,0.05)'
                     }}
                   >
-                    <span className="text-gray-500">ID: </span>
+                    <span className="text-gray-500">User ID: </span>
                     <span>{user.uid}</span>
                   </span>
                 </div>
@@ -278,24 +278,7 @@ export default function DashboardPage() {
                 </svg>
                 <span>Sign Out</span>
               </button>
-              {showSignOutConfirm && (
-                <div className="mt-3 flex flex-row gap-3">
-                  <button
-                    onClick={handleSignOut}
-                    className="btn-signout px-6 py-2 text-base font-bold shadow-md"
-                    aria-label="Confirm sign out"
-                  >
-                    Confirm Sign Out
-                  </button>
-                  <button
-                    onClick={() => setShowSignOutConfirm(false)}
-                    className="btn btn-outline"
-                    aria-label="Cancel sign out"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
+
             </div>
           </div>
         </header>
@@ -395,6 +378,55 @@ export default function DashboardPage() {
           isOpen={showHelp}
           onClose={() => setShowHelp(false)}
         />
+
+        {/* Sign Out Confirmation Modal */}
+        {showSignOutConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop with soft blur */}
+            <div 
+              className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+              onClick={() => setShowSignOutConfirm(false)}
+            />
+            
+            {/* Modal Content */}
+            <div className="relative bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 max-w-md mx-4 transform transition-all">
+              <div className="text-center">
+                {/* Icon */}
+                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+                  <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  Sign Out
+                </h3>
+                
+                {/* Message */}
+                <p className="text-gray-600 mb-8">
+                  Are you sure you want to sign out of your account?
+                </p>
+                
+                {/* Buttons */}
+                <div className="flex gap-4 justify-center">
+                  <button
+                    onClick={() => setShowSignOutConfirm(false)}
+                    className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSignOut}
+                    className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
