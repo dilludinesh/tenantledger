@@ -208,7 +208,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all ${
+          className={`flex-1 py-3 px-6 rounded-full font-semibold transition-all ${
             isLoading
               ? 'bg-blue-400 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'
@@ -233,7 +233,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
           type="button"
           onClick={handleReset}
           disabled={isLoading}
-          className="py-3 px-6 rounded-lg font-semibold transition-all border border-gray-300 text-gray-700 hover:bg-gray-50 active:scale-[0.98] shadow-sm disabled:opacity-50"
+          className="py-3 px-6 rounded-full font-semibold transition-all border border-gray-300 text-gray-700 hover:bg-gray-50 active:scale-[0.98] shadow-sm disabled:opacity-50"
         >
           {entryToEdit ? 'Cancel' : 'Reset'}
         </button>
