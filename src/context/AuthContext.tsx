@@ -117,35 +117,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthError(null);
     
     try {
+      const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import('firebase/auth');
+      const provider = new GoogleAuthProvider();
+      provider.addScope('email');
+      provider.addScope('profile');
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
       const auth = getAuth(getFirebaseApp());
-      const { signInWithGoogleEnhanced, getAuthErrorMessage } = await import('@/utils/authHelpers');
       
-      const result = await signInWithGoogleEnhanced(auth);
-      
-      if (result.success) {
-        if (result.requiresRedirect) {
+      // Try popup first, fallback to redirect if it fails
+      try {
+        await signInWithPopup(auth, provider);
+        logAuthSuccess('google_signin_popup');
+      } catch (popupError: unknown) {
+        const errorCode = popupError && typeof popupError === 'object' && 'code' in popupError 
+          ? (popupError as { code: string }).code 
+          : '';
+        
+        // If popup fails, try redirect
+        if (errorCode === 'auth/popup-blocked' || 
+            errorCode === 'auth/popup-closed-by-user' ||
+            errorCode === 'auth/cancelled-popup-request' ||
+            /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)) {
+          
           toast('Redirecting to Google Sign-In...', { 
             duration: 2000,
             icon: 'ℹ️'
           });
-          logAuthSuccess('google_signin_redirect');
-        } else {
-          logAuthSuccess('google_signin_popup');
+          await signInWithRedirect(auth, provider);
+          return;
         }
-      } else {
-        const errorMessage = result.error ? getAuthErrorMessage({ code: 'custom', message: result.error }) : 'Sign-in failed';
-        logAuthFailure(result.error || 'Unknown error');
-        setAuthError(errorMessage);
-        toast.error(errorMessage, { duration: 6000 });
+        throw popupError;
       }
     } catch (error) {
-      const { getAuthErrorMessage } = await import('@/utils/authHelpers');
-      const errorMessage = getAuthErrorMessage(error);
       logAuthFailure(error instanceof Error ? error.message : 'Unknown error');
-      setAuthError(errorMessage);
-      toast.error(errorMessage, { duration: 6000 });
+      handleAuthError(error);
     }
-  }, []);
+  }, [handleAuthError]);
 
   // Handle redirect result on page load
   useEffect(() => {
@@ -154,24 +164,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const handleRedirectResult = async () => {
       try {
         const auth = getAuth(getFirebaseApp());
-        const { handleRedirectResult, getAuthErrorMessage } = await import('@/utils/authHelpers');
-        const result = await handleRedirectResult(auth);
+        const { getRedirectResult } = await import('firebase/auth');
+        const result = await getRedirectResult(auth);
         
-        if (result.success) {
+        if (result) {
           logAuthSuccess('google_signin_redirect');
           toast.success('Successfully signed in!');
-        } else if (result.error) {
-          const errorMessage = getAuthErrorMessage({ code: 'custom', message: result.error });
-          logAuthFailure(result.error);
-          setAuthError(errorMessage);
-          toast.error(errorMessage, { duration: 6000 });
         }
       } catch (error) {
-        const { getAuthErrorMessage } = await import('@/utils/authHelpers');
-        const errorMessage = getAuthErrorMessage(error);
         logAuthFailure(error instanceof Error ? error.message : 'Redirect error');
-        setAuthError(errorMessage);
-        toast.error(errorMessage, { duration: 6000 });
+        handleAuthError(error);
       }
     };
 
