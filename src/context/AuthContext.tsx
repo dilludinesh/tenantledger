@@ -5,7 +5,6 @@ import {
   User, 
   onAuthStateChanged, 
   signOut as firebaseSignOut,
-  GoogleAuthProvider,
   getAuth 
 } from 'firebase/auth';
 import { getFirebaseApp } from '@/lib/firebase';
@@ -118,46 +117,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthError(null);
     
     try {
-      const provider = new GoogleAuthProvider();
-      provider.addScope('email');
-      provider.addScope('profile');
-      
-      // Configure provider for better popup handling
-      provider.setCustomParameters({
-        prompt: 'select_account'
-      });
-      
       const auth = getAuth(getFirebaseApp());
-      const { signInWithPopup, signInWithRedirect } = await import('firebase/auth');
+      const { signInWithGoogleEnhanced, getAuthErrorMessage } = await import('@/utils/authHelpers');
       
-      // Try popup first, fallback to redirect on mobile or if popup fails
-      try {
-        await signInWithPopup(auth, provider);
-        logAuthSuccess('google_signin_popup');
-      } catch (popupError: unknown) {
-        // If popup fails due to blocking or mobile, try redirect
-        const errorCode = popupError && typeof popupError === 'object' && 'code' in popupError 
-          ? (popupError as { code: string }).code 
-          : '';
-        
-        if (errorCode === 'auth/popup-blocked' || 
-            errorCode === 'auth/popup-closed-by-user' ||
-            /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)) {
-          
+      const result = await signInWithGoogleEnhanced(auth);
+      
+      if (result.success) {
+        if (result.requiresRedirect) {
           toast('Redirecting to Google Sign-In...', { 
             duration: 2000,
             icon: 'ℹ️'
           });
-          await signInWithRedirect(auth, provider);
-          return;
+          logAuthSuccess('google_signin_redirect');
+        } else {
+          logAuthSuccess('google_signin_popup');
         }
-        throw popupError;
+      } else {
+        const errorMessage = result.error ? getAuthErrorMessage({ code: 'custom', message: result.error }) : 'Sign-in failed';
+        logAuthFailure(result.error || 'Unknown error');
+        setAuthError(errorMessage);
+        toast.error(errorMessage, { duration: 6000 });
       }
     } catch (error) {
+      const { getAuthErrorMessage } = await import('@/utils/authHelpers');
+      const errorMessage = getAuthErrorMessage(error);
       logAuthFailure(error instanceof Error ? error.message : 'Unknown error');
-      handleAuthError(error);
+      setAuthError(errorMessage);
+      toast.error(errorMessage, { duration: 6000 });
     }
-  }, [handleAuthError]);
+  }, []);
 
   // Handle redirect result on page load
   useEffect(() => {
@@ -166,16 +154,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const handleRedirectResult = async () => {
       try {
         const auth = getAuth(getFirebaseApp());
-        const { getRedirectResult } = await import('firebase/auth');
-        const result = await getRedirectResult(auth);
+        const { handleRedirectResult, getAuthErrorMessage } = await import('@/utils/authHelpers');
+        const result = await handleRedirectResult(auth);
         
-        if (result) {
+        if (result.success) {
           logAuthSuccess('google_signin_redirect');
           toast.success('Successfully signed in!');
+        } else if (result.error) {
+          const errorMessage = getAuthErrorMessage({ code: 'custom', message: result.error });
+          logAuthFailure(result.error);
+          setAuthError(errorMessage);
+          toast.error(errorMessage, { duration: 6000 });
         }
       } catch (error) {
+        const { getAuthErrorMessage } = await import('@/utils/authHelpers');
+        const errorMessage = getAuthErrorMessage(error);
         logAuthFailure(error instanceof Error ? error.message : 'Redirect error');
-        handleAuthError(error);
+        setAuthError(errorMessage);
+        toast.error(errorMessage, { duration: 6000 });
       }
     };
 

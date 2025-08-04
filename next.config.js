@@ -44,11 +44,8 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload',
           },
-          // Remove Cross-Origin-Opener-Policy to allow Firebase Auth popups
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups',
-          },
+          // Completely remove Cross-Origin-Opener-Policy for Firebase Auth compatibility
+          // Note: COOP header removed to prevent Firebase Auth popup issues
           {
             key: 'Content-Security-Policy',
             value: [

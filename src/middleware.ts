@@ -4,12 +4,15 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  // Add security headers
+  // Add security headers optimized for Firebase Auth
   response.headers.set('X-DNS-Prefetch-Control', 'off');
-  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN'); // Changed from DENY for Firebase Auth
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
   response.headers.set('X-XSS-Protection', '1; mode=block');
+  
+  // Explicitly remove COOP header to prevent Firebase Auth issues
+  response.headers.delete('Cross-Origin-Opener-Policy');
 
   // Rate limiting and bot protection can be added here if needed
 
