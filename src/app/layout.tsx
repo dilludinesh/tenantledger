@@ -3,7 +3,7 @@ import './globals.css';
 import Providers from './Providers';
 import ClientBody from './ClientBody';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { SecurityDashboard } from '@/components/SecurityDashboard';
+
 
 export const metadata: Metadata = {
   title: 'Tenant Ledger',
@@ -136,7 +136,6 @@ function RootLayoutContent({ children }: { children: React.ReactNode }) {
             <ClientBody>
               {children}
             </ClientBody>
-            <SecurityDashboard />
           </Providers>
         </ErrorBoundary>
       </body>
