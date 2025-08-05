@@ -112,10 +112,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
           <div className="space-y-2">
             <div>
               <label htmlFor="date" className={styles.label}>
-                <span className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  Date
-                </span>
+                Date
               </label>
               <input
                 type="date"
@@ -130,10 +127,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
 
             <div>
               <label htmlFor="amount" className={styles.label}>
-                <span className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 8h6m-5 0a3 3 0 110 6H9l3 3 3-3h-1m-4-6V3a1 1 0 011-1h4a1 1 0 011 1v3M4 9h16M4 15h16" /></svg>
-                    Amount (₹)
-                </span>
+                Amount (₹)
               </label>
               <input
                 type="number"
@@ -154,10 +148,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
           <div className="space-y-2">
             <div>
               <label htmlFor="tenant" className={styles.label}>
-                  <span className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                      Tenant
-                  </span>
+                Tenant
               </label>
               <input
                 type="text"
@@ -173,10 +164,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
 
             <div>
               <label htmlFor="category" className={styles.label}>
-                  <span className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                      Category
-                  </span>
+                Category
               </label>
               <select
                 id="category"
@@ -199,10 +187,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
           <div className="space-y-2">
             <div>
               <label htmlFor="description" className={styles.label}>
-                  <span className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" /></svg>
-                      Description
-                  </span>
+                Description
               </label>
               <textarea
                 id="description"
