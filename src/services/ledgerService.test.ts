@@ -23,18 +23,28 @@ const mockUpdateDoc = jest.fn();
 const mockDeleteDoc = jest.fn();
 const mockOrderBy = jest.fn();
 const mockGetDoc = jest.fn();
+const mockLimit = jest.fn();
+const mockStartAfter = jest.fn();
+const mockWhere = jest.fn();
 
-jest.mock('firebase/firestore', () => ({
-  collection: (db: unknown, path: string) => mockCollection(db, path),
-  addDoc: (collectionRef: unknown, data: unknown) => mockAddDoc(collectionRef, data),
-  getDocs: (q: unknown) => mockGetDocs(q),
-  query: (collectionRef: unknown, ...constraints: unknown[]) => mockQuery(collectionRef, ...constraints),
-  doc: (db: unknown, path: string, id: string) => mockDoc(db, path, id),
-  updateDoc: (docRef: unknown, data: unknown) => mockUpdateDoc(docRef, data),
-  deleteDoc: (docRef: unknown) => mockDeleteDoc(docRef),
-  orderBy: (field: string, direction: unknown) => mockOrderBy(field, direction),
-  getDoc: (docRef: unknown) => mockGetDoc(docRef)
-}));
+jest.mock('firebase/firestore', () => {
+  const mockTimestamp = { fromDate: (date: Date) => date };
+  return {
+    collection: (db: unknown, path: string) => mockCollection(db, path),
+    addDoc: (collectionRef: unknown, data: unknown) => mockAddDoc(collectionRef, data),
+    getDocs: (q: unknown) => mockGetDocs(q),
+    query: (collectionRef: unknown, ...constraints: unknown[]) => mockQuery(collectionRef, ...constraints),
+    doc: (db: unknown, path: string, id: string) => mockDoc(db, path, id),
+    updateDoc: (docRef: unknown, data: unknown) => mockUpdateDoc(docRef, data),
+    deleteDoc: (docRef: unknown) => mockDeleteDoc(docRef),
+    orderBy: (field: string, direction: unknown) => mockOrderBy(field, direction),
+    getDoc: (docRef: unknown) => mockGetDoc(docRef),
+    limit: (limit: number) => mockLimit(limit),
+    startAfter: (doc: unknown) => mockStartAfter(doc),
+    where: (field: string, op: string, value: unknown) => mockWhere(field, op, value),
+    Timestamp: mockTimestamp,
+  };
+});
 
 describe('ledgerService', () => {
   const mockUserId = 'test-user-id';

@@ -30,7 +30,6 @@ export default function DashboardPage() {
   const [editingEntry, setEditingEntry] = useState<LedgerEntry & { id: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({ categories: [] });
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedEntries, setSelectedEntries] = useState<Array<LedgerEntry & { id: string }>>([]);
   const [showHelp, setShowHelp] = useState(false);
 
@@ -105,7 +104,7 @@ export default function DashboardPage() {
   };
 
   // Filter entries based on current filters and search term
-  const filteredEntries = useMemo(() => filterEntries(entries, filters, searchTerm), [entries, filters, searchTerm]);
+  const filteredEntries = useMemo(() => filterEntries(entries, filters), [entries, filters]);
 
   // Get unique tenants for filter dropdown
   const uniqueTenants = useMemo(() => {

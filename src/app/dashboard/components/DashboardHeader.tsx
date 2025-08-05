@@ -5,19 +5,13 @@ import styles from '../glass.module.css';
 interface DashboardHeaderProps {
   currentUser: User | null;
   demoUser: User | null;
-  showSignOutConfirm: boolean;
   setShowSignOutConfirm: (show: boolean) => void;
-  onSignOut: () => void;
-  onCancelSignOut: () => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   currentUser,
   demoUser,
-  showSignOutConfirm,
   setShowSignOutConfirm,
-  onSignOut,
-  onCancelSignOut,
 }) => {
   return (
     <header className="mb-10">
