@@ -162,7 +162,6 @@ export default function DashboardPage() {
           showFilters={showFilters}
           onToggleFilters={() => setShowFilters(!showFilters)}
           onExportCSV={handleExportCSV}
-          onShowHelp={() => setShowHelp(true)}
           filteredEntriesCount={filteredEntries.length}
           totalEntriesCount={entries.length}
         />
