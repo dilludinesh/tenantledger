@@ -45,72 +45,75 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       {/* User Info and Entry Form combined */}
       <div className="flex flex-col lg:flex-row items-stretch justify-between gap-4 mb-8 w-full">
         <div className={`${styles.glassCard} text-base w-full shadow-sm flex flex-col lg:flex-row items-stretch justify-between gap-0 p-4`} style={{ borderRadius: 20 }}>
+          {/* User Info Section with attached divider */}
           {currentUser && (
-            <div className="flex flex-col gap-2 lg:w-[25%] lg:min-w-[250px] relative">
-              {/* User Info */}
-              <div className="mb-1">
-                <span className="text-xs text-gray-400 block">Welcome</span>
-                <span
-                  className="text-lg font-semibold block"
-                  style={{
-                    background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, rgb(167, 41, 240) 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
-                  {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
-                </span>
-              </div>
-
-              {currentUser.email && (
-                <div className="text-gray-500 text-sm truncate">
-                  {currentUser.email}
+            <div className="flex lg:w-[25%] lg:min-w-[250px]">
+              <div className="flex flex-col gap-2 flex-1">
+                {/* User Info */}
+                <div className="mb-1">
+                  <span className="text-xs text-gray-400 block">Welcome</span>
+                  <span
+                    className="text-lg font-semibold block"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, rgb(167, 41, 240) 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
+                    {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
+                  </span>
                 </div>
-              )}
 
-              {/* Always visible UID - inline */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400">User ID:</span>
-                <span
-                  className="font-mono text-xs break-all font-medium"
-                  style={{
-                    background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                  }}
+                {currentUser.email && (
+                  <div className="text-gray-500 text-sm truncate">
+                    {currentUser.email}
+                  </div>
+                )}
+
+                {/* Always visible UID - inline */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">User ID:</span>
+                  <span
+                    className="font-mono text-xs break-all font-medium"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    {currentUser.uid}
+                  </span>
+                </div>
+
+                {/* Sign out button - previous style */}
+                <button
+                  onClick={() => setShowSignOutConfirm(true)}
+                  className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-6 w-fit"
+                  aria-label="Sign out"
                 >
-                  {currentUser.uid}
-                </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
               </div>
 
-              {/* Sign out button - previous style */}
-              <button
-                onClick={() => setShowSignOutConfirm(true)}
-                className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-2 w-fit"
-                aria-label="Sign out"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Sign Out</span>
-              </button>
+              {/* Divider attached to user info */}
+              <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent my-2 mr-8"></div>
             </div>
           )}
 
-          {/* First divider */}
-          <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-4 my-2"></div>
-
           {/* Entry Form Section */}
-          <div className="flex-1 lg:w-[45%] mt-3 lg:mt-0">
+          <div className="flex-1 lg:w-[45%] mt-3 lg:mt-0 lg:ml-2 lg:mr-4">
             {children}
           </div>
 

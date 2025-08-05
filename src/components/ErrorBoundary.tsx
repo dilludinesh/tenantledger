@@ -36,7 +36,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Log error to an error reporting service
     console.error('Error caught by boundary:', error, errorInfo);
-    
+
     // Log to external service in production
     if (process.env.NODE_ENV === 'production') {
       // TODO: Send to error tracking service (Sentry, etc.)
@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         url: window.location.href
       });
     }
-    
+
     this.setState({
       error,
       errorInfo,
@@ -91,7 +91,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           };
       }
     }
-    
+
     return {
       title: 'Unexpected Error',
       message: 'We encountered an unexpected problem. Please try refreshing the page.',
