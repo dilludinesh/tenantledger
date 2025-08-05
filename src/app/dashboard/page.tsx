@@ -157,14 +157,12 @@ export default function DashboardPage() {
           demoUser={null}
           setShowSignOutConfirm={setShowSignOutConfirm}
         >
-          <div className={`${styles.glassCard} shadow-sm`} style={{borderRadius: 20}}>
-            <EntryForm
-              onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
-              isLoading={mutation.isPending}
-              entryToEdit={editingEntry}
-              onCancelEdit={() => setEditingEntry(null)}
-            />
-          </div>
+          <EntryForm
+            onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
+            isLoading={mutation.isPending}
+            entryToEdit={editingEntry}
+            onCancelEdit={() => setEditingEntry(null)}
+          />
         </DashboardHeader>
 
         <DashboardActionBar
