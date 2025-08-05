@@ -12,7 +12,6 @@ import { DashboardHeader } from './components/DashboardHeader';
 import { DashboardActionBar } from './components/DashboardActionBar';
 import { FilterPanel } from '@/components/FilterPanel';
 import { FilterBadge } from '@/components/FilterBadge';
-import { HelpModal } from '@/components/HelpModal';
 import { BulkActions } from '@/components/BulkActions';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
@@ -20,6 +19,7 @@ import { processLedgerEntries } from '@/utils/ledgerUtils';
 import { exportToCSV } from '@/utils/export';
 import { useKeyboardShortcuts, createCommonShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { filterEntries, FilterOptions } from '@/utils/filterUtils';
+import { HelpModal } from '@/components/HelpModal';
 import styles from './glass.module.css';
 
 export default function DashboardPage() {
@@ -29,9 +29,9 @@ export default function DashboardPage() {
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<LedgerEntry & { id: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({ categories: [] });
   const [selectedEntries, setSelectedEntries] = useState<Array<LedgerEntry & { id: string }>>([]);
-  const [showHelp, setShowHelp] = useState(false);
 
   const handleSignOut = async () => {
     try {
