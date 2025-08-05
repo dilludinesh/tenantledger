@@ -178,7 +178,7 @@ export default function DashboardPage() {
 
         {/* Filters Panel */}
         {showFilters && !showSignOutConfirm && (
-          <div className="mb-6">
+          <div className={`mb-6 ${styles.glassCard}`} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
             <FilterPanel 
               onFilterChange={handleFilterChange}
               tenants={uniqueTenants}
@@ -189,7 +189,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Entry Form */}
           <div className="lg:col-span-1">
-            <div className={styles.glassCard} style={{borderRadius: 24, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
+            <div className={styles.glassCard} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
               <EntryForm
                 onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
                 isLoading={mutation.isPending}
@@ -200,7 +200,7 @@ export default function DashboardPage() {
           </div>
           {/* Entries Table */}
           <div className="lg:col-span-2">
-            <div className={styles.glassCard} style={{borderRadius: 24, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
+            <div className={styles.glassCard} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
               <EntriesTable
                 entries={filteredEntries}
                 isLoading={isFetching}
