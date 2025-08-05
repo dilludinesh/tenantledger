@@ -261,7 +261,7 @@ export default function DashboardPage() {
                 <div className="flex gap-8 justify-center">
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
-                    className="px-6 py-3 rounded-full transition-colors"
+                    className="flex-1 px-6 py-3 rounded-full transition-colors"
                     style={{
                       background: 'linear-gradient(to bottom, #2563eb, #1d4ed8)',
                       color: 'white',
@@ -284,11 +284,11 @@ export default function DashboardPage() {
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="px-6 py-3 rounded-full transition-colors"
+                    className="flex-1 px-6 py-3 rounded-full transition-colors"
                     style={{
                       backgroundColor: '#e5e7eb',
                       color: '#374151',
-                      fontWeight: '500'
+                      fontWeight: '600'
                     }}
                     onMouseEnter={(e) => {
                       const target = e.target as HTMLElement;
