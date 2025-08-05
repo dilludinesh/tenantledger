@@ -155,10 +155,7 @@ export default function DashboardPage() {
         <DashboardHeader
           currentUser={user}
           demoUser={null}
-          showSignOutConfirm={showSignOutConfirm}
           setShowSignOutConfirm={setShowSignOutConfirm}
-          onSignOut={handleSignOut}
-          onCancelSignOut={() => setShowSignOutConfirm(false)}
         />
 
         <DashboardActionBar
