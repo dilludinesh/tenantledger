@@ -157,7 +157,7 @@ export default function DashboardPage() {
           demoUser={null}
           setShowSignOutConfirm={setShowSignOutConfirm}
           entryForm={
-            <div className={styles.glassCard} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
+            <div className={`${styles.glassCard} shadow-sm`} style={{borderRadius: 20}}>
               <EntryForm
                 onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
                 isLoading={mutation.isPending}

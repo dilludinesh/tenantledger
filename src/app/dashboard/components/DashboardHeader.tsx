@@ -33,65 +33,67 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
 
       {/* User Info and Sign Out Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-10 w-full">
+      <div className="flex flex-col sm:flex-row items-center gap-6 mb-10 w-full">
         {/* Welcome/User Info left */}
-        <div className="flex flex-col w-full sm:w-auto">
-          {currentUser && (
-            <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-sm`} style={{borderRadius: 20}}>
-              <div className="flex flex-col gap-2 p-3">
-                <span className="text-xs text-gray-400">Welcome</span>
-                <span 
-                  className="text-lg font-semibold"
-                  style={{
-                    background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
-                  {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
-                </span>
-                {currentUser.email && (
-                  <span className="text-gray-500 text-xs truncate max-w-[200px] sm:max-w-[180px]">
-                    {currentUser.email}
-                  </span>
-                )}
-                <span 
-                  className="font-mono text-xs break-all"
-                  style={{
-                    background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  <span className="text-gray-400">UID: </span>
-                  <span className="font-medium">{currentUser.uid}</span>
-                </span>
-                <button
-                  onClick={() => setShowSignOutConfirm(true)}
-                  className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-3"
-                  aria-label="Sign out"
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
+        <div className="flex items-start gap-6">
+          <div className="flex flex-col w-full sm:w-auto">
+            {currentUser && (
+              <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-sm`} style={{borderRadius: 20}}>
+                <div className="flex flex-col gap-2 p-3">
+                  <span className="text-xs text-gray-400">Welcome</span>
+                  <span 
+                    className="text-lg font-semibold"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  <span>Sign Out</span>
-                </button>
+                    {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
+                    {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
+                  </span>
+                  {currentUser.email && (
+                    <span className="text-gray-500 text-xs truncate max-w-[200px] sm:max-w-[180px]">
+                      {currentUser.email}
+                    </span>
+                  )}
+                  <span 
+                    className="font-mono text-xs break-all"
+                    style={{
+                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                    }}
+                  >
+                    <span className="text-gray-400">UID: </span>
+                    <span className="font-medium">{currentUser.uid}</span>
+                  </span>
+                  <button
+                    onClick={() => setShowSignOutConfirm(true)}
+                    className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-3"
+                    aria-label="Sign out"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-        {/* Sign Out right */}
-        <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
-          {entryForm}
+            )}
+          </div>
+          {/* Entry Form */}
+          <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
+            {entryForm}
+          </div>
         </div>
       </div>
     </header>

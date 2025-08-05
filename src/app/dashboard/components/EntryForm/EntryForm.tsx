@@ -105,10 +105,10 @@ export const EntryForm: React.FC<EntryFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+    <form onSubmit={handleSubmit} className="p-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
         {/* Column 1: Date and Amount */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
             <label htmlFor="date" className={styles.label}>
               <span className="flex items-center">
@@ -150,7 +150,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
         </div>
 
         {/* Column 2: Tenant and Category */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
             <label htmlFor="tenant" className={styles.label}>
                 <span className="flex items-center">
@@ -195,7 +195,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
         </div>
 
         {/* Column 3: Description and Buttons */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
             <label htmlFor="description" className={styles.label}>
                 <span className="flex items-center">
@@ -210,12 +210,12 @@ export const EntryForm: React.FC<EntryFormProps> = ({
               onChange={handleChange}
               className={`${styles.formInput} ${errors.description ? styles.errorInput : ''}`}
               placeholder="Payment details"
-              rows={2}
+              rows={1}
             />
             {errors.description && <p className={styles.errorMessage}>{errors.description}</p>}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="submit"
               disabled={isLoading}
@@ -248,5 +248,4 @@ export const EntryForm: React.FC<EntryFormProps> = ({
         </div>
       </div>
     </form>
-  );
-};
+  );;
