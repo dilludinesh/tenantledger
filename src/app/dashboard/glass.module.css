@@ -11,13 +11,9 @@
 
 /* Card with glass effect */
 .glassCard {
-  background: linear-gradient(135deg, rgba(255,255,255,0.22) 60%, rgba(139,92,246,0.08) 100%);
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.glassCard:hover {
-  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.18);
-  transform: translateY(-3px) scale(1.01);
-}
 
 /* Glass button */
 .glassButton {

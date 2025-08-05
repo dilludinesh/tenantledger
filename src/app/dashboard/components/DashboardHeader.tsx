@@ -22,7 +22,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           aria-label="Tenant Ledger Dashboard"
           style={{
             display: 'inline-block',
-            textShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            textShadow: '0 2px 4px rgba(0,0,0,0.05)',
+            lineHeight: 'normal'
           }}
         >
           <span style={{letterSpacing: '0.01em'}}>Tenant Ledger</span>
@@ -34,8 +35,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         {/* Welcome/User Info left */}
         <div className="flex flex-col w-full sm:w-auto">
           {currentUser && (
-            <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-lg`} style={{borderRadius: 24}}>
-              <div className="flex flex-col gap-2 p-4">
+            <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-sm`} style={{borderRadius: 24}}>
+              <div className="flex flex-col gap-2 p-3">
                 <span className="text-xs text-gray-400">Welcome</span>
                 <span 
                   className="text-lg font-semibold"
