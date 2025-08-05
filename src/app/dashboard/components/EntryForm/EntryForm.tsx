@@ -249,3 +249,4 @@ export const EntryForm: React.FC<EntryFormProps> = ({
       </div>
     </form>
   );
+};
