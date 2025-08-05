@@ -105,11 +105,11 @@ export const EntryForm: React.FC<EntryFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 h-full">
+    <form onSubmit={handleSubmit} className="p-1 h-full">
       <div className="flex flex-col justify-between h-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-start">
           {/* Column 1: Date and Amount */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div>
               <label htmlFor="date" className={styles.label}>
                 <span className="flex items-center">
@@ -151,7 +151,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
           </div>
 
           {/* Column 2: Tenant and Category */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div>
               <label htmlFor="tenant" className={styles.label}>
                   <span className="flex items-center">
@@ -196,7 +196,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
           </div>
 
           {/* Column 3: Description and Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div>
               <label htmlFor="description" className={styles.label}>
                   <span className="flex items-center">

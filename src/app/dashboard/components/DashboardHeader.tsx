@@ -33,12 +33,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
 
       {/* User Info and Sign Out Bar */}
-      <div className={`${styles.glassCard} shadow-sm`} style={{borderRadius: 20}}>
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Welcome/User Info left */}
-          <div className="p-3">
+      <div className="flex flex-col sm:flex-row items-stretch justify-between gap-6 mb-10 w-full">
+        {/* Welcome/User Info left */}
+        <div className="flex items-stretch gap-6">
+          <div className="flex flex-col w-full sm:w-auto">
             {currentUser && (
-                <div className="flex flex-col gap-2">
+              <div className={`${styles.glassCard} text-base w-full sm:w-auto shadow-sm`} style={{borderRadius: 20}}>
+                <div className="flex flex-col gap-2 p-3">
                   <span className="text-xs text-gray-400">Welcome</span>
                   <span 
                     className="text-lg font-semibold"
@@ -86,10 +87,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     <span>Sign Out</span>
                   </button>
                 </div>
+              </div>
             )}
           </div>
           {/* Entry Form */}
-          <div>
+          <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
             {entryForm}
           </div>
         </div>
