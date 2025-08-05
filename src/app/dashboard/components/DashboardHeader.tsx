@@ -6,12 +6,14 @@ interface DashboardHeaderProps {
   currentUser: User | null;
   demoUser: User | null;
   setShowSignOutConfirm: (show: boolean) => void;
+  entryForm?: React.ReactNode;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   currentUser,
   demoUser,
   setShowSignOutConfirm,
+  entryForm,
 }) => {
   return (
     <header className="mb-10">
@@ -89,6 +91,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         </div>
         {/* Sign Out right */}
         <div className="flex flex-col items-end w-full sm:w-auto sm:items-end">
+          {entryForm}
         </div>
       </div>
     </header>

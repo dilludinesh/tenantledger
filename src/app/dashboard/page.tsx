@@ -156,6 +156,16 @@ export default function DashboardPage() {
           currentUser={user}
           demoUser={null}
           setShowSignOutConfirm={setShowSignOutConfirm}
+          entryForm={
+            <div className={styles.glassCard} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
+              <EntryForm
+                onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
+                isLoading={mutation.isPending}
+                entryToEdit={editingEntry}
+                onCancelEdit={() => setEditingEntry(null)}
+              />
+            </div>
+          }
         />
 
         <DashboardActionBar
@@ -185,18 +195,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Entry Form */}
-          <div className="lg:col-span-1">
-            <div className={styles.glassCard} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
-              <EntryForm
-                onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
-                isLoading={mutation.isPending}
-                entryToEdit={editingEntry}
-                onCancelEdit={() => setEditingEntry(null)}
-              />
-            </div>
-          </div>
+        <div className="grid grid-cols-1 gap-8">
           {/* Entries Table */}
           <div className="lg:col-span-2">
             <div className={styles.glassCard} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
