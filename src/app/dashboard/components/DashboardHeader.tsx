@@ -7,6 +7,11 @@ interface DashboardHeaderProps {
   demoUser: User | null;
   setShowSignOutConfirm: (show: boolean) => void;
   children?: React.ReactNode; // To allow passing EntryForm as children
+  showFilters: boolean;
+  onToggleFilters: () => void;
+  onExportCSV: () => void;
+  filteredEntriesCount: number;
+  totalEntriesCount: number;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -14,6 +19,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   demoUser,
   setShowSignOutConfirm,
   children,
+  showFilters,
+  onToggleFilters,
+  onExportCSV,
+  filteredEntriesCount,
+  totalEntriesCount,
 }) => {
   return (
     <header className="mb-10">
@@ -33,43 +43,53 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
 
       {/* User Info and Entry Form combined */}
-      <div className="flex flex-col lg:flex-row items-stretch justify-between gap-6 mb-10 w-full">
-        <div className={`${styles.glassCard} text-base w-full shadow-sm flex flex-col lg:flex-row items-stretch justify-between gap-6 p-6`} style={{ borderRadius: 20 }}>
+      <div className="flex flex-col lg:flex-row items-stretch justify-between gap-4 mb-8 w-full">
+        <div className={`${styles.glassCard} text-base w-full shadow-sm flex flex-col lg:flex-row items-stretch justify-between gap-0 p-4`} style={{ borderRadius: 20 }}>
           {currentUser && (
-            <div className="flex flex-col gap-2 lg:min-w-[300px]">
-              <span className="text-xs text-gray-400">Welcome</span>
-              <span
-                className="text-lg font-semibold"
-                style={{
-                  background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                }}
-              >
-                {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
-                {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
-              </span>
-              {currentUser.email && (
-                <span className="text-gray-500 text-xs truncate max-w-[200px] lg:max-w-[280px]">
-                  {currentUser.email}
+            <div className="flex flex-col gap-2 lg:w-[25%] lg:min-w-[250px] relative">
+              {/* User Info */}
+              <div className="mb-1">
+                <span className="text-xs text-gray-400 block">Welcome</span>
+                <span
+                  className="text-lg font-semibold block"
+                  style={{
+                    background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, rgb(167, 41, 240) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                  }}
+                >
+                  {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
+                  {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
                 </span>
+              </div>
+
+              {currentUser.email && (
+                <div className="text-gray-500 text-sm truncate">
+                  {currentUser.email}
+                </div>
               )}
-              <span
-                className="font-mono text-xs break-all"
-                style={{
-                  background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                }}
-              >
-                <span className="text-gray-400">UID: </span>
-                <span className="font-medium">{currentUser.uid}</span>
-              </span>
+
+              {/* Always visible UID - inline */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400">User ID:</span>
+                <span
+                  className="font-mono text-xs break-all font-medium"
+                  style={{
+                    background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                  }}
+                >
+                  {currentUser.uid}
+                </span>
+              </div>
+
+              {/* Sign out button - previous style */}
               <button
                 onClick={() => setShowSignOutConfirm(true)}
-                className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-3 w-fit"
+                className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-2 w-fit"
                 aria-label="Sign out"
               >
                 <svg
@@ -85,8 +105,82 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </button>
             </div>
           )}
-          <div className="flex-1 lg:ml-6">
+
+          {/* First divider */}
+          <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-4 my-2"></div>
+
+          {/* Entry Form Section */}
+          <div className="flex-1 lg:w-[45%] mt-3 lg:mt-0">
             {children}
+          </div>
+
+          {/* Second divider */}
+          <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-4 my-2"></div>
+
+          {/* Action Buttons Section */}
+          <div className="flex flex-col gap-3 lg:w-[25%] lg:min-w-[200px] mt-3 lg:mt-0 justify-center">
+
+            <button
+              onClick={onToggleFilters}
+              className={`flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md rounded-full transition-all ${showFilters
+                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              style={{
+                boxShadow: showFilters
+                  ? '0 2px 8px 0 rgba(37, 99, 235, 0.10)'
+                  : '0 2px 8px 0 rgba(148, 163, 184, 0.10)',
+                transition: 'background 0.2s, box-shadow 0.2s, transform 0.1s',
+                letterSpacing: '0.01em'
+              }}
+              onMouseEnter={(e) => {
+                if (!showFilters) {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = 'translateY(-2px) scale(1.03)';
+                  target.style.boxShadow = '0 4px 16px 0 rgba(148, 163, 184, 0.18)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!showFilters) {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = 'none';
+                  target.style.boxShadow = '0 2px 8px 0 rgba(148, 163, 184, 0.10)';
+                }
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
+              </svg>
+              <span>Filters {filteredEntriesCount !== totalEntriesCount && `(${filteredEntriesCount})`}</span>
+            </button>
+
+            <button
+              onClick={onExportCSV}
+              className="flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md rounded-full text-white transition-all"
+              style={{
+                background: 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)',
+                boxShadow: '0 2px 8px 0 rgba(34, 197, 94, 0.10)',
+                transition: 'background 0.2s, box-shadow 0.2s, transform 0.1s',
+                letterSpacing: '0.01em'
+              }}
+              onMouseEnter={(e) => {
+                const target = e.target as HTMLElement;
+                target.style.background = 'linear-gradient(90deg, #16a34a 0%, #22c55e 100%)';
+                target.style.transform = 'translateY(-2px) scale(1.03)';
+                target.style.boxShadow = '0 4px 16px 0 rgba(34, 197, 94, 0.18)';
+              }}
+              onMouseLeave={(e) => {
+                const target = e.target as HTMLElement;
+                target.style.background = 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)';
+                target.style.transform = 'none';
+                target.style.boxShadow = '0 2px 8px 0 rgba(34, 197, 94, 0.10)';
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Export CSV</span>
+            </button>
           </div>
         </div>
       </div>

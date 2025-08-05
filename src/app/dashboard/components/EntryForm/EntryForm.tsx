@@ -15,6 +15,7 @@ interface EntryFormProps {
   isLoading?: boolean;
   entryToEdit?: (LedgerEntry & { id: string }) | null;
   onCancelEdit?: () => void;
+  onPrintLedger?: () => void;
 }
 
 export const EntryForm: React.FC<EntryFormProps> = ({
@@ -22,6 +23,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
   isLoading = false,
   entryToEdit,
   onCancelEdit,
+  onPrintLedger,
 }) => {
   const [formData, setFormData] = useState({
     date: format(new Date(), 'yyyy-MM-dd'),
@@ -105,132 +107,148 @@ export const EntryForm: React.FC<EntryFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-1 h-full">
-      <div className="flex flex-col justify-between h-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-start">
-          {/* Column 1: Date and Amount */}
-          <div className="space-y-2">
-            <div>
-              <label htmlFor="date" className={styles.label}>
-                Date
-              </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className={`${styles.formInput} ${errors.date ? styles.errorInput : ''}`}
-              />
-              {errors.date && <p className={styles.errorMessage}>{errors.date}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="amount" className={styles.label}>
-                Amount (₹)
-              </label>
-              <input
-                type="number"
-                id="amount"
-                name="amount"
-                value={formData.amount}
-                onChange={handleChange}
-                className={`${styles.formInput} ${errors.amount ? styles.errorInput : ''}`}
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-              />
-              {errors.amount && <p className={styles.errorMessage}>{errors.amount}</p>}
-            </div>
+    <form onSubmit={handleSubmit} className="p-2">
+      <div className="space-y-4">
+        {/* Compact grid layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Date */}
+          <div>
+            <label htmlFor="date" className={`${styles.label} text-xs`}>
+              Date
+            </label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className={`${styles.formInput} h-9 text-sm ${errors.date ? styles.errorInput : ''}`}
+            />
+            {errors.date && <p className={`${styles.errorMessage} text-xs`}>{errors.date}</p>}
           </div>
 
-          {/* Column 2: Tenant and Category */}
-          <div className="space-y-2">
-            <div>
-              <label htmlFor="tenant" className={styles.label}>
-                Tenant
-              </label>
-              <input
-                type="text"
-                id="tenant"
-                name="tenant"
-                value={formData.tenant}
-                onChange={handleChange}
-                className={`${styles.formInput} ${errors.tenant ? styles.errorInput : ''}`}
-                placeholder="Tenant name"
-              />
-              {errors.tenant && <p className={styles.errorMessage}>{errors.tenant}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="category" className={styles.label}>
-                Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className={`${styles.formInput} ${errors.category ? styles.errorInput : ''}`}
-              >
-                {CATEGORIES.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              {errors.category && <p className={styles.errorMessage}>{errors.category}</p>}
-            </div>
+          {/* Tenant - Auto-focus */}
+          <div>
+            <label htmlFor="tenant" className={`${styles.label} text-xs`}>
+              Tenant
+            </label>
+            <input
+              type="text"
+              id="tenant"
+              name="tenant"
+              value={formData.tenant}
+              onChange={handleChange}
+              className={`${styles.formInput} h-9 text-sm ${errors.tenant ? styles.errorInput : ''}`}
+              placeholder="Tenant name"
+              autoFocus
+            />
+            {errors.tenant && <p className={`${styles.errorMessage} text-xs`}>{errors.tenant}</p>}
           </div>
 
-          {/* Column 3: Description and Buttons */}
-          <div className="space-y-2">
-            <div>
-              <label htmlFor="description" className={styles.label}>
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className={`${styles.formInput} ${errors.description ? styles.errorInput : ''}`}
-                placeholder="Payment details"
-                rows={1}
-              />
-              {errors.description && <p className={styles.errorMessage}>{errors.description}</p>}
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`flex-1 py-3 px-6 rounded-full font-semibold transition-all ${styles.buttonPrimary}`}
-              >
-                {isLoading ? (
-                  <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    {entryToEdit ? 'Updating...' : 'Adding...'}
-                  </span>
-                ) : entryToEdit ? (
-                  'Update Entry'
-                ) : (
-                  'Add Entry'
-                )}
-              </button>
-              
-              <button
-                type="button"
-                onClick={handleReset}
-                disabled={isLoading}
-                className={`py-3 px-6 rounded-full font-semibold transition-all ${styles.buttonSecondary}`}
-              >
-                {entryToEdit ? 'Cancel' : 'Reset'}
-              </button>
-            </div>
+          {/* Amount */}
+          <div>
+            <label htmlFor="amount" className={`${styles.label} text-xs`}>
+              Amount (₹)
+            </label>
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              className={`${styles.formInput} h-9 text-sm ${errors.amount ? styles.errorInput : ''}`}
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+            />
+            {errors.amount && <p className={`${styles.errorMessage} text-xs`}>{errors.amount}</p>}
           </div>
+
+          {/* Category */}
+          <div>
+            <label htmlFor="category" className={`${styles.label} text-xs`}>
+              Category
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={`${styles.formInput} h-9 text-sm ${errors.category ? styles.errorInput : ''}`}
+            >
+              {CATEGORIES.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            {errors.category && <p className={`${styles.errorMessage} text-xs`}>{errors.category}</p>}
+          </div>
+        </div>
+
+        {/* Description - Full width */}
+        <div>
+          <label htmlFor="description" className={`${styles.label} text-xs`}>
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className={`${styles.formInput} text-sm ${errors.description ? styles.errorInput : ''}`}
+            placeholder="Payment details"
+            rows={2}
+          />
+          {errors.description && <p className={`${styles.errorMessage} text-xs`}>{errors.description}</p>}
+        </div>
+
+        {/* Three buttons in order: Add Entry, Reset, Print Ledger */}
+        <div className="flex items-center justify-between gap-3 pt-2">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={styles.buttonPrimary}
+          >
+            {isLoading ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {entryToEdit ? 'Updating...' : 'Adding...'}
+              </span>
+            ) : entryToEdit ? (
+              'Update'
+            ) : (
+              'Add Entry'
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={isLoading}
+            className={styles.buttonSecondary}
+          >
+            {entryToEdit ? 'Cancel' : 'Reset'}
+          </button>
+
+          {onPrintLedger && (
+            <button
+              type="button"
+              onClick={onPrintLedger}
+              disabled={isLoading}
+              className={styles.buttonPrint}
+            >
+              <span className="flex items-center">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print Ledger
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </form>

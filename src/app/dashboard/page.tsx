@@ -9,7 +9,7 @@ import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { DashboardHeader } from './components/DashboardHeader';
-import { DashboardActionBar } from './components/DashboardActionBar';
+
 import { FilterPanel } from '@/components/FilterPanel';
 import { FilterBadge } from '@/components/FilterBadge';
 import { BulkActions } from '@/components/BulkActions';
@@ -133,10 +133,10 @@ export default function DashboardPage() {
     onToggleFilters: () => setShowFilters(!showFilters),
     onNewEntry: () => {
       setEditingEntry(null);
-      // Focus on first form input
+      // Focus on tenant input for faster data entry
       setTimeout(() => {
-        const firstInput = document.querySelector('input[name="tenant"]') as HTMLInputElement;
-        firstInput?.focus();
+        const tenantInput = document.querySelector('input[name="tenant"]') as HTMLInputElement;
+        tenantInput?.focus();
       }, 100);
     }
   }));
@@ -156,22 +156,20 @@ export default function DashboardPage() {
           currentUser={user}
           demoUser={null}
           setShowSignOutConfirm={setShowSignOutConfirm}
+          showFilters={showFilters}
+          onToggleFilters={() => setShowFilters(!showFilters)}
+          onExportCSV={handleExportCSV}
+          filteredEntriesCount={filteredEntries.length}
+          totalEntriesCount={entries.length}
         >
           <EntryForm
             onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
             isLoading={mutation.isPending}
             entryToEdit={editingEntry}
             onCancelEdit={() => setEditingEntry(null)}
+            onPrintLedger={() => window.print()}
           />
         </DashboardHeader>
-
-        <DashboardActionBar
-          showFilters={showFilters}
-          onToggleFilters={() => setShowFilters(!showFilters)}
-          onExportCSV={handleExportCSV}
-          filteredEntriesCount={filteredEntries.length}
-          totalEntriesCount={entries.length}
-        />
 
         
 
