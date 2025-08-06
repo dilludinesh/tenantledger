@@ -1,3 +1,38 @@
+import { LedgerCategory } from '@/types/ledger';
+
+const CATEGORIES: LedgerCategory[] = [
+  'Rent',
+  'Maintenance',
+  'Security Deposit',
+  'Utilities',
+  'Other'
+];
+
+interface DashboardHeaderProps {
+  currentUser: any; // Consider replacing 'any' with proper User type
+  demoUser?: boolean;
+  filters: any; // Consider replacing 'any' with proper Filters type
+  tenants: string[];
+  filteredEntriesCount: number;
+  totalEntriesCount: number;
+  handleFilterChange: (key: string, value: any) => void;
+  onExportCSV: () => void;
+  setShowSignOutConfirm: (show: boolean) => void;
+  children?: React.ReactNode;
+}
+
+export default function DashboardHeader({
+  currentUser,
+  demoUser = false,
+  filters,
+  tenants,
+  filteredEntriesCount,
+  totalEntriesCount,
+  handleFilterChange,
+  onExportCSV,
+  setShowSignOutConfirm,
+  children
+}: DashboardHeaderProps) {
   return (
     <header className="mb-10">
       {/* Title Section */}
