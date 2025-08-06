@@ -1,7 +1,6 @@
 import React from 'react';
 import { User } from 'firebase/auth';
 import styles from '../glass.module.css';
-import formStyles from './EntryForm/EntryForm.module.css';
 import { CATEGORIES } from '@/types/ledger';
 
 interface FilterOptions {
@@ -43,12 +42,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     onFilterChange(newFilters);
-  };
-
-  const clearFilters = () => {
-    const emptyFilters: FilterOptions = { categories: [] };
-    setFilters(emptyFilters);
-    onFilterChange(emptyFilters);
   };
   return (
     <header className="mb-10">
