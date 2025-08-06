@@ -38,12 +38,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border space-y-4">
+    <div className="bg-white p-4 rounded-3xl shadow-sm border space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Filters</h3>
         <button
           onClick={clearFilters}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="px-3 py-1 text-sm font-semibold text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 hover:text-blue-700 transition-all hover:scale-105"
         >
           Clear All
         </button>
@@ -59,7 +59,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
             type="date"
             value={filters.dateFrom || ''}
             onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -70,7 +70,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
             type="date"
             value={filters.dateTo || ''}
             onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -85,7 +85,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
           placeholder="Search in descriptions..."
           value={filters.searchTerm || ''}
           onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
@@ -97,7 +97,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
         <select
           value={filters.tenant || ''}
           onChange={(e) => handleFilterChange('tenant', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Tenants</option>
           {tenants.map(tenant => (
@@ -142,7 +142,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
             placeholder="0"
             value={filters.amountMin || ''}
             onChange={(e) => handleFilterChange('amountMin', parseFloat(e.target.value) || undefined)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -154,7 +154,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({ onFilterChange, tenant
             placeholder="∞"
             value={filters.amountMax || ''}
             onChange={(e) => handleFilterChange('amountMax', parseFloat(e.target.value) || undefined)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>

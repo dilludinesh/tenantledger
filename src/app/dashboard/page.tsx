@@ -10,7 +10,7 @@ import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { DashboardHeader } from './components/DashboardHeader';
 
-import { FilterPanel } from '@/components/FilterPanel';
+
 import { FilterBadge } from '@/components/FilterBadge';
 import { BulkActions } from '@/components/BulkActions';
 import { useAuth } from '@/context/AuthContext';
@@ -156,11 +156,11 @@ export default function DashboardPage() {
           currentUser={user}
           demoUser={null}
           setShowSignOutConfirm={setShowSignOutConfirm}
-          showFilters={showFilters}
-          onToggleFilters={() => setShowFilters(!showFilters)}
           onExportCSV={handleExportCSV}
           filteredEntriesCount={filteredEntries.length}
           totalEntriesCount={entries.length}
+          tenants={uniqueTenants}
+          onFilterChange={handleFilterChange}
         >
           <EntryForm
             onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
@@ -180,15 +180,7 @@ export default function DashboardPage() {
           onClear={clearFilters}
         />
 
-        {/* Filters Panel */}
-        {showFilters && !showSignOutConfirm && (
-          <div className={`mb-6 ${styles.glassCard}`} style={{borderRadius: 20, boxShadow: '0 2px 16px 0 rgba(31,38,135,0.10)'}}>
-            <FilterPanel 
-              onFilterChange={handleFilterChange}
-              tenants={uniqueTenants}
-            />
-          </div>
-        )}
+
 
         <div className="grid grid-cols-1 gap-8">
           {/* Entries Table */}

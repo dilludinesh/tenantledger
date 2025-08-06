@@ -107,104 +107,106 @@ export const EntryForm: React.FC<EntryFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-2">
+    <form onSubmit={handleSubmit} className="p-3">
       <div className="space-y-4">
-        {/* Compact grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Date */}
-          <div>
-            <label htmlFor="date" className={`${styles.label} text-xs`}>
-              Date
-            </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className={`${styles.formInput} h-9 text-sm ${errors.date ? styles.errorInput : ''}`}
-            />
-            {errors.date && <p className={`${styles.errorMessage} text-xs`}>{errors.date}</p>}
+        {/* Balanced 2-column layout */}
+        <div className="max-w-lg space-y-4">
+          {/* Row 1: Date and Tenant */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="date" className={`${styles.label} text-xs`}>
+                Date
+              </label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                className={`${styles.formInput} h-10 text-sm w-full ${errors.date ? styles.errorInput : ''}`}
+              />
+              {errors.date && <p className={`${styles.errorMessage} text-xs`}>{errors.date}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="tenant" className={`${styles.label} text-xs`}>
+                Tenant
+              </label>
+              <input
+                type="text"
+                id="tenant"
+                name="tenant"
+                value={formData.tenant}
+                onChange={handleChange}
+                className={`${styles.formInput} h-10 text-sm w-full ${errors.tenant ? styles.errorInput : ''}`}
+                placeholder="Tenant name"
+                autoFocus
+              />
+              {errors.tenant && <p className={`${styles.errorMessage} text-xs`}>{errors.tenant}</p>}
+            </div>
           </div>
 
-          {/* Tenant - Auto-focus */}
+          {/* Row 2: Amount and Category */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="amount" className={`${styles.label} text-xs`}>
+                Amount (₹)
+              </label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                value={formData.amount}
+                onChange={handleChange}
+                className={`${styles.formInput} h-10 text-sm w-full ${errors.amount ? styles.errorInput : ''}`}
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+              {errors.amount && <p className={`${styles.errorMessage} text-xs`}>{errors.amount}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="category" className={`${styles.label} text-xs`}>
+                Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className={`${styles.formInput} h-10 text-sm w-full ${errors.category ? styles.errorInput : ''}`}
+              >
+                {CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              {errors.category && <p className={`${styles.errorMessage} text-xs`}>{errors.category}</p>}
+            </div>
+          </div>
+
+          {/* Row 3: Description - Full width */}
           <div>
-            <label htmlFor="tenant" className={`${styles.label} text-xs`}>
-              Tenant
+            <label htmlFor="description" className={`${styles.label} text-xs`}>
+              Description
             </label>
             <input
               type="text"
-              id="tenant"
-              name="tenant"
-              value={formData.tenant}
+              id="description"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
-              className={`${styles.formInput} h-9 text-sm ${errors.tenant ? styles.errorInput : ''}`}
-              placeholder="Tenant name"
-              autoFocus
+              className={`${styles.formInput} h-10 text-sm w-full ${errors.description ? styles.errorInput : ''}`}
+              placeholder="Payment details"
             />
-            {errors.tenant && <p className={`${styles.errorMessage} text-xs`}>{errors.tenant}</p>}
-          </div>
-
-          {/* Amount */}
-          <div>
-            <label htmlFor="amount" className={`${styles.label} text-xs`}>
-              Amount (₹)
-            </label>
-            <input
-              type="number"
-              id="amount"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              className={`${styles.formInput} h-9 text-sm ${errors.amount ? styles.errorInput : ''}`}
-              placeholder="0.00"
-              min="0"
-              step="0.01"
-            />
-            {errors.amount && <p className={`${styles.errorMessage} text-xs`}>{errors.amount}</p>}
-          </div>
-
-          {/* Category */}
-          <div>
-            <label htmlFor="category" className={`${styles.label} text-xs`}>
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className={`${styles.formInput} h-9 text-sm ${errors.category ? styles.errorInput : ''}`}
-            >
-              {CATEGORIES.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            {errors.category && <p className={`${styles.errorMessage} text-xs`}>{errors.category}</p>}
+            {errors.description && <p className={`${styles.errorMessage} text-xs`}>{errors.description}</p>}
           </div>
         </div>
 
-        {/* Description - Full width */}
-        <div>
-          <label htmlFor="description" className={`${styles.label} text-xs`}>
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className={`${styles.formInput} text-sm ${errors.description ? styles.errorInput : ''}`}
-            placeholder="Payment details"
-            rows={2}
-          />
-          {errors.description && <p className={`${styles.errorMessage} text-xs`}>{errors.description}</p>}
-        </div>
-
-        {/* Three buttons in order: Add Entry, Reset, Print Ledger */}
-        <div className="flex items-center justify-between gap-3 pt-2">
+        {/* Action buttons - balanced layout */}
+        <div className="flex items-center justify-start gap-3 pt-3 max-w-lg">
           <button
             type="submit"
             disabled={isLoading}

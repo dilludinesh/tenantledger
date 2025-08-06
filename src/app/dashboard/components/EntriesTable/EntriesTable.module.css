@@ -1,78 +1,78 @@
 .tableContainer {
   width: 100%;
   overflow: hidden;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  box-shadow: 0 2px 16px 0 rgba(31, 38, 135, 0.10);
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent;
 }
 
 .tableHead {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(139, 92, 246, 0.8));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, rgb(167, 41, 240) 100%);
+  border-radius: 20px 20px 0 0;
 }
 
 .tableHeader {
-  padding: 0.875rem 1.5rem;
+  padding: 1rem 1.5rem;
   text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: white;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
+  border: none;
+  user-select: none;
 }
 
 .tableBody {
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .emptyState {
-  padding: 3rem 1rem;
+  padding: 4rem 2rem;
   text-align: center;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
 }
 
 .emptyIcon {
   margin: 0 auto;
-  height: 3rem;
-  width: 3rem;
+  height: 4rem;
+  width: 4rem;
   color: #9ca3af;
 }
 
 .emptyTitle {
-  margin-top: 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
   color: #374151;
 }
 
 .emptyDescription {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  font-size: 1rem;
   color: #6b7280;
 }
 
 .loadingRow {
   display: flex;
   justify-content: center;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
 }

@@ -1,17 +1,29 @@
 import React from 'react';
 import { User } from 'firebase/auth';
 import styles from '../glass.module.css';
+import formStyles from './EntryForm/EntryForm.module.css';
+import { CATEGORIES } from '@/types/ledger';
+
+interface FilterOptions {
+  dateFrom?: string;
+  dateTo?: string;
+  tenant?: string;
+  categories: string[];
+  amountMin?: number;
+  amountMax?: number;
+  searchTerm?: string;
+}
 
 interface DashboardHeaderProps {
   currentUser: User | null;
   demoUser: User | null;
   setShowSignOutConfirm: (show: boolean) => void;
   children?: React.ReactNode; // To allow passing EntryForm as children
-  showFilters: boolean;
-  onToggleFilters: () => void;
   onExportCSV: () => void;
   filteredEntriesCount: number;
   totalEntriesCount: number;
+  tenants: string[];
+  onFilterChange: (filters: FilterOptions) => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -19,12 +31,25 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   demoUser,
   setShowSignOutConfirm,
   children,
-  showFilters,
-  onToggleFilters,
   onExportCSV,
   filteredEntriesCount,
   totalEntriesCount,
+  tenants,
+  onFilterChange,
 }) => {
+  const [filters, setFilters] = React.useState<FilterOptions>({ categories: [] });
+
+  const handleFilterChange = (key: keyof FilterOptions, value: string | string[] | number | undefined) => {
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
+  const clearFilters = () => {
+    const emptyFilters: FilterOptions = { categories: [] };
+    setFilters(emptyFilters);
+    onFilterChange(emptyFilters);
+  };
   return (
     <header className="mb-10">
       {/* Title Section */}
@@ -108,82 +133,93 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </div>
 
               {/* Divider attached to user info */}
-              <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent my-2 mr-8"></div>
+              <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent my-2 mr-4"></div>
             </div>
           )}
 
           {/* Entry Form Section */}
-          <div className="flex-1 lg:w-[45%] mt-3 lg:mt-0 lg:ml-2 lg:mr-4">
+          <div className="flex-1 lg:w-[45%] mt-3 lg:mt-0">
             {children}
           </div>
 
           {/* Second divider */}
           <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-4 my-2"></div>
 
-          {/* Action Buttons Section */}
-          <div className="flex flex-col gap-3 lg:w-[25%] lg:min-w-[200px] mt-3 lg:mt-0 justify-center">
+          {/* Compact Filters Grid */}
+          <div className="lg:w-[25%] lg:min-w-[200px] mt-3 lg:mt-0 space-y-3">
+            {/* More horizontal 3x2 Grid Layout */}
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Date</label>
+                <input
+                  type="date"
+                  value={filters.dateFrom || ''}
+                  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Tenant</label>
+                <select
+                  value={filters.tenant || ''}
+                  onChange={(e) => handleFilterChange('tenant', e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">All</option>
+                  {tenants.map(tenant => (
+                    <option key={tenant} value={tenant}>{tenant}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Amount</label>
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={filters.amountMin || ''}
+                  onChange={(e) => handleFilterChange('amountMin', parseFloat(e.target.value) || undefined)}
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Category</label>
+                <select
+                  value={filters.categories[0] || ''}
+                  onChange={(e) => handleFilterChange('categories', e.target.value ? [e.target.value] : [])}
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">All</option>
+                  {CATEGORIES.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                <input
+                  type="text"
+                  placeholder="Search descriptions..."
+                  value={filters.searchTerm || ''}
+                  onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+            </div>
 
-            <button
-              onClick={onToggleFilters}
-              className={`flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md rounded-full transition-all ${showFilters
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-              style={{
-                boxShadow: showFilters
-                  ? '0 2px 8px 0 rgba(37, 99, 235, 0.10)'
-                  : '0 2px 8px 0 rgba(148, 163, 184, 0.10)',
-                transition: 'background 0.2s, box-shadow 0.2s, transform 0.1s',
-                letterSpacing: '0.01em'
-              }}
-              onMouseEnter={(e) => {
-                if (!showFilters) {
-                  const target = e.target as HTMLElement;
-                  target.style.transform = 'translateY(-2px) scale(1.03)';
-                  target.style.boxShadow = '0 4px 16px 0 rgba(148, 163, 184, 0.18)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!showFilters) {
-                  const target = e.target as HTMLElement;
-                  target.style.transform = 'none';
-                  target.style.boxShadow = '0 2px 8px 0 rgba(148, 163, 184, 0.10)';
-                }
-              }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
-              </svg>
-              <span>Filters {filteredEntriesCount !== totalEntriesCount && `(${filteredEntriesCount})`}</span>
-            </button>
-
+            {/* Export Button */}
             <button
               onClick={onExportCSV}
-              className="flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md rounded-full text-white transition-all"
-              style={{
-                background: 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)',
-                boxShadow: '0 2px 8px 0 rgba(34, 197, 94, 0.10)',
-                transition: 'background 0.2s, box-shadow 0.2s, transform 0.1s',
-                letterSpacing: '0.01em'
-              }}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.background = 'linear-gradient(90deg, #16a34a 0%, #22c55e 100%)';
-                target.style.transform = 'translateY(-2px) scale(1.03)';
-                target.style.boxShadow = '0 4px 16px 0 rgba(34, 197, 94, 0.18)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.background = 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)';
-                target.style.transform = 'none';
-                target.style.boxShadow = '0 2px 8px 0 rgba(34, 197, 94, 0.10)';
-              }}
+              className="w-full px-3 py-2 text-xs font-semibold text-white bg-green-500 rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-sm"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Export CSV</span>
+              Export
             </button>
+
+            {/* Results Count */}
+            {filteredEntriesCount !== totalEntriesCount && (
+              <div className="text-xs text-gray-500 text-center">
+                {filteredEntriesCount} of {totalEntriesCount} entries
+              </div>
+            )}
           </div>
         </div>
       </div>

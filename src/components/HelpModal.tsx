@@ -30,7 +30,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Help & Shortcuts</h2>
@@ -75,7 +75,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="bg-blue-50 rounded-lg p-4">
+            <div className="bg-blue-50 rounded-3xl p-4">
               <h4 className="font-semibold text-blue-900 mb-2">Need more help?</h4>
               <p className="text-blue-800 text-sm">
                 This tenant ledger helps you track payments, expenses, and manage your rental properties efficiently. 
