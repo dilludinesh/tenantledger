@@ -36,11 +36,11 @@ export default function LoginPage() {
             <h1 
               className="text-4xl font-bold"
               style={{
-                background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
+                background: 'linear-gradient(90deg, var(--login-title-gradient-start), var(--login-title-gradient-end))',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 display: 'inline-block',
-                textShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                textShadow: `0 2px 4px var(--login-title-shadow)`
               }}
             >
               Tenant Ledger
@@ -56,14 +56,14 @@ export default function LoginPage() {
             {authError === 'Sign in was cancelled' && (
               <div className="mt-4 w-full flex justify-center">
                 <div
-                  className="bg-gradient-to-r from-rose-100 to-rose-50 border border-rose-300 rounded-lg px-4 py-3 shadow-sm flex flex-col items-center gap-2"
+                  className="bg-gradient-to-r from-[var(--cancelled-signin-background-start)] to-[var(--cancelled-signin-background-end)] border border-[var(--cancelled-signin-border)] rounded-lg px-4 py-3 shadow-sm flex flex-col items-center gap-2"
                   style={{ maxWidth: 340 }}
                 >
                   <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[var(--cancelled-signin-icon)] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
                     </svg>
-                    <span className="text-rose-800 text-sm font-medium text-center">
+                    <span className="text-[var(--cancelled-signin-text)] text-sm font-medium text-center">
                       Sign-in was cancelled.
                     </span>
                   </div>

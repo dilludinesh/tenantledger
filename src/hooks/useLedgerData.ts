@@ -112,13 +112,11 @@ export function useUpdateEntry() {
       await updateEntry(user.uid, id, updates);
       return { id, updates };
     },
-    onSuccess: ({ id, updates }) => {
-      // Invalidate queries
-      queryClient.invalidateQueries({ 
-        queryKey: ['entries', user?.uid] 
-      });
-      
-      // Update cache optimistically
+    onMutate: async ({ id, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['entries', user?.uid] });
+
+      const previousEntries = queryClient.getQueriesData({ queryKey: ['entries', user?.uid] });
+
       queryClient.setQueriesData(
         { queryKey: ['entries', user?.uid] },
         (old: PaginatedResponse<LedgerEntry & { id: string }> | undefined) => {
@@ -133,11 +131,14 @@ export function useUpdateEntry() {
           };
         }
       );
-      
-      toast.success('Entry updated successfully!');
+
+      return { previousEntries };
     },
-    onError: (error: LedgerError) => {
-      toast.error(`Failed to update entry: ${error.message}`);
+    onError: (err, variables, context) => {
+      if (context?.previousEntries) {
+        queryClient.setQueriesData({ queryKey: ['entries', user?.uid] }, context.previousEntries);
+      }
+      toast.error(`Failed to update entry: ${(err as LedgerError).message}`);
     },
   });
 }
@@ -153,13 +154,11 @@ export function useDeleteEntry() {
       await deleteEntry(user.uid, id);
       return id;
     },
-    onSuccess: (deletedId) => {
-      // Invalidate queries
-      queryClient.invalidateQueries({ 
-        queryKey: ['entries', user?.uid] 
-      });
-      
-      // Remove from cache optimistically
+    onMutate: async (deletedId) => {
+      await queryClient.cancelQueries({ queryKey: ['entries', user?.uid] });
+
+      const previousEntries = queryClient.getQueriesData({ queryKey: ['entries', user?.uid] });
+
       queryClient.setQueriesData(
         { queryKey: ['entries', user?.uid] },
         (old: PaginatedResponse<LedgerEntry & { id: string }> | undefined) => {
@@ -170,11 +169,14 @@ export function useDeleteEntry() {
           };
         }
       );
-      
-      toast.success('Entry deleted successfully!');
+
+      return { previousEntries };
     },
-    onError: (error: LedgerError) => {
-      toast.error(`Failed to delete entry: ${error.message}`);
+    onError: (err, deletedId, context) => {
+      if (context?.previousEntries) {
+        queryClient.setQueriesData({ queryKey: ['entries', user?.uid] }, context.previousEntries);
+      }
+      toast.error(`Failed to delete entry: ${(err as LedgerError).message}`);
     },
   });
 }
@@ -204,40 +206,3 @@ export function useBulkDeleteEntries() {
   });
 }
 
-// Hook for optimistic updates
-export function useOptimisticUpdate() {
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
-  
-  return {
-    updateEntry: (id: string, updates: Partial<LedgerEntry>) => {
-      queryClient.setQueriesData(
-        { queryKey: ['entries', user?.uid] },
-        (old: PaginatedResponse<LedgerEntry & { id: string }> | undefined) => {
-          if (!old) return old;
-          return {
-            ...old,
-            data: old.data.map(entry => 
-              entry.id === id 
-                ? { ...entry, ...updates, updatedAt: new Date() }
-                : entry
-            )
-          };
-        }
-      );
-    },
-    
-    removeEntry: (id: string) => {
-      queryClient.setQueriesData(
-        { queryKey: ['entries', user?.uid] },
-        (old: PaginatedResponse<LedgerEntry & { id: string }> | undefined) => {
-          if (!old) return old;
-          return {
-            ...old,
-            data: old.data.filter(entry => entry.id !== id)
-          };
-        }
-      );
-    }
-  };
-}

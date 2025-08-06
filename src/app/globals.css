@@ -9,6 +9,59 @@
   --primary: #3b82f6;
   --primary-hover: #2563eb;
   --secondary: #6b7280;
+  --secondary-hover: #4b5563;
+  --export-start: #22c55e;
+  --export-end: #16a34a;
+  --export-shadow: rgba(34, 197, 94, 0.10);
+  --export-hover-start: #16a34a;
+  --export-hover-end: #22c55e;
+  --export-hover-shadow: rgba(34, 197, 94, 0.18);
+  --glass-background-light: rgba(255, 255, 255, 0.25);
+  --glass-background-medium: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: rgba(31, 38, 135, 0.10);
+  --gradient-start: #3b82f6;
+  --gradient-mid: #8b5cf6;
+  --gradient-end: rgb(167, 41, 240);
+  --icon-color: #9ca3af;
+  --empty-title-color: #374151;
+  --empty-description-color: #6b7280;
+  --table-cell-color: #1f2937;
+  --currency-symbol-color: #6b7280;
+  --category-rent-background: rgba(168, 85, 247, 0.1);
+  --category-rent-color: #8b5cf6;
+  --category-maintenance-background: rgba(59, 130, 246, 0.1);
+  --category-maintenance-color: #3b82f6;
+  --category-security-background: rgba(16, 185, 129, 0.1);
+  --category-security-color: #10b981;
+  --category-utilities-background: rgba(245, 158, 11, 0.1);
+  --category-utilities-color: #f59e0b;
+  --category-other-background: rgba(156, 163, 175, 0.1);
+  --category-other-color: #6b7280;
+  --description-color: #4b5563;
+  --empty-description-text-color: #9ca3af;
+  --glass-background-base: rgba(255, 255, 255, 0.18);
+  --glass-backdrop-filter: blur(18px) saturate(180%);
+  --glass-shadow-base: 0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+  --glass-border-radius: 18px;
+  --glass-button-shadow: 0 2px 8px 0 rgba(99,102,241,0.08);
+  --glass-button-hover-start: #818cf8;
+  --glass-button-hover-end: #c026d3;
+  --glass-button-hover-shadow: 0 4px 16px 0 rgba(99,102,241,0.13);
+  --glass-input-background: rgba(255,255,255,0.35);
+  --glass-input-border-radius: 14px;
+  --glass-input-shadow: 0 1px 4px 0 rgba(31,38,135,0.06);
+  --glass-input-focus-background: rgba(255,255,255,0.55);
+  --glass-input-focus-shadow: 0 0 0 2px #818cf8;
+  --glass-select-arrow-color: #6b7280;
+  --login-title-gradient-start: #3b82f6;
+  --login-title-gradient-end: rgb(167, 41, 240);
+  --login-title-shadow: rgba(0,0,0,0.05);
+  --cancelled-signin-background-start: #ffe4e6;
+  --cancelled-signin-background-end: #fff0f3;
+  --cancelled-signin-border: #fecaca;
+  --cancelled-signin-icon: #ef4444;
+  --cancelled-signin-text: #be123c;
   --success: #10b981;
   --success-hover: #059669;
   --danger: #ef4444;
@@ -114,7 +167,7 @@ input:disabled, select:disabled, textarea:disabled {
 
 /* ===== UNIFORM BUTTONS ===== */
 button {
-  @apply px-6 py-3 rounded-full;
+  /* Base button styles can be defined here or inherited from .btn */
 }
 
 .btn {
@@ -160,7 +213,7 @@ button {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #4b5563;
+  background: var(--secondary-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }

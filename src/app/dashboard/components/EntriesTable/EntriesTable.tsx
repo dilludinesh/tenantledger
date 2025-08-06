@@ -5,6 +5,7 @@ import { LedgerEntry } from '@/types/ledger';
 import { deleteEntry } from '@/services/ledgerService';
 import { useAuth } from '@/context/AuthContext';
 import { EntryRow } from '../EntryRow/EntryRow';
+import { TableSkeleton } from '@/components/LoadingSkeleton';
 import styles from './EntriesTable.module.css';
 
 interface EntriesTableProps {
@@ -42,22 +43,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
 
 
   if (isLoading) {
-    return (
-      <div className={styles.loadingRow}>
-        <div className="animate-pulse flex space-x-4">
-          <div className="flex-1 space-y-6 py-1">
-            <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-            <div className="space-y-3">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="h-2 bg-gray-200 rounded col-span-2"></div>
-                <div className="h-2 bg-gray-200 rounded col-span-1"></div>
-              </div>
-              <div className="h-2 bg-gray-200 rounded"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <TableSkeleton rows={5} columns={6} />;
   }
 
   if (entries.length === 0) {
@@ -118,8 +104,6 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
               entry={entry}
               onEdit={onEdit}
               onDelete={handleDelete}
-              isDeleting={deleteMutation.isPending && deleteMutation.variables === entry.id}
-
             />
           ))}
         </tbody>

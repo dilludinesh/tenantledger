@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { format } from 'date-fns';
 import { CATEGORIES, LedgerEntry } from '@/types/ledger';
 import { validateLedgerEntry, sanitizeInput } from '@/utils/validation';
@@ -18,13 +18,13 @@ interface EntryFormProps {
   onPrintLedger?: () => void;
 }
 
-export const EntryForm: React.FC<EntryFormProps> = ({
+export const EntryForm = forwardRef<HTMLFormElement, EntryFormProps>(({
   onSubmit,
   isLoading = false,
   entryToEdit,
   onCancelEdit,
   onPrintLedger,
-}) => {
+}, ref) => {
   const [formData, setFormData] = useState({
     date: format(new Date(), 'yyyy-MM-dd'),
     tenant: '',
@@ -34,6 +34,8 @@ export const EntryForm: React.FC<EntryFormProps> = ({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const formRef = useRef<HTMLFormElement>(null);
+
+  useImperativeHandle(ref, () => formRef.current as HTMLFormElement);
 
   useEffect(() => {
     if (entryToEdit) {
@@ -245,4 +247,6 @@ export const EntryForm: React.FC<EntryFormProps> = ({
       </div>
     </form>
   );
-};
+});
+
+EntryForm.displayName = 'EntryForm';

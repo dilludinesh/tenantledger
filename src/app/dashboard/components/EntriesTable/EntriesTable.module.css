@@ -1,12 +1,12 @@
 .tableContainer {
   width: 100%;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 2px 16px 0 rgba(31, 38, 135, 0.10);
+  background: var(--glass-background-light);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 2px 16px 0 var(--glass-shadow);
 }
 
 .table {
@@ -16,14 +16,14 @@
 }
 
 .tableHead {
-  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, rgb(167, 41, 240) 100%);
-  border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .tableHeader {
-  padding: 1rem 1.5rem;
+  padding: var(--spacing-md) var(--spacing-lg);
   text-align: left;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   font-weight: 700;
   color: white;
   text-transform: uppercase;
@@ -33,46 +33,46 @@
 }
 
 .tableBody {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--glass-background-medium);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 .emptyState {
-  padding: 4rem 2rem;
+  padding: var(--spacing-2xl) var(--spacing-xl);
   text-align: center;
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--glass-background-medium);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
 }
 
 .emptyIcon {
   margin: 0 auto;
   height: 4rem;
   width: 4rem;
-  color: #9ca3af;
+  color: var(--icon-color);
 }
 
 .emptyTitle {
-  margin-top: 1.5rem;
-  font-size: 1.125rem;
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-size-lg);
   font-weight: 600;
-  color: #374151;
+  color: var(--empty-title-color);
 }
 
 .emptyDescription {
-  margin-top: 0.75rem;
-  font-size: 1rem;
-  color: #6b7280;
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  color: var(--empty-description-color);
 }
 
 .loadingRow {
   display: flex;
   justify-content: center;
-  padding: 3rem;
-  background: rgba(255, 255, 255, 0.4);
+  padding: var(--spacing-2xl);
+  background: var(--glass-background-medium);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
 }

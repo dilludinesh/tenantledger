@@ -9,14 +9,22 @@ import { formatCurrency } from '@/utils/validation';
 export const exportToCSV = (entries: LedgerEntry[], filename = 'ledger-export.csv') => {
   const headers = ['Date', 'Tenant', 'Amount', 'Category', 'Description'];
   
+  const sanitizeCell = (cell: string) => {
+    let sanitized = cell.replace(/"/g, '""');
+    if (/[,\=\+\-@"]/.test(sanitized)) {
+      sanitized = `"${sanitized}"`;
+    }
+    return sanitized;
+  };
+
   const csvContent = [
     headers.join(','),
     ...entries.map(entry => [
       formatDate(entry.date, 'yyyy-MM-dd'),
-      `"${entry.tenant}"`,
+      sanitizeCell(entry.tenant),
       entry.amount.toString(),
       entry.category,
-      `"${entry.description}"`
+      sanitizeCell(entry.description)
     ].join(','))
   ].join('\n');
 
@@ -34,37 +42,35 @@ export const exportToCSV = (entries: LedgerEntry[], filename = 'ledger-export.cs
   }
 };
 
-export const generateSummaryReport = (entries: LedgerEntry[]) => {
-  const totalIncome = entries
-    .filter(e => ['Rent', 'Security Deposit'].includes(e.category))
-    .reduce((sum, e) => sum + e.amount, 0);
-    
-  const totalExpenses = entries
-    .filter(e => ['Maintenance', 'Utilities', 'Other'].includes(e.category))
-    .reduce((sum, e) => sum + e.amount, 0);
-    
-  const netIncome = totalIncome - totalExpenses;
-  
-  return {
-    totalIncome,
-    totalExpenses,
-    netIncome,
+export const generatePrintableReport = (entries: LedgerEntry[], title = 'Tenant Ledger Report') => {
+  const summary = {
+    totalIncome: entries
+      .filter(e => ['Rent', 'Security Deposit'].includes(e.category))
+      .reduce((sum, e) => sum + e.amount, 0),
+    totalExpenses: entries
+      .filter(e => ['Maintenance', 'Utilities', 'Other'].includes(e.category))
+      .reduce((sum, e) => sum + e.amount, 0),
+    get netIncome() {
+      return this.totalIncome - this.totalExpenses;
+    },
     entryCount: entries.length,
     categories: entries.reduce((acc, entry) => {
       acc[entry.category] = (acc[entry.category] || 0) + entry.amount;
       return acc;
     }, {} as Record<string, number>)
   };
-};
 
-export const generatePrintableReport = (entries: LedgerEntry[], title = 'Tenant Ledger Report') => {
-  const summary = generateSummaryReport(entries);
+  const sanitizeHTML = (text: string) => {
+    const el = document.createElement('div');
+    el.innerText = text;
+    return el.innerHTML;
+  };
   
   const html = `
     <!DOCTYPE html>
     <html>
     <head>
-      <title>${title}</title>
+      <title>${sanitizeHTML(title)}</title>
       <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .header { text-align: center; margin-bottom: 30px; }
@@ -79,7 +85,7 @@ export const generatePrintableReport = (entries: LedgerEntry[], title = 'Tenant 
     </head>
     <body>
       <div class="header">
-        <h1>${title}</h1>
+        <h1>${sanitizeHTML(title)}</h1>
         <p>Generated on ${formatDate(new Date(), 'PPP')}</p>
       </div>
       
@@ -107,9 +113,9 @@ export const generatePrintableReport = (entries: LedgerEntry[], title = 'Tenant 
           ${entries.map(entry => `
             <tr>
               <td>${formatDate(entry.date, 'PP')}</td>
-              <td>${entry.tenant}</td>
-              <td>${entry.category}</td>
-              <td>${entry.description}</td>
+              <td>${sanitizeHTML(entry.tenant)}</td>
+              <td>${sanitizeHTML(entry.category)}</td>
+              <td>${sanitizeHTML(entry.description)}</td>
               <td class="amount">${formatCurrency(entry.amount)}</td>
             </tr>
           `).join('')}

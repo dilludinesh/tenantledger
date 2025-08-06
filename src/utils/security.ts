@@ -32,7 +32,25 @@ interface RateLimitEntry {
   resetTime: number;
 }
 
-const rateLimitStore = new Map<string, RateLimitEntry>();
+const rateLimitStore = {
+  get: (key: string): RateLimitEntry | undefined => {
+    if (typeof window === 'undefined') return undefined;
+    const entry = localStorage.getItem(key);
+    return entry ? JSON.parse(entry) : undefined;
+  },
+  set: (key: string, entry: RateLimitEntry) => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(key, JSON.stringify(entry));
+  },
+  delete: (key: string) => {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(key);
+  },
+  entries: (): [string, RateLimitEntry][] => {
+    if (typeof window === 'undefined') return [];
+    return Object.keys(localStorage).map(key => [key, JSON.parse(localStorage.getItem(key)!)]);
+  }
+};
 
 export function checkRateLimit(key: string, maxRequests: number = 10, windowMs: number = 60000): boolean {
   const now = Date.now();
@@ -63,22 +81,32 @@ export function cleanupRateLimit(): void {
 
 // Security headers validation
 export function validateSecurityHeaders(headers: Headers): boolean {
-  const requiredHeaders = [
-    'x-frame-options',
-    'x-content-type-options',
-    'x-xss-protection'
-  ];
+  const requiredHeaders: { [key: string]: string } = {
+    'x-frame-options': 'SAMEORIGIN',
+    'x-content-type-options': 'nosniff',
+    'x-xss-protection': '1; mode=block',
+    'content-security-policy': "default-src 'self'"
+  };
   
-  return requiredHeaders.every(header => headers.has(header));
+  return Object.entries(requiredHeaders).every(([header, value]) => {
+    const headerValue = headers.get(header);
+    return headerValue ? headerValue.includes(value) : false;
+  });
 }
 
 // Input validation for potential attacks
 export function detectSQLInjection(input: string): boolean {
   const sqlPatterns = [
-    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
+    // Common SQL keywords
+    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|TRUNCATE|DECLARE|MERGE)\b)/i,
+    // Tautologies
     /(\b(OR|AND)\s+\d+\s*=\s*\d+)/i,
-    /(--|\/\*|\*\/)/,
-    /(\b(SCRIPT|JAVASCRIPT|VBSCRIPT)\b)/i
+    // Comments
+    /(--|\/\*|\*\/|#)/,
+    // Dangerous characters
+    /[;'"`]/,
+    // Common attack patterns
+    /(\b(xp_cmdshell|sp_executesql|sp_configure)\b)/i
   ];
   
   return sqlPatterns.some(pattern => pattern.test(input));
@@ -87,11 +115,16 @@ export function detectSQLInjection(input: string): boolean {
 // XSS detection
 export function detectXSS(input: string): boolean {
   const xssPatterns = [
+    // Script tags
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    // Javascript URLs
     /javascript:/gi,
+    // Event handlers
     /on\w+\s*=/gi,
-    /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi,
-    /<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi
+    // Other dangerous tags
+    /<(iframe|object|embed|form|video|audio|svg|math|style|link|meta)\b[^<]*/gi,
+    // Dangerous attributes
+    /\s(src|href|formaction|style|background|poster|data|codebase|classid|profile|usemap)\s*=/gi
   ];
   
   return xssPatterns.some(pattern => pattern.test(input));

@@ -25,15 +25,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return {
-      hasError: true,
-      error,
-      errorInfo: null,
-    };
-  }
+  
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    this.setState({
+      hasError: true,
+      error,
+      errorInfo,
+    });
+
     // Log error to an error reporting service
     console.error('Error caught by boundary:', error, errorInfo);
 
@@ -49,11 +49,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         url: window.location.href
       });
     }
-
-    this.setState({
-      error,
-      errorInfo,
-    });
   }
 
   private getErrorMessage(error: Error): { title: string; message: string; actionable: boolean } {

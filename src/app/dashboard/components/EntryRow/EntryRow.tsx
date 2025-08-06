@@ -6,7 +6,6 @@ interface EntryRowProps {
   entry: LedgerEntry & { id: string }; // Ensure id is required
   onEdit?: (entry: LedgerEntry & { id: string }) => void;
   onDelete?: (entryId: string) => void;
-  isDeleting?: boolean;
 }
 
 const getCategoryStyle = (category: string) => {
@@ -24,7 +23,15 @@ const getCategoryStyle = (category: string) => {
   }
 };
 
-export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isDeleting = false }) => {
+const formatAmount = (amount: number): string => {
+  return amount.toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: true
+  });
+};
+
+export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const categoryStyle = getCategoryStyle(entry.category);
 
@@ -41,8 +48,6 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
     }
   };
 
-
-  
   return (
     <tr className={styles.row}>
 
@@ -64,11 +69,7 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
         <div className="flex justify-end w-full">
           <div className={`${styles.text} ${styles.amount}`}>
             <span className={styles.currencySymbol}>₹</span>
-            {entry.amount.toLocaleString('en-IN', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-              useGrouping: true
-            })}
+            {formatAmount(entry.amount)}
           </div>
         </div>
       </td>
@@ -91,7 +92,6 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
                   onClick={handleEdit}
                   className="px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 hover:text-blue-700 transition-all hover:scale-105"
                   aria-label="Edit entry"
-                  disabled={isDeleting}
                 >
                   Edit
                 </button>
@@ -101,7 +101,6 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
                   onClick={() => setShowDeleteConfirm(true)}
                   className="px-3 py-1 text-xs font-semibold text-red-600 bg-red-50 rounded-full hover:bg-red-100 hover:text-red-700 transition-all hover:scale-105"
                   aria-label="Delete entry"
-                  disabled={isDeleting}
                 >
                   Delete
                 </button>
@@ -112,14 +111,12 @@ export const EntryRow: React.FC<EntryRowProps> = ({ entry, onEdit, onDelete, isD
               <button
                 onClick={handleDelete}
                 className="px-3 py-1 text-xs font-semibold bg-red-600 text-white rounded-full hover:bg-red-700 transition-all hover:scale-105 shadow-sm"
-                disabled={isDeleting}
               >
-                {isDeleting ? 'Deleting...' : 'Confirm'}
+                Confirm
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 className="px-3 py-1 text-xs font-semibold bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all hover:scale-105 shadow-sm"
-                disabled={isDeleting}
               >
                 Cancel
               </button>

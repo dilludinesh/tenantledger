@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getEntries, addEntry, updateEntry } from '@/services/ledgerService';
@@ -9,16 +9,14 @@ import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { DashboardHeader } from './components/DashboardHeader';
-
-
-import { FilterBadge } from '@/components/FilterBadge';
+import { HelpModal } from '@/components/HelpModal';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 import { processLedgerEntries } from '@/utils/ledgerUtils';
 import { exportToCSV } from '@/utils/export';
 import { useKeyboardShortcuts, createCommonShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { filterEntries, FilterOptions } from '@/utils/filterUtils';
-import { HelpModal } from '@/components/HelpModal';
+import { SignOutModal } from '@/components/SignOutModal';
 import styles from './glass.module.css';
 
 export default function DashboardPage() {
@@ -30,7 +28,7 @@ export default function DashboardPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({ categories: [] });
-
+  const entryFormRef = useRef<HTMLFormElement>(null);
 
   const handleSignOut = async () => {
     try {
@@ -132,11 +130,7 @@ export default function DashboardPage() {
     onToggleFilters: () => setShowFilters(!showFilters),
     onNewEntry: () => {
       setEditingEntry(null);
-      // Focus on tenant input for faster data entry
-      setTimeout(() => {
-        const tenantInput = document.querySelector('input[name="tenant"]') as HTMLInputElement;
-        tenantInput?.focus();
-      }, 100);
+      entryFormRef.current?.querySelector<HTMLInputElement>('input[name="tenant"]')?.focus();
     }
   }));
 
@@ -149,7 +143,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
+    <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         <DashboardHeader
           currentUser={user}
@@ -162,6 +157,7 @@ export default function DashboardPage() {
           onFilterChange={handleFilterChange}
         >
           <EntryForm
+            ref={entryFormRef}
             onSubmit={(values) => mutation.mutate({ values, entryId: editingEntry?.id })}
             isLoading={mutation.isPending}
             entryToEdit={editingEntry}
@@ -172,12 +168,6 @@ export default function DashboardPage() {
 
         
 
-        {/* Filter Badge */}
-        <FilterBadge 
-          count={filteredEntries.length}
-          total={entries.length}
-          onClear={clearFilters}
-        />
 
 
 
@@ -202,55 +192,13 @@ export default function DashboardPage() {
           onClose={() => setShowHelp(false)}
         />
 
-        {/* Sign Out Confirmation Modal */}
-        {showSignOutConfirm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop with soft blur */}
-            <div 
-              className="absolute inset-0 bg-black/20 backdrop-blur-sm"
-              onClick={() => setShowSignOutConfirm(false)}
-            />
-            
-            {/* Modal Content */}
-            <div className="relative bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 max-w-md mx-4 transform transition-all">
-              <div className="text-center">
-                {/* Icon */}
-                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
-                  <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </div>
-                
-                {/* Title */}
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Sign Out
-                </h3>
-                
-                {/* Message */}
-                <p className="text-gray-600 mb-8">
-                  Are you sure you want to sign out of your account?
-                </p>
-                
-                {/* Buttons */}
-                <div className="flex gap-3 justify-center">
-                  <button
-                    onClick={() => setShowSignOutConfirm(false)}
-                    className="btn btn-primary flex-1"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSignOut}
-                    className="btn btn-danger flex-1"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <SignOutModal
+          isOpen={showSignOutConfirm}
+          onClose={() => setShowSignOutConfirm(false)}
+          onConfirm={handleSignOut}
+        />
       </div>
     </div>
+  </div>
   );
 }
