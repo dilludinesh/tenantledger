@@ -8,7 +8,7 @@ import { LedgerEntry, LedgerCategory } from '@/types/ledger';
 import { EntryForm } from './components/EntryForm/EntryForm';
 import { EntriesTable } from './components/EntriesTable/EntriesTable';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
-import { DashboardHeader } from './components/DashboardHeader';
+import DashboardHeader from './components/DashboardHeader';
 import { HelpModal } from '@/components/HelpModal';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
@@ -148,7 +148,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto">
         <DashboardHeader
           currentUser={user}
-          demoUser={null}
+          demoUser={false}
           setShowSignOutConfirm={setShowSignOutConfirm}
           onExportCSV={handleExportCSV}
           filteredEntriesCount={filteredEntries.length}

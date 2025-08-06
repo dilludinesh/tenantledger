@@ -11,11 +11,10 @@ const CATEGORIES: LedgerCategory[] = [
 interface DashboardHeaderProps {
   currentUser: any; // Consider replacing 'any' with proper User type
   demoUser?: boolean;
-  filters: any; // Consider replacing 'any' with proper Filters type
   tenants: string[];
   filteredEntriesCount: number;
   totalEntriesCount: number;
-  handleFilterChange: (key: string, value: any) => void;
+  onFilterChange: (filters: any) => void; // Updated to match usage
   onExportCSV: () => void;
   setShowSignOutConfirm: (show: boolean) => void;
   children?: React.ReactNode;
@@ -24,11 +23,10 @@ interface DashboardHeaderProps {
 export default function DashboardHeader({
   currentUser,
   demoUser = false,
-  filters,
   tenants,
   filteredEntriesCount,
   totalEntriesCount,
-  handleFilterChange,
+  onFilterChange,
   onExportCSV,
   setShowSignOutConfirm,
   children
@@ -139,7 +137,7 @@ export default function DashboardHeader({
                 <input
                   type="number"
                   placeholder="Min"
-                  value={filters.amountMin || ''}
+                  value={''}
                   onChange={(e) => handleFilterChange('amountMin', parseFloat(e.target.value) || undefined)}
                   className="filter-input"
                 />
@@ -147,7 +145,7 @@ export default function DashboardHeader({
               <div className="flex-1 min-w-[120px]">
                 <label className="filter-label">Category</label>
                 <select
-                  value={filters.categories[0] || ''}
+                  value={''}
                   onChange={(e) => handleFilterChange('categories', e.target.value ? [e.target.value as LedgerCategory] : [])}
                   className="filter-input"
                 >
