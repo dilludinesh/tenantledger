@@ -213,8 +213,7 @@ button {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--secondary-hover);
-  box-shadow: var(--shadow-md);
+  background: var(--secondary);
   transform: translateY(-1px);
 }
 
@@ -225,8 +224,7 @@ button {
 }
 
 .btn-success:hover:not(:disabled) {
-  background: var(--success-hover);
-  box-shadow: var(--shadow-md);
+  background: var(--success);
   transform: translateY(-1px);
 }
 
@@ -237,8 +235,7 @@ button {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: var(--danger-hover);
-  box-shadow: var(--shadow-md);
+  background: var(--danger);
   transform: translateY(-1px);
 }
 
@@ -274,13 +271,13 @@ button {
   background: var(--card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  transition: none;
   border: 1px solid var(--border);
   padding: var(--spacing-xl);
-  transition: all var(--transition-base);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 /* ===== UNIFORM MODALS ===== */
