@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { CATEGORIES, LedgerEntry } from '@/types/ledger';
 import { validateLedgerEntry, sanitizeInput } from '@/utils/validation';
@@ -33,6 +33,7 @@ export const EntryForm: React.FC<EntryFormProps> = ({
     description: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (entryToEdit) {
@@ -56,16 +57,13 @@ export const EntryForm: React.FC<EntryFormProps> = ({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
-    // Sanitize input for security
-    const sanitizedValue = name === 'amount' ? value : sanitizeInput(value);
+    const sanitizedValue = sanitizeInput(value);
     
     setFormData(prev => ({
       ...prev,
       [name]: sanitizedValue
     }));
     
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -80,10 +78,9 @@ export const EntryForm: React.FC<EntryFormProps> = ({
     setErrors(validation.errors);
     
     if (!validation.isValid) {
-      // Focus on the first field with an error
       const firstErrorField = Object.keys(validation.errors)[0];
-      if (firstErrorField) {
-        const element = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
+      if (firstErrorField && formRef.current) {
+        const element = formRef.current.querySelector(`[name="${firstErrorField}"]`) as HTMLElement;
         element?.focus();
       }
       return;
@@ -95,19 +92,12 @@ export const EntryForm: React.FC<EntryFormProps> = ({
     if (entryToEdit && onCancelEdit) {
       onCancelEdit();
     } else {
-      setFormData({
-        date: format(new Date(), 'yyyy-MM-dd'),
-        tenant: '',
-        amount: '',
-        category: 'Rent',
-        description: '',
-      });
       setErrors({});
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3">
+    <form onSubmit={handleSubmit} ref={formRef}>
       <div className="space-y-4">
         {/* Balanced 2-column layout */}
         <div className="max-w-lg space-y-4">

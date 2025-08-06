@@ -61,60 +61,44 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
 
       {/* User Info and Entry Form combined */}
-      <div className="flex flex-col lg:flex-row items-stretch justify-between gap-4 mb-8 w-full">
-        <div className={`${styles.glassCard} text-base w-full shadow-sm flex flex-col lg:flex-row items-stretch justify-between gap-0 p-4`} style={{ borderRadius: 20 }}>
-          {/* User Info Section with attached divider */}
+      <div className="mb-8 w-full">
+        <div className="card flex flex-col lg:flex-row items-start justify-between gap-0">
+          {/* User Info Section */}
           {currentUser && (
-            <div className="flex lg:w-[25%] lg:min-w-[250px]">
-              <div className="flex flex-col gap-2 flex-1">
+            <div className="lg:w-[25%] lg:min-w-[250px] p-4">
+              <div className="flex flex-col gap-3">
                 {/* User Info */}
-                <div className="mb-1">
-                  <span className="text-xs text-gray-400 block">Welcome</span>
-                  <span
-                    className="text-lg font-semibold block"
-                    style={{
-                      background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, rgb(167, 41, 240) 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                    }}
-                  >
+                <div>
+                  <span className="filter-label">Welcome</span>
+                  <span className="text-xl font-bold block title-gradient">
                     {currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}
-                    {demoUser && <span className="text-xs text-blue-600 ml-1">(Demo)</span>}
+                    {demoUser && <span className="text-xs text-blue-600 ml-2">(Demo)</span>}
                   </span>
                 </div>
 
                 {currentUser.email && (
-                  <div className="text-gray-500 text-sm truncate">
+                  <div style={{color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)'}}>
                     {currentUser.email}
                   </div>
                 )}
 
-                {/* Always visible UID - inline */}
+                {/* User ID */}
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">User ID:</span>
-                  <span
-                    className="font-mono text-xs break-all font-medium"
-                    style={{
-                      background: 'linear-gradient(90deg, #3b82f6, rgb(167, 41, 240))',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                    }}
-                  >
+                  <span className="filter-label">User ID:</span>
+                  <span className="font-mono text-xs font-medium break-all title-gradient">
                     {currentUser.uid}
                   </span>
                 </div>
 
-                {/* Sign out button - previous style */}
+                {/* Sign out button */}
                 <button
                   onClick={() => setShowSignOutConfirm(true)}
-                  className="btn-signout flex items-center justify-center space-x-2 px-4 py-2 text-sm font-bold shadow-md mt-6 w-fit"
+                  className="btn btn-danger btn-sm w-fit"
                   aria-label="Sign out"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
+                    className="h-4 w-4"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -124,95 +108,100 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   <span>Sign Out</span>
                 </button>
               </div>
-
-              {/* Divider attached to user info */}
-              <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent my-2 mr-4"></div>
             </div>
           )}
 
           {/* Entry Form Section */}
-          <div className="flex-1 lg:w-[45%] mt-3 lg:mt-0">
+          <div className="flex-1 lg:w-[45%] p-4 border-l border-r border-gray-200">
             {children}
           </div>
 
-          {/* Second divider */}
-          <div className="hidden lg:block w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent mx-4 my-2"></div>
-
-          {/* Compact Filters Grid */}
-          <div className="lg:w-[25%] lg:min-w-[200px] mt-3 lg:mt-0 space-y-3">
-            {/* More horizontal 3x2 Grid Layout */}
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Date</label>
-                <input
-                  type="date"
-                  value={filters.dateFrom || ''}
-                  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
+          {/* Filters Section */}
+          <div className="lg:w-[30%] lg:min-w-[240px] p-4">
+            <div className="space-y-4">
+            {/* Filter Grid */}
+            <div>
+              <h3 className="text-center text-lg font-semibold mb-4">Filters</h3>
+              <div className="flex flex-wrap gap-3">
+                <div className="flex-1 min-w-[120px]">
+                  <label className="filter-label">Date</label>
+                  <input
+                    type="date"
+                    value={filters.dateFrom || ''}
+                    onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                    className="filter-input"
+                  />
+                </div>
+                <div className="flex-1 min-w-[120px]">
+                  <label className="filter-label">Tenant</label>
+                  <select
+                    value={filters.tenant || ''}
+                    onChange={(e) => handleFilterChange('tenant', e.target.value)}
+                    className="filter-input"
+                  >
+                    <option value="">All</option>
+                    {tenants.map(tenant => (
+                      <option key={tenant} value={tenant}>{tenant}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex-1 min-w-[120px]">
+                  <label className="filter-label">Amount</label>
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={filters.amountMin || ''}
+                    onChange={(e) => handleFilterChange('amountMin', parseFloat(e.target.value) || undefined)}
+                    className="filter-input"
+                  />
+                </div>
+                <div className="flex-1 min-w-[120px]">
+                  <label className="filter-label">Category</label>
+                  <select
+                    value={filters.categories[0] || ''}
+                    onChange={(e) => handleFilterChange('categories', e.target.value ? [e.target.value] : [])}
+                    className="filter-input"
+                  >
+                    <option value="">All</option>
+                    {CATEGORIES.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Tenant</label>
-                <select
-                  value={filters.tenant || ''}
-                  onChange={(e) => handleFilterChange('tenant', e.target.value)}
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="">All</option>
-                  {tenants.map(tenant => (
-                    <option key={tenant} value={tenant}>{tenant}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Amount</label>
-                <input
-                  type="number"
-                  placeholder="Min"
-                  value={filters.amountMin || ''}
-                  onChange={(e) => handleFilterChange('amountMin', parseFloat(e.target.value) || undefined)}
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Category</label>
-                <select
-                  value={filters.categories[0] || ''}
-                  onChange={(e) => handleFilterChange('categories', e.target.value ? [e.target.value] : [])}
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="">All</option>
-                  {CATEGORIES.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-span-2">
-                <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+              <div className="mt-3">
+                <label className="filter-label">Description</label>
                 <input
                   type="text"
                   placeholder="Search descriptions..."
                   value={filters.searchTerm || ''}
                   onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="filter-input"
                 />
               </div>
             </div>
 
-            {/* Export Button */}
-            <button
-              onClick={onExportCSV}
-              className="w-full px-3 py-2 text-xs font-semibold text-white bg-green-500 rounded-full hover:bg-green-600 transition-all hover:scale-105 shadow-sm"
-            >
-              Export
-            </button>
+            {/* Actions */}
+            <div>
+              <h3 style={{fontSize: 'var(--font-size-sm)', fontWeight: '600', color: 'var(--foreground)', marginBottom: 'var(--spacing-md)'}}>Actions</h3>
+              <button
+                onClick={onExportCSV}
+                className="btn btn-success w-full"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Export CSV
+              </button>
+            </div>
 
             {/* Results Count */}
             {filteredEntriesCount !== totalEntriesCount && (
-              <div className="text-xs text-gray-500 text-center">
-                {filteredEntriesCount} of {totalEntriesCount} entries
+              <div className="badge badge-primary">
+                <span>{filteredEntriesCount} of {totalEntriesCount} entries</span>
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>

@@ -12,7 +12,6 @@ import { DashboardHeader } from './components/DashboardHeader';
 
 
 import { FilterBadge } from '@/components/FilterBadge';
-import { BulkActions } from '@/components/BulkActions';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 import { processLedgerEntries } from '@/utils/ledgerUtils';
@@ -31,7 +30,7 @@ export default function DashboardPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({ categories: [] });
-  const [selectedEntries, setSelectedEntries] = useState<Array<LedgerEntry & { id: string }>>([]);
+
 
   const handleSignOut = async () => {
     try {
@@ -190,22 +189,12 @@ export default function DashboardPage() {
                 entries={filteredEntries}
                 isLoading={isFetching}
                 onEdit={handleEdit}
-                selectedEntries={selectedEntries}
-                setSelectedEntries={setSelectedEntries}
               />
             </div>
           </div>
         </div>
 
-        {/* Bulk Actions */}
-        <BulkActions
-          selectedEntries={selectedEntries}
-          onClearSelection={() => setSelectedEntries([])}
-          onExportSelected={() => {
-            exportToCSV(selectedEntries, `tenant-ledger-selected-${new Date().toISOString().split('T')[0]}.csv`);
-            toast.success(`Exported ${selectedEntries.length} selected entries to CSV`);
-          }}
-        />
+
 
         {/* Help Modal */}
         <HelpModal 
@@ -243,50 +232,16 @@ export default function DashboardPage() {
                 </p>
                 
                 {/* Buttons */}
-                <div className="flex gap-8 justify-center">
+                <div className="flex gap-3 justify-center">
                   <button
                     onClick={() => setShowSignOutConfirm(false)}
-                    className="flex-1 px-6 py-3 rounded-full transition-colors"
-                    style={{
-                      background: 'linear-gradient(to bottom, #2563eb, #1d4ed8)',
-                      color: 'white',
-                      fontWeight: '600',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                      transform: 'none'
-                    }}
-                    onMouseEnter={(e) => {
-                      const target = e.target as HTMLElement;
-                      target.style.background = 'linear-gradient(to bottom, #1d4ed8, #2563eb)';
-                      target.style.transform = 'none';
-                    }}
-                    onMouseLeave={(e) => {
-                      const target = e.target as HTMLElement;
-                      target.style.background = 'linear-gradient(to bottom, #2563eb, #1d4ed8)';
-                      target.style.transform = 'none';
-                    }}
+                    className="btn btn-primary flex-1"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="flex-1 px-6 py-3 rounded-full transition-colors"
-                    style={{
-                      backgroundColor: '#e5e7eb',
-                      color: '#374151',
-                      fontWeight: '600'
-                    }}
-                    onMouseEnter={(e) => {
-                      const target = e.target as HTMLElement;
-                      target.style.background = 'linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%)';
-                      target.style.color = 'white';
-                      target.style.boxShadow = '0 4px 16px 0 rgba(255,65,108,0.18)';
-                    }}
-                    onMouseLeave={(e) => {
-                      const target = e.target as HTMLElement;
-                      target.style.background = '#e5e7eb';
-                      target.style.color = '#374151';
-                      target.style.boxShadow = 'none';
-                    }}
+                    className="btn btn-danger flex-1"
                   >
                     Sign Out
                   </button>

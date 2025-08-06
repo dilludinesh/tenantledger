@@ -10,7 +10,7 @@ service cloud.firestore {
         && isValidLedgerEntry();
       allow update: if request.auth != null 
         && request.auth.uid == userId
-        && resource.data.userId == request.auth.uid;
+        && isValidLedgerEntry();
       allow delete: if request.auth != null 
         && request.auth.uid == userId
         && resource.data.userId == request.auth.uid;

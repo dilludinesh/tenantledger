@@ -11,16 +11,12 @@ interface EntriesTableProps {
   entries: Array<LedgerEntry & { id: string }>;
   isLoading?: boolean;
   onEdit: (entry: LedgerEntry & { id: string }) => void;
-  selectedEntries: Array<LedgerEntry & { id: string }>;
-  setSelectedEntries: React.Dispatch<React.SetStateAction<Array<LedgerEntry & { id: string }>>>;
 }
 
 export const EntriesTable: React.FC<EntriesTableProps> = ({
   entries,
   isLoading = false,
   onEdit,
-  selectedEntries,
-  setSelectedEntries,
 }) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -43,23 +39,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
     deleteMutation.mutate(entryId);
   };
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedEntries(entries);
-    } else {
-      setSelectedEntries([]);
-    }
-  };
 
-  const handleSelectEntry = (entry: LedgerEntry & { id: string }, isSelected: boolean) => {
-    if (isSelected) {
-      setSelectedEntries((prev) => [...prev, entry]);
-    } else {
-      setSelectedEntries((prev) => prev.filter((selected) => selected.id !== entry.id));
-    }
-  };
-
-  const allEntriesSelected = selectedEntries.length === entries.length && entries.length > 0;
 
   if (isLoading) {
     return (
@@ -108,14 +88,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
       <table className={styles.table}>
         <thead>
           <tr className={styles.tableHead}>
-            <th scope="col" className="w-12 px-4 py-3">
-              <input
-                type="checkbox"
-                className="form-checkbox h-4 w-4 text-blue-600 rounded"
-                checked={allEntriesSelected}
-                onChange={handleSelectAll}
-              />
-            </th>
+
             <th scope="col" className={styles.tableHeader}>
               Date
             </th>
@@ -146,8 +119,7 @@ export const EntriesTable: React.FC<EntriesTableProps> = ({
               onEdit={onEdit}
               onDelete={handleDelete}
               isDeleting={deleteMutation.isPending && deleteMutation.variables === entry.id}
-              onSelect={handleSelectEntry}
-              isSelected={selectedEntries.some((selected) => selected.id === entry.id)}
+
             />
           ))}
         </tbody>

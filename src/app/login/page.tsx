@@ -67,7 +67,7 @@ export default function LoginPage() {
                       Sign-in was cancelled.
                     </span>
                   </div>
-                  <button onClick={handleSignIn} className="text-sm text-blue-600 hover:underline font-semibold">
+                  <button onClick={handleSignIn} className="btn btn-primary">
                     Please try again.
                   </button>
                 </div>

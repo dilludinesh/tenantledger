@@ -104,7 +104,7 @@ describe('EntryForm', () => {
     
     expect(screen.getByLabelText('Tenant')).toHaveValue('John Doe');
     expect(screen.getByLabelText('Amount (₹)')).toHaveValue(1000);
-    expect(screen.getByRole('button', { name: 'Update Entry' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Update' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
 
