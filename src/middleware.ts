@@ -8,72 +8,69 @@ function base64url(bytes: Uint8Array): string {
   return Buffer.from(bin, 'binary').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function buildCSP(nonce: string): string {
-  // Baseline CSP allowing Next.js, Firebase Auth, and images with per-request nonce
-  // Next.js dev/runtime may require 'unsafe-eval' in development for React Refresh and certain parsing paths.
+function buildCSP(): string {
+  // Simplified CSP for Next.js
   const self = "'self'";
   const data = "data:";
   const https = "https:";
   const firebase = "*.firebaseapp.com *.firebaseio.com *.googleapis.com";
   const gstatic = "*.gstatic.com";
   const google = "*.google.com *.accounts.google.com";
-  const nonceDirective = `'nonce-${nonce}'`;
-  const unsafeEval = "'unsafe-eval'";
-
-  // For Next.js, we need to be more permissive with scripts and styles
+  const vercel = "*.vercel.app vercel.app";
+  
+  // Script sources
   const scriptSrc = [
     `script-src`,
-    nonceDirective,
     `'self'`,
     `'unsafe-inline'`,
     `'unsafe-eval'`,
     'blob:',
-    '*.vercel.app',
-    'vercel.app',
-    '*.google.com',
-    '*.gstatic.com',
-    '*.accounts.google.com'
+    vercel,
+    google,
+    gstatic
   ].filter(Boolean).join(' ');
 
+  // Style sources
   const styleSrc = [
     `style-src`,
     `'self'`,
     `'unsafe-inline'`,
     'blob:',
-    '*.vercel.app',
-    'vercel.app',
-    '*.google.com',
-    '*.gstatic.com'
+    vercel,
+    google,
+    gstatic
   ].filter(Boolean).join(' ');
   
+  // Image sources
   const imgSrc = [
     `img-src`,
     `'self'`,
     'data:',
     'blob:',
-    '*.vercel.app',
-    'vercel.app',
-    '*.google.com',
-    '*.gstatic.com',
+    vercel,
+    google,
+    gstatic,
     '*.googleapis.com',
     '*.firebaseio.com',
     'firebasestorage.googleapis.com'
   ].filter(Boolean).join(' ');
 
+  // Build the final CSP
   return [
     scriptSrc,
     styleSrc,
     imgSrc,
     `default-src 'self'`,
     `base-uri 'self'`,
-    `font-src 'self' ${data} *.gstatic.com`,
+    `font-src 'self' ${data} ${gstatic}`,
     `object-src 'none'`,
-    `connect-src 'self' https: *.vercel.app vercel.app ${firebase} ${gstatic} ${google}`,
+    `connect-src 'self' ${https} ${vercel} ${firebase} ${gstatic} ${google}`,
     `frame-src 'self' ${google}`,
     `frame-ancestors 'self'`,
     `form-action 'self'`,
     `worker-src 'self' blob:`,
-    `media-src 'self' blob: data:`
+    `media-src 'self' blob: data:`,
+    `upgrade-insecure-requests`
   ].join('; ');
 }
 
@@ -97,7 +94,7 @@ export function middleware(request: NextRequest) {
   response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
-  response.headers.set('Content-Security-Policy', buildCSP(nonce));
+  response.headers.set('Content-Security-Policy', buildCSP());
 
   // HSTS only in production
   if (process.env.NODE_ENV === 'production') {
