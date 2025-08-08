@@ -102,17 +102,16 @@ export function middleware(request: NextRequest) {
     response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
-  // Relax COOP/COEP for authentication routes to allow Firebase popup/redirect
-  const isAuthPath = pathname.startsWith('/login') || pathname.startsWith('/auth') || pathname === '/';
-  
-  // Set COOP to unsafe-none for auth paths to allow popups
-  response.headers.set('Cross-Origin-Opener-Policy', isAuthPath ? 'unsafe-none' : 'same-origin');
-  
-  // Set COEP to allow cross-origin resources when needed
-  response.headers.set('Cross-Origin-Embedder-Policy', isAuthPath ? 'unsafe-none' : 'require-corp');
-  
-  // Add CORP header for cross-origin resources
+  // Simplified COOP/COEP policies to work with Firebase Auth
+  // Using less restrictive settings for better compatibility
+  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  response.headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none');
   response.headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  
+  // Additional headers for compatibility
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   // Protect sensitive routes
   if (pathname.startsWith('/dashboard')) {
