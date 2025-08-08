@@ -26,13 +26,17 @@ function buildCSP(nonce: string): string {
     google,
     gstatic,
     nonceDirective,
-    // Allow eval only during development to fix EvalError while preserving stronger prod policy
-    process.env.NODE_ENV !== 'production' ? unsafeEval : ''
+    `'unsafe-inline'`,
+    `'unsafe-eval'`,
+    'blob:'
   ].filter(Boolean).join(' ');
 
-  const styleSrc = process.env.NODE_ENV === 'production'
-    ? `style-src ${self} ${nonceDirective}`
-    : `style-src ${self} 'unsafe-inline' ${nonceDirective}`;
+  const styleSrc = [
+    `style-src ${self}`,
+    `'unsafe-inline'`,
+    nonceDirective,
+    'blob:'
+  ].filter(Boolean).join(' ');
 
   return [
     `default-src ${self}`,
