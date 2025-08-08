@@ -26,16 +26,16 @@ function buildCSP(nonce: string): string {
     google,
     gstatic,
     nonceDirective,
-    `'unsafe-inline'`,
+    `'strict-dynamic'`,
     `'unsafe-eval'`,
     'blob:'
   ].filter(Boolean).join(' ');
 
   const styleSrc = [
     `style-src ${self}`,
-    `'unsafe-inline'`,
     nonceDirective,
-    'blob:'
+    'blob:',
+    `'unsafe-inline'` // Required for some Next.js styles
   ].filter(Boolean).join(' ');
 
   return [
