@@ -102,9 +102,17 @@ export function middleware(request: NextRequest) {
     response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
-  // Scope COOP relaxation to auth-related pages where Firebase popup/redirect is used
-  const isAuthPath = pathname.startsWith('/login') || pathname.startsWith('/auth');
+  // Relax COOP/COEP for authentication routes to allow Firebase popup/redirect
+  const isAuthPath = pathname.startsWith('/login') || pathname.startsWith('/auth') || pathname === '/';
+  
+  // Set COOP to unsafe-none for auth paths to allow popups
   response.headers.set('Cross-Origin-Opener-Policy', isAuthPath ? 'unsafe-none' : 'same-origin');
+  
+  // Set COEP to allow cross-origin resources when needed
+  response.headers.set('Cross-Origin-Embedder-Policy', isAuthPath ? 'unsafe-none' : 'require-corp');
+  
+  // Add CORP header for cross-origin resources
+  response.headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
 
   // Protect sensitive routes
   if (pathname.startsWith('/dashboard')) {
