@@ -20,36 +20,60 @@ function buildCSP(nonce: string): string {
   const nonceDirective = `'nonce-${nonce}'`;
   const unsafeEval = "'unsafe-eval'";
 
+  // For Next.js, we need to be more permissive with scripts and styles
   const scriptSrc = [
-    `script-src ${self}`,
-    https,
-    google,
-    gstatic,
+    `script-src`,
     nonceDirective,
-    `'strict-dynamic'`,
+    `'self'`,
+    `'unsafe-inline'`,
     `'unsafe-eval'`,
-    'blob:'
+    'blob:',
+    '*.vercel.app',
+    'vercel.app',
+    '*.google.com',
+    '*.gstatic.com',
+    '*.accounts.google.com'
   ].filter(Boolean).join(' ');
 
   const styleSrc = [
-    `style-src ${self}`,
-    nonceDirective,
+    `style-src`,
+    `'self'`,
+    `'unsafe-inline'`,
     'blob:',
-    `'unsafe-inline'` // Required for some Next.js styles
+    '*.vercel.app',
+    'vercel.app',
+    '*.google.com',
+    '*.gstatic.com'
+  ].filter(Boolean).join(' ');
+  
+  const imgSrc = [
+    `img-src`,
+    `'self'`,
+    'data:',
+    'blob:',
+    '*.vercel.app',
+    'vercel.app',
+    '*.google.com',
+    '*.gstatic.com',
+    '*.googleapis.com',
+    '*.firebaseio.com',
+    'firebasestorage.googleapis.com'
   ].filter(Boolean).join(' ');
 
   return [
-    `default-src ${self}`,
-    `base-uri ${self}`,
-    `font-src ${self} ${data} ${gstatic}`,
-    `img-src ${self} ${data} blob: ${https}`,
-    `object-src 'none'`,
     scriptSrc,
     styleSrc,
-    `connect-src ${self} ${https} ${firebase} ${gstatic} ${google}`,
-    `frame-src ${self} ${google}`,
-    `frame-ancestors ${self}`,
-    `form-action ${self}`,
+    imgSrc,
+    `default-src 'self'`,
+    `base-uri 'self'`,
+    `font-src 'self' ${data} *.gstatic.com`,
+    `object-src 'none'`,
+    `connect-src 'self' https: *.vercel.app vercel.app ${firebase} ${gstatic} ${google}`,
+    `frame-src 'self' ${google}`,
+    `frame-ancestors 'self'`,
+    `form-action 'self'`,
+    `worker-src 'self' blob:`,
+    `media-src 'self' blob: data:`
   ].join('; ');
 }
 
