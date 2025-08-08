@@ -17,6 +17,7 @@ function buildCSP(): string {
   const gstatic = "*.gstatic.com";
   const google = "*.google.com *.accounts.google.com";
   const vercel = "*.vercel.app vercel.app";
+  const firebaseAuth = "tenantledgerio.firebaseapp.com";
   
   // Script sources
   const scriptSrc = [
@@ -65,7 +66,7 @@ function buildCSP(): string {
     `font-src 'self' ${data} ${gstatic}`,
     `object-src 'none'`,
     `connect-src 'self' ${https} ${vercel} ${firebase} ${gstatic} ${google}`,
-    `frame-src 'self' ${google}`,
+    `frame-src 'self' ${google} ${firebaseAuth} ${firebase}`,
     `frame-ancestors 'self'`,
     `form-action 'self'`,
     `worker-src 'self' blob:`,
