@@ -119,10 +119,7 @@ export default function DashboardPage() {
     setFilters(newFilters);
   };
 
-  const clearFilters = () => {
-    setFilters({ categories: [] });
-    setShowFilters(false);
-  };
+
 
   // Keyboard shortcuts
   useKeyboardShortcuts(createCommonShortcuts({

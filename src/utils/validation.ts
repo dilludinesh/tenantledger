@@ -1,4 +1,4 @@
-import { CATEGORIES } from '@/types/ledger';
+
 import { detectSQLInjection, detectXSS } from './security';
 import { 
   validateLedgerEntryForm, 

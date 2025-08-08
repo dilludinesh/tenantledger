@@ -17,13 +17,28 @@ const CATEGORIES: LedgerCategory[] = [
   'Other'
 ];
 
+interface User {
+  uid: string;
+  displayName?: string | null;
+  email?: string | null;
+  photoURL?: string | null;
+}
+
+interface FilterOptions {
+  dateFrom?: string;
+  tenant?: string;
+  amountMin?: number;
+  searchTerm?: string;
+  categories: LedgerCategory[];
+}
+
 interface DashboardHeaderProps {
-  currentUser: any; // Consider replacing 'any' with proper User type
+  currentUser: User;
   demoUser?: boolean;
   tenants: string[];
   filteredEntriesCount: number;
   totalEntriesCount: number;
-  onFilterChange: (filters: any) => void; // Updated to match usage
+  onFilterChange: (filters: FilterOptions) => void;
   onExportCSV: () => void;
   setShowSignOutConfirm: (show: boolean) => void;
   children?: React.ReactNode;
@@ -44,12 +59,12 @@ export default function DashboardHeader({
   setShowSignOutConfirm,
   children
 }: DashboardHeaderProps) {
-  const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [filters, setFilters] = useState<FilterOptions>(defaultFilters);
 
   // Handle filter changes
-  const handleFilterChange = useCallback((key: keyof FilterState, value: any) => {
+  const handleFilterChange = useCallback((key: keyof FilterOptions, value: string | number | LedgerCategory[] | undefined) => {
     setFilters(prev => {
-      const newFilters = {
+      const newFilters: FilterOptions = {
         ...prev,
         [key]: value
       };

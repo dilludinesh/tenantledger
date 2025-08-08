@@ -209,23 +209,15 @@ export const getEntriesPaginated = async (
       if (data.userId && data.userId !== userId) {
         continue;
       }
-      
-      // If this is an old entry without userId, update it
-      if (!data.userId) {
-        try {
-          await updateDoc(docSnap.ref, { userId: userId });
-          data.userId = userId;
-        } catch {
-          // Silent error handling for document update
-        }
-      }
-      
+
+      // Do NOT mutate documents during read; background migration should handle missing userId.
       const entry = normalizeEntryData(docSnap, data, userId);
       processedEntries.push(entry);
     }
 
-    const nextCursor = hasMore && processedEntries.length > 0 
-      ? processedEntries[processedEntries.length - 1].id 
+    // Derive next cursor from the last included document if we actually have more
+    const nextCursor = hasMore && processedEntries.length > 0
+      ? processedEntries[processedEntries.length - 1].id
       : undefined;
 
     return {
@@ -350,7 +342,9 @@ export const searchEntries = async (
     }
     
     if (filters.categories.length > 0) {
-      q = query(q, where('category', 'in', filters.categories));
+      // Firestore 'in' operator supports up to 10 values
+      const categoriesForQuery = filters.categories.slice(0, 10);
+      q = query(q, where('category', 'in', categoriesForQuery));
     }
 
     // Add ordering and pagination

@@ -21,9 +21,23 @@
 
 /* Glass button */
 .glassButton {
-  composes: buttonBase;
+  composes: glassBase;
   padding: 0.6rem 2rem;
   box-shadow: var(--glass-button-shadow);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  font-family: var(--font-family);
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  letter-spacing: 0.01em;
+  color: white;
 }
 
 .glassButton:hover {

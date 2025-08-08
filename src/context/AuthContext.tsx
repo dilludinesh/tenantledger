@@ -27,42 +27,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  const handleAuthError = useCallback((error: unknown) => {
-    let errorMessage = 'An error occurred during sign in';
-
-    if (error && typeof error === 'object' && 'code' in error) {
-      const err = error as { code: string; message?: string };
-      switch (err.code) {
-        case 'auth/cancelled-popup-request':
-        case 'auth/popup-closed-by-user':
-          errorMessage = 'Sign in was cancelled';
-          break;
-        case 'auth/popup-blocked':
-          errorMessage = 'Sign in popup was blocked. Please allow popups for this site.';
-          break;
-        case 'auth/auth-domain-config-required':
-          errorMessage = 'Authentication domain configuration is required';
-          break;
-        case 'auth/operation-not-allowed':
-          errorMessage = 'Google sign-in is not enabled for this project';
-          break;
-        case 'auth/unauthorized-domain':
-          errorMessage = 'This domain is not authorized for authentication';
-          break;
-        default:
-          errorMessage = err.message || errorMessage;
-      }
-    } else if (error && typeof error === 'object' && 'message' in error) {
-      errorMessage = (error as { message: string }).message;
-    }
-
-    setAuthError(errorMessage);
-    toast.error(errorMessage, { 
-      duration: 6000,
-      position: 'top-center'
-    });
-
-    return errorMessage;
+  const handleAuthError = useCallback(async (error: unknown) => {
+    // Leverage centralized error formatting and handling
+    const { handleAppError, AppErrorType } = await import('@/services/errorService');
+    const message: string = handleAppError(error, AppErrorType.AUTH, true);
+    setAuthError(message);
+    return message;
   }, []);
 
   const logout = async () => {
@@ -142,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             errorCode === 'auth/cancelled-popup-request' ||
             /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)) {
           
-          toast('Redirecting to Google Sign-In...', { 
+          toast('Redirecting to Google Sign-In...', {
             duration: 2000,
             icon: 'ℹ️'
           });

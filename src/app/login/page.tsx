@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
-import { useRouter } from 'next/navigation';
+
 
 import GoogleButton from '@/components/GoogleButton';
 import styles from '../dashboard/glass.module.css';
@@ -14,7 +14,6 @@ interface AuthError extends Error {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
   useAuthRedirect();
   const { loading, signInWithGoogle, authError } = useAuth();
   const [signingIn, setSigningIn] = useState(false);
