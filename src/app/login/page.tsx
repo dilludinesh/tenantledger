@@ -4,14 +4,6 @@ import { useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { GoogleButton } from '@/components/GoogleButton';
 
-const styles = `
-  @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-`;
-
 interface AuthError extends Error {
   code?: string;
   message: string;

@@ -68,7 +68,7 @@ export function generateId(): string {
  * @param wait - The number of milliseconds to delay
  * @returns A debounced version of the function
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -129,7 +129,7 @@ export function safeJsonParse<T>(str: string, defaultValue: T): T {
  * @param wait - The number of milliseconds to wait before allowing another call
  * @returns A throttled function
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {

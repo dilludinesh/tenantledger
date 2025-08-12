@@ -10,7 +10,6 @@ function base64url(bytes: Uint8Array): string {
 
 function buildCSP(): string {
   // Simplified CSP for Next.js
-  const self = "'self'";
   const data = "data:";
   const https = "https:";
   const firebase = "*.firebaseapp.com *.firebaseio.com *.googleapis.com";
