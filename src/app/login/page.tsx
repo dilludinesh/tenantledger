@@ -1,12 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import { GoogleButton } from '@/components/GoogleButton';
 
-
-import GoogleButton from '@/components/GoogleButton';
-import styles from '../dashboard/glass.module.css';
+const styles = `
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+`;
 
 interface AuthError extends Error {
   code?: string;
@@ -14,126 +18,59 @@ interface AuthError extends Error {
 }
 
 export default function LoginPage() {
-  useAuthRedirect();
-  const { loading, signInWithGoogle, authError } = useAuth();
-  const [signingIn, setSigningIn] = useState(false);
-  const [localError, setLocalError] = useState<string | null>(null);
+  const { signInWithGoogle } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Set document title
-  useEffect(() => {
-    document.title = 'Login - Tenant Ledger';
-  }, []);
-
-  // Handle auth errors
-  useEffect(() => {
-    if (authError) {
-      setSigningIn(false);
-      setLocalError(authError);
-      
-      // Auto-clear error after 5 seconds
-      const timer = setTimeout(() => {
-        setLocalError(null);
-      }, 5000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [authError]);
-
-  const handleSignIn = async () => {
-    setSigningIn(true);
-    setLocalError(null);
+  const handleSignIn = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
     
     try {
       await signInWithGoogle();
-      // Redirect is handled by useAuthRedirect
-    } catch (error) {
-      const authError = error as AuthError;
-      console.error('Sign in error:', authError);
-      setLocalError(authError.message || 'Failed to sign in. Please try again.');
-      setSigningIn(false);
+    } catch (err) {
+      const error = err as AuthError;
+      setError(error.message || 'Failed to sign in');
+      setIsLoading(false);
     }
-  };
+  }, [signInWithGoogle]);
 
   return (
-    <div className="flex flex-col h-screen justify-start px-4" role="main">
-      <div className="mt-8 mx-auto w-full max-w-xs">
-        <div 
-          className={`${styles.glass} py-8 px-6 sm:px-8`}
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <div className="text-center mb-8">
-            <h1 
-              className="text-4xl font-bold"
-              aria-label="Tenant Ledger"
-              style={{
-                background: 'linear-gradient(90deg, var(--login-title-gradient-start), var(--login-title-gradient-end))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                display: 'inline-block',
-                textShadow: '0 2px 4px var(--login-title-shadow)'
-              }}
-            >
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="w-full max-w-sm mx-auto mt-16">
+        <div className="bg-white rounded-xl shadow-md p-8 space-y-6">
+          <div className="text-center">
+            <h1 className="text-4xl font-extrabold" style={{
+              background: 'linear-gradient(90deg, #1e40af, #3b82f6, #7c3aed)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              color: 'transparent',
+              display: 'inline-block',
+              lineHeight: '1.2'
+            }}>
               Tenant Ledger
             </h1>
-            <p className="sr-only">Secure login to access your tenant management dashboard</p>
           </div>
-
-          <div className="flex flex-col items-center">
+          
+          <div className="space-y-4">
             <GoogleButton 
               onClick={handleSignIn}
-              disabled={loading || signingIn}
-              loading={signingIn}
-              aria-busy={signingIn}
-              aria-live="polite"
+              disabled={isLoading}
+              loading={isLoading}
+              className="w-full"
             >
-              {signingIn ? 'Signing in...' : 'Sign in with Google'}
+              {isLoading ? 'Signing in...' : 'Sign in with Google'}
             </GoogleButton>
             
-            {(localError || authError) && (
-              <div 
-                className="mt-4 w-full flex justify-center transition-opacity duration-300"
-                role="alert"
-                aria-live="assertive"
-              >
-                <div
-                  className={`bg-gradient-to-r from-[var(--cancelled-signin-background-start)] to-[var(--cancelled-signin-background-end)] 
-                  border border-[var(--cancelled-signin-border)] rounded-lg px-4 py-3 shadow-sm 
-                  flex flex-col items-center gap-2 w-full max-w-xs`}
-                >
-                  <div className="flex items-center gap-2">
-                    <svg 
-                      className="w-5 h-5 text-[var(--cancelled-signin-icon)] flex-shrink-0" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" 
-                      />
-                    </svg>
-                    <span className="text-[var(--cancelled-signin-text)] text-sm font-medium text-center">
-                      {localError || authError}
-                    </span>
-                  </div>
-                  <button 
-                    onClick={handleSignIn} 
-                    className="btn btn-primary text-sm px-3 py-1"
-                    disabled={signingIn}
-                    aria-label="Try signing in again"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              </div>
+            {error && (
+              <p className="text-sm text-red-600 text-center mt-2">
+                {error}
+              </p>
             )}
           </div>
         </div>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

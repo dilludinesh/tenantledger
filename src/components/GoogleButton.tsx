@@ -1,42 +1,103 @@
-import React, { ReactNode } from 'react';
+import React, { forwardRef } from 'react';
+import { cn } from '../lib/utils';
 
-interface GoogleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface GoogleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * Whether the button is in a loading state
+   */
   loading?: boolean;
-  children?: ReactNode;
+  /**
+   * Custom class name for the button
+   */
+  className?: string;
 }
 
-export default function GoogleButton({
-  loading = false,
-  children,
-  ...props
-}: GoogleButtonProps) {
-  return (
-    <button
-      {...props}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '12px 16px',
-        backgroundColor: '#fff',
-        border: '1px solid #dadce0',
-        borderRadius: '24px',
-        cursor: 'pointer',
-        minWidth: '240px',
-        fontFamily: '"Google Sans", Roboto, arial, sans-serif',
-        fontSize: '14px',
-        fontWeight: 500,
-        color: '#3c4043',
-      }}
-    >
-      {!loading && (
-        <div style={{ marginRight: '12px' }}>
-          <svg width="18" height="18" viewBox="0 0 24 24">
-            <path fill="#EA4335" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
-          </svg>
-        </div>
-      )}
-      <span>{loading ? (children || 'Signing in...') : (children || 'Sign in with Google')}</span>
-    </button>
-  );
-}
+/**
+ * A reusable Google sign-in button component with consistent styling and loading states.
+ */
+const GoogleButton = forwardRef<HTMLButtonElement, GoogleButtonProps>(
+  ({ loading = false, className, children, disabled, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        disabled={disabled || loading}
+        className={cn(
+          'group relative w-full max-w-[250px] flex items-center justify-center py-2.5 px-6',
+          'rounded-full border border-gray-300 bg-white',
+          'text-sm font-medium text-gray-700 hover:bg-gray-50',
+          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+          'transition-colors duration-200',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+          className
+        )}
+        aria-busy={loading}
+        {...props}
+      >
+        {!loading && (
+          <span className="mr-3">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              className="text-gray-500 group-hover:text-gray-700 transition-colors"
+              aria-hidden="true"
+            >
+              <path
+                fill="currentColor"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                className="text-[#4285F4]"
+              />
+              <path
+                fill="currentColor"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.28-1.93-6.14-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                className="text-[#34A853]"
+              />
+              <path
+                fill="currentColor"
+                d="M5.86 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.68-2.84z"
+                className="text-[#FBBC05]"
+              />
+              <path
+                fill="currentColor"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.86-2.6 3.28-4.53 6.16-4.53z"
+                className="text-[#EA4335]"
+              />
+            </svg>
+          </span>
+        )}
+        <span className="whitespace-nowrap">
+          {loading ? 'Signing in...' : children || 'Sign in with Google'}
+        </span>
+        {loading && (
+          <span className="ml-2">
+            <svg
+              className="animate-spin h-4 w-4 text-gray-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+          </span>
+        )}
+      </button>
+    );
+  }
+);
+
+GoogleButton.displayName = 'GoogleButton';
+
+export { GoogleButton };

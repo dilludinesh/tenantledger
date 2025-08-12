@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Providers from './Providers';
 import ClientBody from './ClientBody';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-
 
 export const metadata: Metadata = {
   title: 'Tenant Ledger',
@@ -16,8 +15,14 @@ export const metadata: Metadata = {
     apple: '/favicon.ico',
   },
   manifest: '/manifest.json',
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: '#3b82f6',
+  maximumScale: 1,
+  userScalable: false,
 };
 
 function RootLayoutContent({ children }: { children: React.ReactNode }) {
