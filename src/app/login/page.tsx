@@ -33,7 +33,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-xl shadow-md p-8 space-y-6">
           <div className="text-center">
             <h1 className="text-4xl font-extrabold" style={{
-              background: 'linear-gradient(90deg, #1e40af, #3b82f6, #7c3aed)',
+              backgroundImage: 'linear-gradient(90deg, #3b82f6, #6366f1, #8b5cf6, #a855f7)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
